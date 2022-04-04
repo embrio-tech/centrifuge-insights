@@ -1,6 +1,8 @@
 # Centrifuge Insights
 
 [![React](https://img.shields.io/static/v1?label=built+with&message=React&color=61dafb)](https://reactjs.org/)
+[![Ant Design](https://img.shields.io/static/v1?label=built+with&message=Ant+Design&color=0170fe)](https://ant.design/)
+[![tailwindcss](https://img.shields.io/static/v1?label=built+with&message=Tailwind+CSS&color=38bef8)](https://tailwindcss.com/)
 [![Docker](https://img.shields.io/static/v1?label=shipped+with&message=Docker&color=287cf9)](https://www.docker.com/)
 [![embrio.tech](https://img.shields.io/static/v1?label=by&message=EMBRIO.tech&color=24ae5f)](https://embrio.tech)
 [![Centrifuge](https://img.shields.io/static/v1?label=for&message=Centrifuge&color=2762ff)](https://centrifuge.io/)
@@ -8,6 +10,21 @@
 <!-- [![Ant Design](https://img.shields.io/static/v1?label=built+with&message=Ant+Design&color=F74455)](https://ant.design/) -->
 
 A single-page application to visualize data and activities on the Centrifuge Parachain on Polkadot.
+
+## Development
+
+### Prerequisites
+
+- node: > v16.14.2
+- yarn: > v1.22.17
+
+### Install
+
+    $ yarn install
+
+### Run
+
+    $ yarn start
 
 🚧 We are breeding the next EMBRIO. More soon... 🚀
 
