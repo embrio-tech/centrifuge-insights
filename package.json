@@ -80,7 +80,7 @@
     "tailwindcss": "^3.0.23"
   },
   "lint-staged": {
-    "src/**/*.{js,ts}": [
+    "src/**/*.{js,ts,tsx,jsx}": [
       "eslint --max-warnings 0"
     ]
   }
