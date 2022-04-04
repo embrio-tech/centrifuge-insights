@@ -7,7 +7,7 @@ function App() {
     <div className='p-4'>
       hello world!{' '}
       <Button type='primary'>
-        Button
+        Button  
       </Button>
     </div>
   )

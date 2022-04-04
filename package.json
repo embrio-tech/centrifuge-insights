@@ -36,8 +36,8 @@
     "build": "craco build",
     "test": "craco test --watchAll=false",
     "test:watch": "craco test",
-    "lint": "eslint --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
-    "lint:fix": "eslint --fix --max-warnings 0 '**/*.{ts,tsx,js,jsx}'",
+    "lint": "eslint --max-warnings 0 'src/**/*.{ts,tsx,js,jsx}'",
+    "lint:fix": "eslint --fix --max-warnings 0 'src/**/*.{ts,tsx,js,jsx}'",
     "prepare": "husky install",
     "eject": "react-scripts eject"
   },
