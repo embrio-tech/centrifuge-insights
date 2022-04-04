@@ -11,12 +11,14 @@
 
 A single-page application to visualize data and activities on the Centrifuge Parachain on Polkadot.
 
+🚧 We are breeding the next EMBRIO. More soon... 🚀
+
 ## Development
 
 ### Prerequisites
 
-- node: > v16.14.2
-- yarn: > v1.22.17
+- [Node Version Manager](https://github.com/nvm-sh/nvm)
+  - node: version specified in [`.nvmrc`](/.nvmrc)
 
 ### Install
 
@@ -26,7 +28,11 @@ A single-page application to visualize data and activities on the Centrifuge Par
 
     $ yarn start
 
-🚧 We are breeding the next EMBRIO. More soon... 🚀
+### Commit
+
+This repository uses commitlint to enforce commit message conventions. You have to specify the type of the commit in your commit message. Use one of the [supported types](https://github.com/conventional-changelog/commitlint/tree/master/@commitlint/config-conventional#type-enum).
+
+    $ git commit -m "[type]: foo bar"
 
 ## Contact
 
