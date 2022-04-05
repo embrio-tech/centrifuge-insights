@@ -1,12 +1,16 @@
 import React from 'react'
 import './App.less'
-import { Button } from 'antd'
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
+import { Root } from './routes'
 
 function App() {
   return (
-    <div className='p-4'>
-      hello world! <Button type='primary'>Button</Button>
-    </div>
+    <Router>
+      <Routes>
+        <Route path='/' element={<Root />} />
+        <Route path='*' element={<Navigate to={'/'} />} />
+      </Routes>
+    </Router>
   )
 }
 
