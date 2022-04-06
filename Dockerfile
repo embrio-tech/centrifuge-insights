@@ -19,7 +19,6 @@ WORKDIR /usr/src/app
 
 ARG OPS_ENV=local
 ENV REACT_APP_OPS_ENV=$OPS_ENV
-ENV SKIP_PREFLIGHT_CHECK=true
 
 COPY --from=install /usr/src/app/node_modules ./node_modules
 COPY . .

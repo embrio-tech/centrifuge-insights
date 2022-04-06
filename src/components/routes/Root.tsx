@@ -6,7 +6,7 @@ import { BasicLayout } from '../layouts'
 const Root: React.FC = () => {
   return (
     <BasicLayout>
-      <Card title='Default size card' className='w-full max-w-xs'>
+      <Card title='Some Widget' className='w-full max-w-xs'>
         <p>Card content</p>
         <p>Card content</p>
         <p>Card content</p>
