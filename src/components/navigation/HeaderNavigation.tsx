@@ -1,5 +1,5 @@
 import React from 'react'
-import './HeaderNavigation.less'
+// import './HeaderNavigation.less'
 import logo from '../../svg/centrifuge-marquee-light.svg'
 import { Link } from 'react-router-dom'
 import { Button } from 'antd'

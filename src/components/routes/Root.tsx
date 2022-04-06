@@ -1,7 +1,7 @@
 import { Card } from 'antd'
 import React from 'react'
 import { BasicLayout } from '../layouts'
-import './Root.less'
+// import './Root.less'
 
 const Root: React.FC = () => {
   return (
