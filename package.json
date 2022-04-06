@@ -84,5 +84,10 @@
     "src/**/*.{js,ts,tsx,jsx}": [
       "eslint --max-warnings 0"
     ]
+  },
+  "jest": {
+    "transformIgnorePatterns": [
+      "/node_modules/(?!antd|@ant-design|rc-.+?|@babel/runtime).+(js|jsx|ts|tsx)$"
+    ]
   }
 }
