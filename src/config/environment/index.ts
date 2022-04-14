@@ -3,8 +3,6 @@ import { staging } from './staging'
 import { development } from './development'
 import { local } from './local'
 import { defaults } from './defaults'
-import dotenv from 'dotenv'
-dotenv.config()
 
 export const { REACT_APP_OPS_ENV = 'local' } = process.env
 
