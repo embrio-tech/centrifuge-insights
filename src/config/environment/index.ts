@@ -20,5 +20,3 @@ const getEnvironment = (opsEnv: string) => {
 }
 
 export const environment = getEnvironment(REACT_APP_OPS_ENV)
-
-// export { environment }
