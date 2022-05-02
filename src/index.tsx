@@ -2,7 +2,7 @@ import React from 'react'
 // import { createRoot } from 'react-dom/client'
 import { render } from 'react-dom'
 import './index.less'
-import App from './components/App'
+import { App } from './components'
 import * as serviceWorkerRegistration from './serviceWorkerRegistration'
 import reportWebVitals from './reportWebVitals'
 
