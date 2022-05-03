@@ -1,7 +1,7 @@
 import { Button, Layout } from 'antd'
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons'
 import React, { useState, useEffect } from 'react'
-import { useMediaQuery } from 'react-responsive'
+import { useBreakpoints } from '../../hooks'
 import { HeaderNavigation } from '../navigation'
 import './BasicLayout.less'
 
@@ -10,15 +10,15 @@ const { Header, Content, Footer, Sider } = Layout
 const BasicLayout: React.FC = (props) => {
   const { children } = props
   const [siderCollapsed, setSiderCollapsed] = useState<boolean>(false)
-  const isSM = useMediaQuery({ maxWidth: 767 })
+  const { gtSM, ltMD } = useBreakpoints()
 
   const SIDER_COLLAPSED_WIDTH = 60
   const SIDER_WIDTH = 250
   const FOOTER_HEIGTH = 70
 
   useEffect(() => {
-    if (!isSM && siderCollapsed) setSiderCollapsed(false)
-  }, [isSM, siderCollapsed])
+    if (gtSM && siderCollapsed) setSiderCollapsed(false)
+  }, [gtSM, siderCollapsed])
 
   return (
     <Layout>
@@ -26,7 +26,17 @@ const BasicLayout: React.FC = (props) => {
         <HeaderNavigation />
       </Header>
       <Layout hasSider className='mt-16'>
-        <Layout style={{ marginRight: isSM ? 0 : SIDER_WIDTH }}>
+        <Layout
+          style={{ marginRight: gtSM ? SIDER_WIDTH : 0 }}
+          className={ltMD && !siderCollapsed ? 'blur-sm' : undefined}
+          onClick={
+            ltMD && !siderCollapsed
+              ? () => {
+                  setSiderCollapsed(true)
+                }
+              : undefined
+          }
+        >
           <Content className='p-6' style={{ minHeight: `calc(100vh - 64px - ${FOOTER_HEIGTH}px)` }}>
             {children}
           </Content>
@@ -43,14 +53,14 @@ const BasicLayout: React.FC = (props) => {
           collapsible
           collapsed={siderCollapsed}
           theme='light'
-          collapsedWidth={isSM ? 0 : SIDER_COLLAPSED_WIDTH}
-          width={isSM ? '90vw' : SIDER_WIDTH}
+          collapsedWidth={gtSM ? SIDER_COLLAPSED_WIDTH : 0}
+          width={gtSM ? SIDER_WIDTH : '80vw'}
           trigger={null}
         >
           <div className='p-4'>Sider contents here...</div>
         </Sider>
       </Layout>
-      {isSM && (
+      {ltMD && (
         <Button className='basic-layout-sider-collapse-btn' shape='circle' size='large' onClick={() => setSiderCollapsed(!siderCollapsed)}>
           {siderCollapsed ? <MenuOutlined /> : <CloseOutlined />}
         </Button>
