@@ -57,7 +57,19 @@ const BasicLayout: React.FC = (props) => {
           width={gtSM ? SIDER_WIDTH : '80vw'}
           trigger={null}
         >
-          <div className='p-4'>Sider contents here...</div>
+          <div className='h-full flex flex-col justify-between'>
+            <div className='p-4'>
+              <p>Filters here...</p>
+              <p>Filter 1</p>
+              <p>Filter 2</p>
+            </div>
+            <div className='p-4'>
+              <p>Navigation here...</p>
+              <p>Item 1</p>
+              <p>Item 2</p>
+              <p>Item 3</p>
+            </div>
+          </div>
         </Sider>
       </Layout>
       {ltMD && (
