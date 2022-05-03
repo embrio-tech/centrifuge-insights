@@ -36,7 +36,7 @@ This repository uses commitlint to enforce commit message conventions. You have 
 
 ## Contact
 
-[EMBRIO.tech](https://embrio.tech)
+[EMBRIO.tech](https://embrio.tech)  
 [hello@embrio.tech](mailto:hello@embrio.tech)  
 +41 44 552 00 75
 
