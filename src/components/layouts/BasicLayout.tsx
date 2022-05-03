@@ -9,8 +9,8 @@ const { Header, Content, Footer, Sider } = Layout
 
 const BasicLayout: React.FC = (props) => {
   const { children } = props
-  const [siderCollapsed, setSiderCollapsed] = useState<boolean>(false)
   const { gtSM, ltMD } = useBreakpoints()
+  const [siderCollapsed, setSiderCollapsed] = useState<boolean>(ltMD)
 
   const SIDER_COLLAPSED_WIDTH = 60
   const SIDER_WIDTH = 250
