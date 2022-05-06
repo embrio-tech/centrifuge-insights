@@ -1,4 +1,5 @@
 import { useMediaQuery } from 'react-responsive'
+import { breakpoints } from '../config'
 
 interface Breakpoints {
   // match
@@ -25,7 +26,7 @@ interface Breakpoints {
 }
 
 export const useBreakpoints = (): Breakpoints => {
-  const [SM, MD, LG, XL, XXL] = [576, 768, 992, 1200, 1600]
+  const { SM, MD, LG, XL, XXL } = breakpoints
 
   // match
   const isXS = useMediaQuery({ maxWidth: SM - 1 })
