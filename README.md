@@ -30,7 +30,7 @@ A single-page application to visualize data and activities on the Centrifuge Par
 
 ### Commit
 
-This repository uses commitlint to enforce commit message conventions. You have to specify the type of the commit in your commit message. Use one of the [supported types](https://github.com/pvdlg/conventional-commit-types).
+This repository uses commitlint to enforce commit message conventions. You have to specify the type of the commit in your commit message. Use one of the [supported types](https://github.com/pvdlg/conventional-changelog-metahub).
 
     $ git commit -m "[type]: foo bar"
 
