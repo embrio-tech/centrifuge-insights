@@ -1,5 +1,5 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const { breakpoints } = require('./src/config/breakpoints')
+const { breakpoints } = require('./src/config/breakpoints.config')
 const { SM, MD, LG, XL, XXL } = breakpoints
 
 module.exports = {
