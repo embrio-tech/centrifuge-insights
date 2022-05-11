@@ -38,7 +38,7 @@ const WidgetLayout: React.FC<WidgetLayoutProps> = (props) => {
         // }}
         // onLayoutChange={(layout, allLayouts) => {
         //   // TODO: handle layout change
-        //   // console.log('layout: ', layout)
+        //   console.log('layout: ', layout)
         //   // console.log('allLayouts: ', allLayouts)
         // }}
       >
