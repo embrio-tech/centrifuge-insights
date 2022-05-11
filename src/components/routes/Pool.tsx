@@ -1,12 +1,11 @@
 import React from 'react'
-import { Dashboard } from '../../types'
+import { Dashboard as DashboardInterface } from '../../types'
 import { BasicLayout } from '../layouts'
-import { Section } from '../util'
-import { Widgets } from '../widgets'
+import { Dashboard } from '../util'
 // import './Pool.less'
 
 const Pool: React.FC = () => {
-  const dashboard: Dashboard = {
+  const dashboard: DashboardInterface = {
     name: 'Pool Details',
     sections: [
       {
@@ -64,11 +63,7 @@ const Pool: React.FC = () => {
 
   return (
     <BasicLayout>
-      {dashboard.sections.map(({ name, widgets }) => (
-        <Section title={name} key={name} className='p-4 mt-6'>
-          <Widgets widgets={widgets} className='-m-4' />
-        </Section>
-      ))}
+      <Dashboard dashboard={dashboard} />
     </BasicLayout>
   )
 }
