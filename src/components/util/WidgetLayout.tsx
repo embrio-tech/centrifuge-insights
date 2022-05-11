@@ -1,6 +1,6 @@
 import React, { useRef } from 'react'
 import { Responsive as ResponsiveGridLayout } from 'react-grid-layout'
-import { gridBreakpoints, gridCols, gridMargin } from '../../config'
+import { girdRowHeight, gridBreakpoints, gridCols, gridMargin } from '../../config'
 // import './WidgetLayout.less'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
@@ -29,11 +29,12 @@ const WidgetLayout: React.FC<WidgetLayoutProps> = (props) => {
         breakpoints={gridBreakpoints}
         cols={gridCols}
         margin={gridMargin}
+        rowHeight={girdRowHeight}
         isDraggable={edit}
         isResizable={edit}
         // onBreakpointChange={(breakpoint: string, cols: number) => {
         //   // TODO: handle breakpoint change
-        //   // console.log('breakpoint: ', breakpoint, cols)
+        //   console.log('breakpoint: ', breakpoint, cols)
         // }}
         // onLayoutChange={(layout, allLayouts) => {
         //   // TODO: handle layout change

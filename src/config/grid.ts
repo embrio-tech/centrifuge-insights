@@ -21,3 +21,5 @@ export const gridCols: { [breakpoint in keyof typeof gridBreakpoints]: number } 
 }
 
 export const gridMargin: [number, number] = [16, 16] // corresponds to 1rem (tailwind m-4)
+
+export const girdRowHeight = 150
