@@ -1,4 +1,4 @@
-describe('Root should', () => {
+describe('Pool should', () => {
   test.skip('have tests!', () => {
     // TODO:
   })

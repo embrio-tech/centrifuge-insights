@@ -1,7 +1,8 @@
 import React, { useMemo } from 'react'
-import { Column, ColumnConfig } from '@ant-design/plots'
+import { Column as ColumnChart, ColumnConfig } from '@ant-design/plots'
 import { gql, useQuery } from '@apollo/client'
-import { Card, Spin } from 'antd'
+import { Spin } from 'antd'
+
 // import './DemoWidget.less'
 
 interface DemoWidgetProps {
@@ -26,7 +27,9 @@ interface ChartData {
   minEpochTime: number
 }
 
-const DemoWidget: React.FC<DemoWidgetProps> = () => {
+const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
+  const { className } = props
+
   const query = gql`
     query GetPools {
       pools {
@@ -83,9 +86,9 @@ const DemoWidget: React.FC<DemoWidgetProps> = () => {
           text: 'Currency',
           spacing: 10,
           style: {
-            fontSize: 14
-          }
-        }
+            fontSize: 14,
+          },
+        },
       },
       xAxis: {
         label: {
@@ -110,9 +113,16 @@ const DemoWidget: React.FC<DemoWidgetProps> = () => {
   }, [chartData])
 
   return (
-    <Card title='Min Epoch Time of Pools by Currency' className='w-full max-w-2xl'>
-      <div className='p-4 pt-8'>{loading ? <Spin /> : <Column {...config} />}</div>
-    </Card>
+    <div className={className}>
+      <div className='h-full flex flex-col'>
+        <div className='grow-0'>
+          <h3 className='text-base'>Min Epoch Time of Pools by Currency</h3>
+        </div>
+        <div className='grow h-0'>
+          <div className='h-full'>{loading ? <Spin /> : <ColumnChart {...config} />}</div>
+        </div>
+      </div>
+    </div>
   )
 }
 

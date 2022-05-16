@@ -1,1 +1,1 @@
-export * from './DemoWidget'
+export * from './Widgets'

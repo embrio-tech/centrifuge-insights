@@ -37,7 +37,7 @@ const BasicLayout: React.FC = (props) => {
               : undefined
           }
         >
-          <Content className='p-6' style={{ minHeight: `calc(100vh - 64px - ${FOOTER_HEIGTH}px)` }}>
+          <Content className='' style={{ minHeight: `calc(100vh - 64px - ${FOOTER_HEIGTH}px)` }}>
             {children}
           </Content>
           <Footer className='text-center' style={{ maxHeight: FOOTER_HEIGTH }}>

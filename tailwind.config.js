@@ -1,3 +1,7 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { breakpoints } = require('./src/config/breakpoints.config')
+const { SM, MD, LG, XL, XXL } = breakpoints
+
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   theme: {
@@ -5,15 +9,15 @@ module.exports = {
 
     // unify tailwind breakpoints with ant design breakpoints
     screens: {
-      sm: '576px',
+      sm: `${SM}px`,
       // => @media (min-width: 576px) { ... }
-      md: '768px',
+      md: `${MD}px`,
       // => @media (min-width: 768px) { ... }
-      lg: '992px',
+      lg: `${LG}px`,
       // => @media (min-width: 992px) { ... }
-      xl: '1200px',
+      xl: `${XL}px`,
       // => @media (min-width: 1200px) { ... }
-      'xxl': '1600px',
+      xxl: `${XXL}px`,
       // => @media (min-width: 1600px) { ... }
     },
   },
