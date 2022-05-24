@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { Column as ColumnChart, ColumnConfig } from '@ant-design/plots'
 import { gql, useQuery } from '@apollo/client'
-import { Spin } from 'antd'
+import { ChartLayout } from '../layouts'
 
 // import './DemoWidget.less'
 
@@ -113,16 +113,9 @@ const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
   }, [chartData])
 
   return (
-    <div className={className}>
-      <div className='h-full flex flex-col'>
-        <div className='grow-0'>
-          <h3 className='text-base'>Min Epoch Time of Pools by Currency</h3>
-        </div>
-        <div className='grow h-0'>
-          <div className='h-full'>{loading ? <Spin /> : <ColumnChart {...config} />}</div>
-        </div>
-      </div>
-    </div>
+    <ChartLayout className={className} loading={loading} title='Min Epoch Time of Pools by Currency'>
+      <ColumnChart {...config} />
+    </ChartLayout>
   )
 }
 
