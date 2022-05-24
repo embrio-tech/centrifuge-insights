@@ -1,4 +1,4 @@
-describe('WidgetLayout should', () => {
+describe('WidgetsLayout should', () => {
   test.skip('have tests!', () => {
     // TODO:
   })

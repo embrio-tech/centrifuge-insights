@@ -1,3 +1,3 @@
-export * from './WidgetLayout'
+export * from './WidgetsLayout'
 export * from './Section'
 export * from './Dashboard'

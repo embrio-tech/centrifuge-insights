@@ -11,7 +11,7 @@ import { gridBreakpointNames } from '../config'
  *
  * @returns {Object} responsive layouts for react-grid-layout
  */
-export const useWidgetLayout = (widgets: WidgetAppearance[]): Layouts => {
+export const useWidgetsLayout = (widgets: WidgetAppearance[]): Layouts => {
   const layouts = useMemo<Layouts>(() => {
     const layouts = Object.fromEntries(gridBreakpointNames.map((gridBreakpoint) => [gridBreakpoint, new Array<Layout>()]))
 
