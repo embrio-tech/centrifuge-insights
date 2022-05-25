@@ -112,10 +112,26 @@ const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
     }
   }, [chartData])
 
+  const kpis = (
+    <ul className='mb-0'>
+      <li>Foo</li>
+      <li>
+        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys
+        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
+        a type specimen book.
+      </li>
+      <li>Xii</li>
+    </ul>
+  )
+
   return (
-    <ChartLayout className={className} loading={loading} title='Min Epoch Time of Pools by Currency'>
-      <ColumnChart {...config} />
-    </ChartLayout>
+    <ChartLayout
+      className={className}
+      chart={<ColumnChart {...config} />}
+      info={kpis}
+      loading={loading}
+      title='Min Epoch Time of Pools by Currency'
+    />
   )
 }
 
