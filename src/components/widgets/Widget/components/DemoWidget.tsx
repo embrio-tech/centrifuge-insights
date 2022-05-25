@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { Column as ColumnChart, ColumnConfig } from '@ant-design/plots'
 import { gql, useQuery } from '@apollo/client'
 import { ChartLayout } from '../layouts'
+import { WidgetKPI, WidgetKPIs } from '../util'
 
 // import './DemoWidget.less'
 
@@ -112,23 +113,31 @@ const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
     }
   }, [chartData])
 
-  const kpis = (
-    <ul className='mb-0'>
-      <li>Foo</li>
-      <li>
-        Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys
-        standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make
-        a type specimen book.
-      </li>
-      <li>Xii</li>
-    </ul>
-  )
+  const kpis: WidgetKPI[] = [
+    {
+      label: 'Pool value growth',
+      value: 64,
+      unit: '%',
+    },
+    {
+      label: 'Liquidity reserve as % of pool value',
+      value: 4,
+      unit: '%',
+    },
+    {
+      label: '',
+    },
+    {
+      label: '# of loans',
+      value: '4\'150',
+    },
+  ]
 
   return (
     <ChartLayout
       className={className}
       chart={<ColumnChart {...config} />}
-      info={kpis}
+      info={<WidgetKPIs kpis={kpis} />}
       loading={loading}
       title='Min Epoch Time of Pools by Currency'
     />
