@@ -13,13 +13,17 @@ import { gridBreakpointNames } from '../config'
  */
 export const useWidgetsLayout = (widgets: WidgetAppearance[]): Layouts => {
   const layouts = useMemo<Layouts>(() => {
-    const layouts = Object.fromEntries(gridBreakpointNames.map((gridBreakpoint) => [gridBreakpoint, new Array<Layout>()]))
+    const layouts = Object.fromEntries(
+      gridBreakpointNames.map((gridBreakpoint) => [gridBreakpoint, new Array<Layout>()])
+    )
 
     widgets.forEach((widget) => {
       const { name, coordinates } = widget
       gridBreakpointNames.forEach((gridBreakpoint) => {
         const breakpointCoordinates = coordinates.find(({ breakpoint }) => breakpoint === gridBreakpoint)
-        if (!breakpointCoordinates) throw new Error(`Widget ${name}: breakpointCoordinates missing for breakpoint ${gridBreakpoint}`)
+        if (!breakpointCoordinates) {
+          throw new Error(`Widget ${name}: breakpointCoordinates missing for breakpoint ${gridBreakpoint}`)
+        }
         const { x, y, w, h } = breakpointCoordinates
         layouts[gridBreakpoint].push({ i: name, x, y, w, h })
       })
