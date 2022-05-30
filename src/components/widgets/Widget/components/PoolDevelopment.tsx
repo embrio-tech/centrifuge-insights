@@ -3,7 +3,7 @@ import { gql, useQuery } from '@apollo/client'
 import { Line as LineChart, LineConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
-import { abbreviatedNumber, textDate } from '../../../../util'
+import { abbreviatedNumber, textDate, wad } from '../../../../util'
 
 // import './PoolDevelopment.less'
 
@@ -39,8 +39,11 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const from: Date = new Date('2022-05-07')
   const to: Date = new Date('2022-05-14')
 
+  // const from = new Date('2022-01-01')
+  // const to = new Date('2022-05-31')
+
   const query = gql`
-    query getPoolDevelopment($poolId: String!, $from: Datetime, $to: Datetime) {
+    query getPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
       poolSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC
@@ -57,17 +60,11 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     }
   `
 
-  const { loading, data } = useQuery<ApiData>(query, { variables: { poolId, from, to } })
+  const { loading, data } = useQuery<ApiData>(query, {
+    variables: { poolId, from, to },
+  })
 
   const chartData = useMemo<ChartData[]>(() => {
-    const totalReserves =
-      data?.poolSnapshots?.nodes?.map(
-        ({ timestamp, totalReserve }): ChartData => ({
-          series: 'Liquidity Reserve',
-          value: Number(totalReserve),
-          timestamp: new Date(timestamp),
-        })
-      ) || []
     const netAssetValues =
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, netAssetValue }): ChartData => ({
@@ -76,7 +73,16 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           timestamp: new Date(timestamp),
         })
       ) || []
-    return [...totalReserves, ...netAssetValues]
+    const totalReserves =
+      data?.poolSnapshots?.nodes?.map(
+        ({ timestamp, totalReserve }): ChartData => ({
+          series: 'Liquidity Reserve',
+          value: Number(totalReserve),
+          timestamp: new Date(timestamp),
+        })
+      ) || []
+
+    return [...netAssetValues, ...totalReserves]
   }, [data])
 
   const chartConfig = useMemo<LineConfig>(
@@ -104,39 +110,61 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         value: {
           type: 'linear',
           // TODO: check magnitude of values
-          formatter: (v) => abbreviatedNumber(v / 10 ** 18),
+          formatter: (v) => abbreviatedNumber(wad(v)),
         },
       },
     }),
     [chartData]
   )
 
-  const kpis: WidgetKPI[] = [
-    {
-      label: 'Pool value growth',
-      value: 64,
-      unit: '%',
-    },
-    {
-      label: 'Liquidity reserve as % of pool value',
-      value: 4,
-      unit: '%',
-    },
-    {
-      label: '',
-    },
-    {
-      label: '# of loans',
-      value: '4150',
-    },
-  ]
+  const kpis = useMemo<WidgetKPI[]>(() => {
+    const poolSnapshots = data?.poolSnapshots?.nodes || []
+
+    if (!poolSnapshots.length) return []
+
+    const first = poolSnapshots[0]
+    const last = poolSnapshots[poolSnapshots.length - 1]
+
+    return [
+      {
+        label: 'Pool value growth',
+        value: ((100 * (wad(last.netAssetValue) - wad(first.netAssetValue))) / wad(first.netAssetValue)).toPrecision(3),
+        unit: '%',
+      },
+      {
+        label: 'Liquidity reserve as % of pool value',
+        value: ((100 * wad(last.totalReserve)) / wad(last.netAssetValue)).toPrecision(3),
+        unit: '%',
+      },
+      {
+        label: '',
+      },
+      {
+        label: '# of loans',
+        value: last.totalEverNumberOfLoans,
+      },
+      {
+        label: '# of loans growth',
+        value: (
+          (100 * (Number(last.totalEverNumberOfLoans) - Number(first.totalEverNumberOfLoans))) /
+          Number(first.totalEverNumberOfLoans)
+        ).toPrecision(3),
+        unit: '%',
+      },
+      {
+        label: '',
+      },
+      {
+        label: 'Avg. loan size',
+        value: abbreviatedNumber(wad(last.netAssetValue) / Number(last.totalEverNumberOfLoans)),
+      },
+    ]
+  }, [data])
 
   return (
     <ChartLayout
       className={className}
-      chart={
-        <LineChart {...chartConfig} />
-      }
+      chart={<LineChart {...chartConfig} />}
       info={<WidgetKPIs kpis={kpis} />}
       loading={loading}
       title='Pool Development'
