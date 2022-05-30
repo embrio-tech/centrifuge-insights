@@ -44,7 +44,7 @@ const Pool: React.FC = () => {
         ],
       },
       {
-        name: 'Pool development',
+        name: 'Pool History',
         widgets: [
           {
             name: 'PoolDevelopment',
