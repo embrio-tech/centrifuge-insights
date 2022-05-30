@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import { Column as ColumnChart, ColumnConfig } from '@ant-design/plots'
 import { gql, useQuery } from '@apollo/client'
 import { ChartLayout } from '../layouts'
-import { WidgetKPI, WidgetKPIs } from '../util'
 
 // import './DemoWidget.less'
 
@@ -113,31 +112,10 @@ const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
     }
   }, [chartData])
 
-  const kpis: WidgetKPI[] = [
-    {
-      label: 'Pool value growth',
-      value: 64,
-      unit: '%',
-    },
-    {
-      label: 'Liquidity reserve as % of pool value',
-      value: 4,
-      unit: '%',
-    },
-    {
-      label: '',
-    },
-    {
-      label: '# of loans',
-      value: '4\'150',
-    },
-  ]
-
   return (
     <ChartLayout
       className={className}
       chart={<ColumnChart {...config} />}
-      info={<WidgetKPIs kpis={kpis} />}
       loading={loading}
       title='Min Epoch Time of Pools by Currency'
     />
