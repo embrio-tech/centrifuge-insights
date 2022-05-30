@@ -1,6 +1,17 @@
+import React from 'react'
+import renderer from 'react-test-renderer'
+import { WidgetLayout } from './WidgetLayout'
+
 describe('WidgetLayout should', () => {
-  test.skip('have tests!', () => {
-    // TODO: write tests
+  test('match snapshot!', () => {
+    const tree = renderer
+      .create(
+        <WidgetLayout className='foo-class' header='This is the header!' footer='This is the footer!'>
+          This is the body!
+        </WidgetLayout>
+      )
+      .toJSON()
+    expect(tree).toMatchSnapshot()
   })
 })
 
