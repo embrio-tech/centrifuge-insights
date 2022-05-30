@@ -1,6 +1,6 @@
 import React from 'react'
 import { WidgetAppearance } from '../../types'
-import { WidgetLayout } from '../util'
+import { WidgetsLayout } from '../util'
 import { Widget } from './Widget'
 // import './Widgets.less'
 
@@ -14,13 +14,13 @@ const Widgets: React.FC<WidgetsProps> = (props) => {
 
   return (
     <div className={className}>
-      <WidgetLayout widgets={widgets}>
+      <WidgetsLayout widgets={widgets}>
         {widgets.map(({ name }) => (
           <div key={name}>
             <Widget is={name} />
           </div>
         ))}
-      </WidgetLayout>
+      </WidgetsLayout>
     </div>
   )
 }

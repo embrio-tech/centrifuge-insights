@@ -42,7 +42,12 @@ const BasicLayout: React.FC = (props) => {
           </Content>
           <Footer className='text-center' style={{ maxHeight: FOOTER_HEIGTH }}>
             Powered by{' '}
-            <a href='https://embrio.tech/en' target='_blank' rel='noreferrer' title='EMBRIO.tech | Digitale Lösungsbauer | Zürich'>
+            <a
+              href='https://embrio.tech/en'
+              target='_blank'
+              rel='noreferrer'
+              title='EMBRIO.tech | Digitale Lösungsbauer | Zürich'
+            >
               <img className='h-6 inline' src='https://embrio.tech/img/logo-dark.svg' alt='EMBRIO.tech logo' />
             </a>
           </Footer>
@@ -58,12 +63,12 @@ const BasicLayout: React.FC = (props) => {
           trigger={null}
         >
           <div className='h-full flex flex-col justify-between'>
-            <div className='p-4'>
+            <div className='p-6'>
               <p>Filters here...</p>
               <p>Filter 1</p>
               <p>Filter 2</p>
             </div>
-            <div className='p-4'>
+            <div className='p-6'>
               <p>Navigation here...</p>
               <p>Item 1</p>
               <p>Item 2</p>
@@ -73,7 +78,12 @@ const BasicLayout: React.FC = (props) => {
         </Sider>
       </Layout>
       {ltMD && (
-        <Button className='basic-layout-sider-collapse-btn' shape='circle' size='large' onClick={() => setSiderCollapsed(!siderCollapsed)}>
+        <Button
+          className='basic-layout-sider-collapse-btn'
+          shape='circle'
+          size='large'
+          onClick={() => setSiderCollapsed(!siderCollapsed)}
+        >
           {siderCollapsed ? <MenuOutlined /> : <CloseOutlined />}
         </Button>
       )}

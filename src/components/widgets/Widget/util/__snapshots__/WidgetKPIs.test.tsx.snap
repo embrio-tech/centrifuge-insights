@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WidgetKPIs should match snapshot! 1`] = `
+<div>
+  <h4
+    className="text-sm"
+  >
+    KPIs
+  </h4>
+  <ul
+    className="text-xs mb-0"
+  >
+    <li
+      className="flex h-5"
+    >
+      <div
+        className="grow shrink truncate font-light"
+      >
+        Pool value growth
+      </div>
+      <div
+        className="pl-2"
+      >
+        <span
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+        >
+          58.43
+        </span>
+      </div>
+      <div>
+        %
+      </div>
+    </li>
+    <li
+      className="flex h-5"
+    >
+      <div
+        className="grow shrink truncate font-light"
+      >
+        Liquidity reserve as % of pool value
+      </div>
+      <div
+        className="pl-2"
+      >
+        <span
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+        >
+          24.2
+        </span>
+      </div>
+      <div>
+        %
+      </div>
+    </li>
+    <li
+      className="flex h-5"
+    >
+      <div
+        className="grow shrink truncate font-light"
+      />
+    </li>
+    <li
+      className="flex h-5"
+    >
+      <div
+        className="grow shrink truncate font-light"
+      >
+        # of loans
+      </div>
+      <div
+        className="pl-2"
+      >
+        <span
+          onMouseEnter={[Function]}
+          onMouseLeave={[Function]}
+        >
+          0
+        </span>
+      </div>
+    </li>
+  </ul>
+</div>
+`;

@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WidgetLayout should match snapshot! 1`] = `
+<div
+  className="foo-class"
+>
+  <div
+    className="ant-spin-nested-loading widget-spin"
+  >
+    <div
+      className="ant-spin-container"
+    >
+      <div
+        className="h-full flex flex-col overflow-hidden"
+      >
+        <div
+          className="grow-0"
+        >
+          This is the header!
+        </div>
+        <div
+          className="grow h-px"
+        >
+          <div
+            className="h-full"
+          >
+            This is the body!
+          </div>
+        </div>
+        <div
+          className="grow-0"
+        >
+          This is the footer!
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

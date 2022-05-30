@@ -1,24 +1,24 @@
 import React, { useRef } from 'react'
 import { Responsive as ResponsiveGridLayout } from 'react-grid-layout'
 import { girdRowHeight, gridBreakpoints, gridCols, gridMargin } from '../../config'
-// import './WidgetLayout.less'
+// import './WidgetsLayout.less'
 import 'react-grid-layout/css/styles.css'
 import 'react-resizable/css/styles.css'
-import { useSize, useWidgetLayout } from '../../hooks'
+import { useSize, useWidgetsLayout } from '../../hooks'
 import { WidgetAppearance } from '../../types'
 
-interface WidgetLayoutProps {
+interface WidgetsLayoutProps {
   className?: string
   widgets: WidgetAppearance[]
   edit?: boolean
 }
 
-const WidgetLayout: React.FC<WidgetLayoutProps> = (props) => {
+const WidgetsLayout: React.FC<WidgetsLayoutProps> = (props) => {
   const { className, children, widgets, edit = false } = props
   const ref = useRef(null)
   const { width } = useSize(ref)
 
-  const layouts = useWidgetLayout(widgets)
+  const layouts = useWidgetsLayout(widgets)
 
   return (
     <div ref={ref} className={className}>
@@ -48,4 +48,4 @@ const WidgetLayout: React.FC<WidgetLayoutProps> = (props) => {
   )
 }
 
-export { WidgetLayout }
+export { WidgetsLayout }

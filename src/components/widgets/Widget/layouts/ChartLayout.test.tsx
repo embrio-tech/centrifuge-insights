@@ -1,6 +1,6 @@
-describe('WidgetLayout should', () => {
+describe('ChartLayout should', () => {
   test.skip('have tests!', () => {
-    // TODO:
+    // TODO: write tests
   })
 })
 

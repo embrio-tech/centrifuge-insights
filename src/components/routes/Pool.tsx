@@ -44,16 +44,26 @@ const Pool: React.FC = () => {
         ],
       },
       {
-        name: 'Pool development',
+        name: 'Pool History',
         widgets: [
+          {
+            name: 'PoolDevelopment',
+            coordinates: [
+              { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 0 },
+              { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 0 },
+              { breakpoint: 'md', w: 6, h: 2, x: 0, y: 0 },
+              { breakpoint: 'lg', w: 5, h: 3, x: 0, y: 0 },
+              { breakpoint: 'xl', w: 6, h: 3, x: 0, y: 0 },
+            ],
+          },
           {
             name: 'DemoWidget',
             coordinates: [
-              { breakpoint: 'xs', w: 2, h: 2, x: 0, y: 0 },
-              { breakpoint: 'sm', w: 3, h: 2, x: 0, y: 0 },
-              { breakpoint: 'md', w: 5, h: 2, x: 0, y: 0 },
-              { breakpoint: 'lg', w: 6, h: 3, x: 0, y: 0 },
-              { breakpoint: 'xl', w: 8, h: 4, x: 0, y: 0 },
+              { breakpoint: 'xs', w: 2, h: 2, x: 0, y: 3 },
+              { breakpoint: 'sm', w: 3, h: 2, x: 0, y: 2 },
+              { breakpoint: 'md', w: 3, h: 2, x: 0, y: 2 },
+              { breakpoint: 'lg', w: 5, h: 3, x: 5, y: 0 },
+              { breakpoint: 'xl', w: 6, h: 3, x: 6, y: 0 },
             ],
           },
         ],
