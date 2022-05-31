@@ -9,7 +9,7 @@ interface DemoBProps {
 const DemoB: React.FC<DemoBProps> = (props) => {
   const { className } = props
 
-  return <FigureLayout className={className} value={'23.45'} unit='%' name='DemoB' color={'#2762ff'} />
+  return <FigureLayout className={className} value={'23.45'} suffix='%' name='DemoB' color={'#2762ff'} />
 }
 
 export { DemoB }

@@ -9,7 +9,7 @@ interface DemoAProps {
 const DemoA: React.FC<DemoAProps> = (props) => {
   const { className } = props
 
-  return <FigureLayout className={className} value={'94.6'} unit='cm' name='DemoA' />
+  return <FigureLayout className={className} value={'94.6'} suffix='cm' name='DemoA' loading />
 }
 
 export { DemoA }

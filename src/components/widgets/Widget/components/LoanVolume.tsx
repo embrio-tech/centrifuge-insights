@@ -56,5 +56,13 @@ export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
     return abbreviatedNumber(wad(poolSnapshots[0].totalEverBorrowed))
   }, [data])
 
-  return <FigureLayout className={className} value={value} name='Loan Volume' loading={loading} color={'#fcbb59'} />
+  return (
+    <FigureLayout
+      className={className}
+      value={value}
+      name='Loan Volume'
+      loading={loading}
+      color={'#fcbb59'}
+    />
+  )
 }

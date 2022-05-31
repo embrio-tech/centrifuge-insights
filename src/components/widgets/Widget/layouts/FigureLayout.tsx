@@ -9,11 +9,12 @@ interface FigureLayoutProps {
   loading?: boolean
   name: string
   value: string
-  unit?: string
+  prefix?: string
+  suffix?: string
 }
 
 export const FigureLayout: React.FC<FigureLayoutProps> = (props) => {
-  const { className, name, value, unit, loading, color } = props
+  const { className, name, value, prefix, suffix, loading, color } = props
 
   const label = useMemo(() => {
     if (name)
@@ -27,10 +28,11 @@ export const FigureLayout: React.FC<FigureLayoutProps> = (props) => {
 
   return (
     <WidgetLayout className={className} footer={label} loading={loading}>
-      <Tooltip title={`${value}${unit ? unit : ''}`}>
+      <Tooltip title={`${prefix ? `${prefix} ` : ''}${value}${suffix ? suffix : ''}`}>
         <div className='figure-value' style={{ color }}>
+          {prefix && <span className='truncate px-2'>{prefix}</span>}
           <span className='truncate'>{value}</span>
-          <span className='truncate'>{unit}</span>
+          {suffix && <span className='truncate'>{suffix}</span>}
         </div>
       </Tooltip>
     </WidgetLayout>
