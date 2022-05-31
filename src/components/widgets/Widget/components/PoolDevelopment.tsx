@@ -102,6 +102,8 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           text: 'DAI / USD',
         },
       },
+      colorField: 'type', // or seriesField in some cases
+      color: ['#2762ff', '#fcbb59'],
       meta: {
         timestamp: {
           type: 'timeCat',
