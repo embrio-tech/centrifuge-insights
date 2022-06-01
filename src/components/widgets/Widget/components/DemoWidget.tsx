@@ -15,7 +15,7 @@ interface ApiData {
     nodes: {
       __typename: string
       id: string
-      currency: 'native' | 'usd' | string
+      currency: 'native' | 'Usd' | string
       minEpochTime: number
     }[]
   }
@@ -23,7 +23,7 @@ interface ApiData {
 
 interface ChartData {
   id: string
-  currency: 'native' | 'usd' | string
+  currency: 'native' | 'Usd' | string
   minEpochTime: number
 }
 
@@ -68,7 +68,7 @@ const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
         switch (currency) {
           case 'native':
             return '#2762ff'
-          case 'usd':
+          case 'Usd':
             return '#fcbb59'
           default:
             return '#ccc'

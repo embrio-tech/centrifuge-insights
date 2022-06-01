@@ -1,4 +1,5 @@
 import React from 'react'
+import { FigureLayout } from '../layouts'
 // import './DemoA.less'
 
 interface DemoAProps {
@@ -8,7 +9,7 @@ interface DemoAProps {
 const DemoA: React.FC<DemoAProps> = (props) => {
   const { className } = props
 
-  return <div className={className}>DemoA</div>
+  return <FigureLayout className={className} value={'94.6'} suffix='cm' name='DemoA' loading />
 }
 
 export { DemoA }

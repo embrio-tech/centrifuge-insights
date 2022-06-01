@@ -12,22 +12,22 @@ const Pool: React.FC = () => {
         name: 'Key figures',
         widgets: [
           {
-            name: 'DemoA',
+            name: 'LoanVolume',
             coordinates: [
               { breakpoint: 'xs', w: 1, h: 1, x: 0, y: 0 },
               { breakpoint: 'sm', w: 1, h: 1, x: 0, y: 0 },
               { breakpoint: 'md', w: 2, h: 1, x: 0, y: 0 },
-              { breakpoint: 'lg', w: 4, h: 1, x: 0, y: 0 },
+              { breakpoint: 'lg', w: 2, h: 1, x: 0, y: 0 },
               { breakpoint: 'xl', w: 3, h: 1, x: 0, y: 0 },
             ],
           },
           {
-            name: 'DemoB',
+            name: 'DemoA',
             coordinates: [
               { breakpoint: 'xs', w: 1, h: 1, x: 1, y: 0 },
               { breakpoint: 'sm', w: 1, h: 1, x: 1, y: 0 },
               { breakpoint: 'md', w: 2, h: 1, x: 2, y: 0 },
-              { breakpoint: 'lg', w: 2, h: 1, x: 4, y: 1 },
+              { breakpoint: 'lg', w: 2, h: 1, x: 2, y: 1 },
               { breakpoint: 'xl', w: 4, h: 1, x: 2, y: 1 },
             ],
           },
@@ -39,6 +39,16 @@ const Pool: React.FC = () => {
               { breakpoint: 'md', w: 2, h: 1, x: 4, y: 0 },
               { breakpoint: 'lg', w: 2, h: 1, x: 4, y: 0 },
               { breakpoint: 'xl', w: 4, h: 2, x: 6, y: 0 },
+            ],
+          },
+          {
+            name: 'DemoB',
+            coordinates: [
+              { breakpoint: 'xs', w: 1, h: 1, x: 1, y: 1 },
+              { breakpoint: 'sm', w: 1, h: 1, x: 3, y: 0 },
+              { breakpoint: 'md', w: 2, h: 1, x: 0, y: 1 },
+              { breakpoint: 'lg', w: 2, h: 1, x: 6, y: 0 },
+              { breakpoint: 'xl', w: 3, h: 1, x: 3, y: 0 },
             ],
           },
         ],
