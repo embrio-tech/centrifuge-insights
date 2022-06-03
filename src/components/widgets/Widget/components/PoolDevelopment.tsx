@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react'
 import { gql, useQuery } from '@apollo/client'
-import { Line as LineChart, LineConfig } from '@ant-design/plots'
+import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
 import { abbreviatedNumber, textDate, wad } from '../../../../util'
+import { Meta } from '@antv/g2plot'
 
 // import './PoolDevelopment.less'
 
@@ -25,10 +26,16 @@ interface ApiData {
   }
 }
 
-interface ChartData {
+interface SharesData {
   timestamp: Date
   value: number
-  series: string
+  share: string
+}
+
+interface SumsData {
+  timestamp: Date
+  value: number
+  sum: string
 }
 
 export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
@@ -64,60 +71,118 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     variables: { poolId, from, to },
   })
 
-  const chartData = useMemo<ChartData[]>(() => {
-    const netAssetValues =
-      data?.poolSnapshots?.nodes?.map(
-        ({ timestamp, netAssetValue }): ChartData => ({
-          series: 'Pool NAV',
-          value: Number(netAssetValue),
-          timestamp: new Date(timestamp),
-        })
-      ) || []
+  const sharesData = useMemo<SharesData[]>(() => {
     const totalReserves =
       data?.poolSnapshots?.nodes?.map(
-        ({ timestamp, totalReserve }): ChartData => ({
-          series: 'Liquidity Reserve',
-          value: Number(totalReserve),
+        ({ timestamp, totalReserve }): SharesData => ({
+          share: 'Liquidity Reserve',
+          value: Number(wad(totalReserve)),
+          timestamp: new Date(timestamp),
+        })
+      ) || []
+    const netAssetValues =
+      data?.poolSnapshots?.nodes?.map(
+        ({ timestamp, netAssetValue }): SharesData => ({
+          share: 'Pool NAV',
+          value: Number(wad(netAssetValue)),
           timestamp: new Date(timestamp),
         })
       ) || []
 
-    return [...netAssetValues, ...totalReserves]
+    // TODO: replace ...netAssetValues by ...trancheAValues, ...trancheBValues, etc.
+    return [...totalReserves, ...netAssetValues]
   }, [data])
 
-  const chartConfig = useMemo<LineConfig>(
-    () => ({
-      data: chartData,
-      xField: 'timestamp',
-      yField: 'value',
+  const sumsData = useMemo<SumsData[]>(() => {
+    const poolValues =
+      data?.poolSnapshots?.nodes?.map(
+        ({ timestamp, totalReserve, netAssetValue }): SumsData => ({
+          sum: 'Pool Value',
+          value: Number(wad(totalReserve)) + Number(wad(netAssetValue)),
+          timestamp: new Date(timestamp),
+        })
+      ) || []
+    const netAssetValues =
+      data?.poolSnapshots?.nodes?.map(
+        ({ timestamp, netAssetValue }): SumsData => ({
+          sum: 'Pool NAV',
+          value: Number(wad(netAssetValue)),
+          timestamp: new Date(timestamp),
+        })
+      ) || []
+
+    return [...poolValues, ...netAssetValues]
+  }, [data])
+
+  const chartConfig = useMemo<MixConfig>(() => {
+    const maxValue = Math.max(...sumsData.filter(({ sum }) => sum === 'Pool Value').map(({ value }) => value))
+
+    const meta: Record<string, Meta> = {
+      timestamp: {
+        type: 'timeCat',
+        formatter: (v: Date) => textDate(v),
+      },
+      value: {
+        formatter: (v: number) => abbreviatedNumber(v),
+        max: Math.round(maxValue * 1.3),
+      },
+    }
+
+    return {
+      tooltip: {
+        shared: true,
+        reversed: false,
+      },
       legend: {
-        layout: 'horizontal',
-        position: 'bottom',
-        offsetY: 12,
-      },
-      seriesField: 'series',
-      stepType: 'hvh',
-      yAxis: {
-        title: {
-          text: 'DAI / USD',
+        share: {
+          layout: 'horizontal',
+          position: 'bottom',
+          reversed: true,
+          padding: [0, 0, 0, 0],
+        },
+        sum: {
+          layout: 'horizontal',
+          position: 'bottom',
+          reversed: false,
+          padding: [10, 0, 0, 0],
         },
       },
-      colorField: 'type', // or seriesField in some cases
-      color: ['#2762ff', '#fcbb59'],
-      meta: {
-        timestamp: {
-          type: 'timeCat',
-          formatter: (v: Date) => textDate(v),
+      syncViewPadding: true,
+      plots: [
+        {
+          type: 'area',
+          options: {
+            data: sharesData,
+            xField: 'timestamp',
+            yField: 'value',
+            seriesField: 'share',
+            xAxis: {
+              line: null,
+              label: null,
+            },
+            yAxis: {
+              label: null,
+              grid: null,
+            },
+            line: false,
+            meta,
+            color: ['#2762ff', '#fcbb59', '#ccc'],
+          },
         },
-        value: {
-          type: 'linear',
-          // TODO: check magnitude of values
-          formatter: (v) => abbreviatedNumber(wad(v)),
+        {
+          type: 'line',
+          options: {
+            data: sumsData,
+            xField: 'timestamp',
+            yField: 'value',
+            seriesField: 'sum',
+            meta,
+            color: ['#2762ff', '#fcbb59', '#ccc'],
+          },
         },
-      },
-    }),
-    [chartData]
-  )
+      ],
+    }
+  }, [sumsData, sharesData])
 
   const kpis = useMemo<WidgetKPI[]>(() => {
     const poolSnapshots = data?.poolSnapshots?.nodes || []
@@ -166,7 +231,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   return (
     <ChartLayout
       className={className}
-      chart={<LineChart {...chartConfig} />}
+      chart={<MixChart {...chartConfig} />}
       info={<WidgetKPIs kpis={kpis} />}
       loading={loading}
       title='Pool Development'
