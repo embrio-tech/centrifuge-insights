@@ -115,6 +115,8 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   }, [data])
 
   const chartConfig = useMemo<MixConfig>(() => {
+    const maxValue = Math.max(...sumsData.filter(({ sum }) => sum === 'Pool Value').map(({ value }) => value))
+
     const meta: Record<string, Meta> = {
       timestamp: {
         type: 'timeCat',
@@ -122,6 +124,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       value: {
         formatter: (v: number) => abbreviatedNumber(v),
+        max: Math.round(maxValue * 1.3),
       },
     }
 
