@@ -81,8 +81,27 @@ const Pool: React.FC = () => {
     ],
   }
 
+  const filters = (
+    <div className='p-6'>
+      <p>Filters here...</p>
+      <p>For pool dashboard currently hardcoded to</p>
+      <p>
+        Period:
+        <br />
+        from: 2022-05-07,
+        <br />
+        to: 2022-05-14
+      </p>
+      <p>
+        Pool:
+        <br />
+        poolId: 3075481758
+      </p>
+    </div>
+  )
+
   return (
-    <BasicLayout>
+    <BasicLayout filters={filters}>
       <Dashboard dashboard={dashboard} />
     </BasicLayout>
   )
