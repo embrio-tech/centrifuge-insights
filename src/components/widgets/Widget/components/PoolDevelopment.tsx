@@ -1,10 +1,11 @@
 import React, { useMemo } from 'react'
-import { gql, useQuery } from '@apollo/client'
+import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
 import { abbreviatedNumber, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
+import { useFetch } from '../../../../hooks'
 
 // import './PoolDevelopment.less'
 
@@ -42,7 +43,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { className } = props
 
   // TODO: set these variables from filters
-  const poolId = '3075481758'
+  const poolId = '815196858113'
   const from: Date = new Date('2022-05-07')
   const to: Date = new Date('2022-05-14')
 
@@ -67,7 +68,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     }
   `
 
-  const { loading, data } = useQuery<ApiData>(query, {
+  const { loading, data } = useFetch<ApiData>(query, {
     variables: { poolId, from, to },
   })
 
