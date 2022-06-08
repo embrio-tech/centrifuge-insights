@@ -8,11 +8,11 @@ import './BasicLayout.less'
 const { Header, Content, Footer, Sider } = Layout
 
 interface BasicLayoutProps {
-  filters?: ReactNode
+  sider?: ReactNode
 }
 
 const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
-  const { children, filters } = props
+  const { children, sider } = props
   const { gtSM, ltMD } = useBreakpoints()
   const [siderCollapsed, setSiderCollapsed] = useState<boolean>(ltMD)
 
@@ -67,7 +67,9 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           trigger={null}
         >
           <div className='sider-container'>
-            <div id='filters'>{filters}</div>
+            <div id='sider-content'>
+              {sider}
+            </div>
             <div id='navigation'>
               <div className='p-6'>
                 <p>Navigation here...</p>
