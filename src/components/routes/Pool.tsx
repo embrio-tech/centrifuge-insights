@@ -84,32 +84,8 @@ const Pool: React.FC = () => {
 
   const filters: Filter[] = [
     {
-      name: 'Pool',
-      options: [
-        {
-          label: 'Pool 1',
-          value: '23456789',
-        },
-        {
-          label: 'Pool 2',
-          value: '98765422',
-        },
-      ],
-      type: 'SelectFilter',
-    },
-    {
-      name: 'Tranche',
-      options: [
-        {
-          label: 'Tranche 1',
-          value: 'adfasf',
-        },
-        {
-          label: 'Tranche 2',
-          value: 'qewrqer',
-        },
-      ],
-      type: 'SelectFilter',
+      id: 'pool',
+      type: 'PoolFilter',
     },
   ]
 
