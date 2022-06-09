@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { gql } from '@apollo/client'
 import { abbreviatedNumber, wad } from '../../../../util'
 import { FigureLayout } from '../layouts'
-import { useFetch } from '../../../../hooks'
+import { useGraphQL } from '../../../../hooks'
 
 // import './LoanVolume.less'
 
@@ -45,7 +45,7 @@ export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
     }
   `
 
-  const { loading, data } = useFetch<ApiData>(query, {
+  const { loading, data } = useGraphQL<ApiData>(query, {
     variables: { poolId, to },
   })
 

@@ -1,4 +1,4 @@
-describe('SelectFilter should', () => {
+describe('FilterLabel should', () => {
   test.skip('have tests!', () => {
     // TODO: write tests
   })

@@ -1,8 +1,11 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { gql } from '@apollo/client'
-import { useFetch, usePoolsMetadata } from '../../../../hooks'
+import { useGraphQL, usePoolsMetadata } from '../../../../hooks'
 import { Pool } from '../../../../models'
-import { SelectFilter, SelectFilterOption } from '../util'
+import { FilterLabel } from '../util'
+import { useFilters } from '../../../../contexts'
+import { Select } from 'antd'
+
 // import './PoolFilter.less'
 
 interface PoolFilterProps {
@@ -18,7 +21,8 @@ interface ApiData {
 }
 
 export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
-  const { className } = props
+  const { className, id } = props
+  const { setSelection, selection } = useFilters(id)
 
   const query = gql`
     query GetPools {
@@ -32,7 +36,7 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
     }
   `
 
-  const { data, loading } = useFetch<ApiData>(query)
+  const { data, loading } = useGraphQL<ApiData>(query)
 
   const pools = useMemo<Pool[]>(() => {
     const { pools } = data || {}
@@ -45,7 +49,7 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
 
   const poolsMetadata = usePoolsMetadata(metadataPaths)
 
-  const options = useMemo<SelectFilterOption[]>(
+  const options = useMemo<{ label: string; value: string }[]>(
     () =>
       pools.map(({ id, metadata }) => ({
         label: poolsMetadata[metadata]?.pool.name || id,
@@ -54,5 +58,21 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
     [pools, poolsMetadata]
   )
 
-  return <SelectFilter className={className} label='Pool' options={options} loading={loading} />
+  const onChange = (value: string) => {
+    if (value) setSelection(id, [value])
+  }
+
+  const selected = useMemo(() => (selection?.length === 1 ? selection[0] : undefined), [selection])
+
+  useEffect(() => {
+    if (options.length && id && !selected) {
+      setSelection(id, [options[0].value])
+    }
+  }, [options, id, setSelection, selected])
+
+  return (
+    <FilterLabel className={className} label='Pool'>
+      <Select value={selected} options={options} className='w-full' loading={loading} onChange={onChange} />
+    </FilterLabel>
+  )
 }

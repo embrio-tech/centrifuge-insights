@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import './WidgetLayout.less'
+// import './WidgetLayout.less'
 import { WidgetSpin } from './WidgetSpin'
 
 interface WidgetLayoutProps {

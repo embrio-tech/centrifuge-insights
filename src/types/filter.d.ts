@@ -4,3 +4,5 @@ export interface Filter {
   id: string
   type: keyof typeof components
 }
+
+export type Selection = string[]

@@ -5,7 +5,7 @@ import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
 import { abbreviatedNumber, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
-import { useFetch } from '../../../../hooks'
+import { useGraphQL } from '../../../../hooks'
 
 // import './PoolDevelopment.less'
 
@@ -68,7 +68,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     }
   `
 
-  const { loading, data } = useFetch<ApiData>(query, {
+  const { loading, data } = useGraphQL<ApiData>(query, {
     variables: { poolId, from, to },
   })
 
