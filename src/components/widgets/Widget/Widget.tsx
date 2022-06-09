@@ -11,7 +11,7 @@ const Widget: React.FC<WidgetProps> = (props) => {
 
   const WidgetComponent = useMemo(() => components[is], [is])
 
-  return <WidgetComponent className='widget'/>
+  return <WidgetComponent className='widget' />
 }
 
 export { Widget }

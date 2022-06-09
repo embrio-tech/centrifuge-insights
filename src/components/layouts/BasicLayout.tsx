@@ -67,9 +67,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
           trigger={null}
         >
           <div className='sider-container'>
-            <div id='sider-content'>
-              {sider}
-            </div>
+            <div id='sider-content'>{sider}</div>
             <div id='navigation'>
               <div className='p-6'>
                 <p>Navigation here...</p>
