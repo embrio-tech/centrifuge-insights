@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 import { gql } from '@apollo/client'
-import { useFetch } from '../../../../hooks'
+import { useFetch, usePoolsMetadata } from '../../../../hooks'
 import { Pool } from '../../../../models'
 import { SelectFilter, SelectFilterOption } from '../util'
 // import './PoolFilter.less'
@@ -34,15 +34,25 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
 
   const { data, loading } = useFetch<ApiData>(query)
 
-  const options = useMemo<SelectFilterOption[]>(() => {
+  const pools = useMemo<Pool[]>(() => {
     const { pools } = data || {}
     const { nodes = [], totalCount = 0 } = pools || {}
     if (nodes.length !== totalCount) throw new Error('Not all pools fetched because of pagination (first: 100).')
-    return nodes.map(({ id }) => ({
-      label: id, // TODO: fetch poolname from IPFS
-      value: id,
-    }))
+    return nodes
   }, [data])
+
+  const metadataPaths = useMemo<string[]>(() => pools.map(({ metadata }) => metadata), [pools])
+
+  const poolsMetadata = usePoolsMetadata(metadataPaths)
+
+  const options = useMemo<SelectFilterOption[]>(
+    () =>
+      pools.map(({ id, metadata }) => ({
+        label: poolsMetadata[metadata]?.pool.name || id,
+        value: id,
+      })),
+    [pools, poolsMetadata]
+  )
 
   return <SelectFilter className={className} label='Pool' options={options} loading={loading} />
 }
