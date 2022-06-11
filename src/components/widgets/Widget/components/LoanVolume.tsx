@@ -3,6 +3,7 @@ import { gql } from '@apollo/client'
 import { abbreviatedNumber, wad } from '../../../../util'
 import { FigureLayout } from '../layouts'
 import { useGraphQL } from '../../../../hooks'
+import { useFilters } from '../../../../contexts'
 
 // import './LoanVolume.less'
 
@@ -24,10 +25,7 @@ interface ApiData {
 
 export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
   const { className } = props
-
-  // TODO: set these variables from filters
-  const poolId = '3075481758'
-  const to: Date = new Date('2022-05-14')
+  const { selections } = useFilters()
 
   const query = gql`
     query getPoolLoanVolume($poolId: String!, $to: Datetime!) {
@@ -45,8 +43,22 @@ export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
     }
   `
 
+  const variables = useMemo(
+    () => ({
+      poolId: selections.pool?.[0],
+      to: new Date(),
+    }),
+    [selections]
+  )
+
+  const skip = useMemo(
+    () => Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false),
+    [variables]
+  )
+
   const { loading, data } = useGraphQL<ApiData>(query, {
-    variables: { poolId, to },
+    variables,
+    skip,
   })
 
   const value = useMemo<string>(() => {
@@ -57,13 +69,5 @@ export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
     return abbreviatedNumber(wad(poolSnapshots[0].totalEverBorrowed))
   }, [data])
 
-  return (
-    <FigureLayout
-      className={className}
-      value={value}
-      name='Loan Volume'
-      loading={loading}
-      color={'#fcbb59'}
-    />
-  )
+  return <FigureLayout className={className} value={value} name='Loan Volume' loading={loading} color={'#fcbb59'} />
 }
