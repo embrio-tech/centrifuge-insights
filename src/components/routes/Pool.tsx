@@ -91,7 +91,7 @@ const Pool: React.FC = () => {
   ]
 
   return (
-    <FiltersContextProvider>
+    <FiltersContextProvider filters={filters}>
       <BasicLayout sider={<Filters filters={filters} />}>
         <Dashboard dashboard={dashboard} />
       </BasicLayout>

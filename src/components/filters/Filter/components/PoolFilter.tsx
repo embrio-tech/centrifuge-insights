@@ -22,10 +22,11 @@ interface ApiData {
 
 export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
   const { className, id } = props
-  const { setSelection, selection } = useFilters(id)
+  const { setSelection, selection, setFilterStatus, filterReady } = useFilters(id)
 
+  // fetch list of pools with metadata paths
   const query = gql`
-    query GetPools {
+    query GetPoolsMetadata {
       pools(first: 100) {
         nodes {
           id
@@ -35,9 +36,7 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
       }
     }
   `
-
-  const { data, loading } = useGraphQL<ApiData>(query)
-
+  const { data, loading: optionsLoading } = useGraphQL<ApiData>(query)
   const pools = useMemo<Pool[]>(() => {
     const { pools } = data || {}
     const { nodes = [], totalCount = 0 } = pools || {}
@@ -45,10 +44,11 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
     return nodes
   }, [data])
 
+  // fetch metadata
   const metadataPaths = useMemo<string[]>(() => pools.map(({ metadata }) => metadata), [pools])
+  const { poolsMetadata, loading: metadataLoading } = usePoolsMetadata(metadataPaths)
 
-  const poolsMetadata = usePoolsMetadata(metadataPaths)
-
+  // derive filters selection options from pools and poolsMetadata
   const options = useMemo<{ label: string; value: string }[]>(
     () =>
       pools.map(({ id, metadata }) => ({
@@ -58,21 +58,34 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
     [pools, poolsMetadata]
   )
 
+  // onChange: store new selection to FiltersContext
   const onChange = (value: string) => {
     if (value) setSelection(id, [value])
   }
 
+  // read selected option from FiltersContext
   const selected = useMemo(() => (selection?.length === 1 ? selection[0] : undefined), [selection])
 
+  // effect to make sure an existing option is always selected
   useEffect(() => {
-    if (options.length && id && !selected) {
-      setSelection(id, [options[0].value])
+    if (id && options.length) {
+      if (!selected || options.findIndex((option) => option.value === selected) === -1) {
+        setFilterStatus(id, false)
+        setSelection(id, [options[0].value])
+      }
+      if (!filterReady) setFilterStatus(id, true)
     }
-  }, [options, id, setSelection, selected])
+  }, [options, id, setSelection, selected, setFilterStatus, filterReady])
 
   return (
     <FilterLabel className={className} label='Pool'>
-      <Select value={selected} options={options} className='w-full' loading={loading} onChange={onChange} />
+      <Select
+        value={selected}
+        options={options}
+        className='w-full'
+        loading={optionsLoading || metadataLoading}
+        onChange={onChange}
+      />
     </FilterLabel>
   )
 }

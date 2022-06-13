@@ -25,7 +25,7 @@ interface ApiData {
 
 export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
   const { className } = props
-  const { selections } = useFilters()
+  const { selections, filtersReady } = useFilters()
 
   const query = gql`
     query getPoolLoanVolume($poolId: String!, $to: Datetime!) {
@@ -52,8 +52,10 @@ export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
   )
 
   const skip = useMemo(
-    () => Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false),
-    [variables]
+    () =>
+      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
+      !filtersReady,
+    [variables, filtersReady]
   )
 
   const { loading, data } = useGraphQL<ApiData>(query, {

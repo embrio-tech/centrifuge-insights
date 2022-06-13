@@ -42,7 +42,7 @@ interface SumsData {
 
 export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { className } = props
-  const { selections } = useFilters()
+  const { selections, filtersReady } = useFilters()
 
   // const from = new Date('2022-01-01')
   // const to = new Date('2022-05-31')
@@ -75,8 +75,10 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   )
 
   const skip = useMemo(
-    () => Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false),
-    [variables]
+    () =>
+      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
+      !filtersReady,
+    [variables, filtersReady]
   )
 
   const { loading, data } = useGraphQL<ApiData>(query, {
