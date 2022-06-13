@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { Column as ColumnChart, ColumnConfig } from '@ant-design/plots'
 import { gql } from '@apollo/client'
 import { ChartLayout } from '../layouts'
-import { useFetch } from '../../../../hooks'
+import { useGraphQL } from '../../../../hooks'
 
 // import './DemoWidget.less'
 
@@ -44,7 +44,7 @@ const DemoWidget: React.FC<DemoWidgetProps> = (props) => {
     }
   `
 
-  const { loading, data } = useFetch<ApiData>(query)
+  const { loading, data } = useGraphQL<ApiData>(query)
 
   const chartData = useMemo<ChartData[]>(() => {
     return (

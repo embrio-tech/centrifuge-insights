@@ -5,7 +5,8 @@ import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
 import { abbreviatedNumber, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
-import { useFetch } from '../../../../hooks'
+import { useGraphQL } from '../../../../hooks'
+import { useFilters } from '../../../../contexts'
 
 // import './PoolDevelopment.less'
 
@@ -41,11 +42,7 @@ interface SumsData {
 
 export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { className } = props
-
-  // TODO: set these variables from filters
-  const poolId = '815196858113'
-  const from: Date = new Date('2022-05-07')
-  const to: Date = new Date('2022-05-14')
+  const { selections, filtersReady } = useFilters()
 
   // const from = new Date('2022-01-01')
   // const to = new Date('2022-05-31')
@@ -68,8 +65,25 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     }
   `
 
-  const { loading, data } = useFetch<ApiData>(query, {
-    variables: { poolId, from, to },
+  const variables = useMemo(
+    () => ({
+      poolId: selections.pool?.[0],
+      from: new Date('2022-06-04'),
+      to: new Date(),
+    }),
+    [selections]
+  )
+
+  const skip = useMemo(
+    () =>
+      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
+      !filtersReady,
+    [variables, filtersReady]
+  )
+
+  const { loading, data } = useGraphQL<ApiData>(query, {
+    variables,
+    skip,
   })
 
   const sharesData = useMemo<SharesData[]>(() => {

@@ -10,7 +10,7 @@ import {
 import { useError } from '../contexts/ErrorContext'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const useFetch = <Data = any, Variables = OperationVariables>(
+export const useGraphQL = <Data = any, Variables = OperationVariables>(
   query: DocumentNode | TypedDocumentNode<Data, Variables>,
   options?: QueryHookOptions<Data, Variables>
 ): Omit<QueryResult<Data, Variables>, 'error'> => {

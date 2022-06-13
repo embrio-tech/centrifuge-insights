@@ -1,14 +1,18 @@
 import { Button, Layout } from 'antd'
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons'
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, ReactNode } from 'react'
 import { useBreakpoints } from '../../hooks'
 import { HeaderNavigation } from '../navigation'
 import './BasicLayout.less'
 
 const { Header, Content, Footer, Sider } = Layout
 
-const BasicLayout: React.FC = (props) => {
-  const { children } = props
+interface BasicLayoutProps {
+  sider?: ReactNode
+}
+
+const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+  const { children, sider } = props
   const { gtSM, ltMD } = useBreakpoints()
   const [siderCollapsed, setSiderCollapsed] = useState<boolean>(ltMD)
 
@@ -62,28 +66,15 @@ const BasicLayout: React.FC = (props) => {
           width={gtSM ? SIDER_WIDTH : '80vw'}
           trigger={null}
         >
-          <div className='h-full flex flex-col justify-between'>
-            <div className='p-6'>
-              <p>Filters here...</p>
-              <p>For pool dashboard currently hardcoded to</p>
-              <p>
-                Period:
-                <br />
-                from: 2022-05-07,
-                <br />
-                to: 2022-05-14
-              </p>
-              <p>
-                Pool:
-                <br />
-                poolId: 3075481758
-              </p>
-            </div>
-            <div className='p-6'>
-              <p>Navigation here...</p>
-              <p>Item 1</p>
-              <p>Item 2</p>
-              <p>Item 3</p>
+          <div className='sider-container'>
+            <div id='sider-content'>{sider}</div>
+            <div id='navigation'>
+              <div className='p-6'>
+                <p>Navigation here...</p>
+                <p>Item 1</p>
+                <p>Item 2</p>
+                <p>Item 3</p>
+              </div>
             </div>
           </div>
         </Sider>

@@ -1,5 +1,5 @@
 import React, { ReactNode } from 'react'
-import './WidgetLayout.less'
+// import './WidgetLayout.less'
 import { WidgetSpin } from './WidgetSpin'
 
 interface WidgetLayoutProps {
@@ -27,7 +27,7 @@ export const WidgetLayout: React.FC<WidgetLayoutProps> = (props) => {
         <div className='h-full flex flex-col overflow-hidden'>
           {header && <div className='grow-0'>{header}</div>}
           <div className='grow h-px'>
-            <div className='h-full'>{children}</div>
+              <div className='h-full'>{children}</div>
           </div>
           {footer && <div className='grow-0'>{footer}</div>}
         </div>
