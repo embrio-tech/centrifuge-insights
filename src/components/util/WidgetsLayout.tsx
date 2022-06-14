@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { PropsWithChildren, useRef } from 'react'
 import { Responsive as ResponsiveGridLayout } from 'react-grid-layout'
 import { girdRowHeight, gridBreakpoints, gridCols, gridMargin } from '../../config'
 // import './WidgetsLayout.less'
@@ -13,7 +13,7 @@ interface WidgetsLayoutProps {
   edit?: boolean
 }
 
-const WidgetsLayout: React.FC<WidgetsLayoutProps> = (props) => {
+const WidgetsLayout: React.FC<PropsWithChildren<WidgetsLayoutProps>> = (props) => {
   const { className, children, widgets, edit = false } = props
   const ref = useRef(null)
   const { width } = useSize(ref)

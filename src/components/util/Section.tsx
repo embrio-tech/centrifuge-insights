@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 import './Section.less'
 
 interface SectionProps {
@@ -6,7 +6,7 @@ interface SectionProps {
   title: string
 }
 
-const Section: React.FC<SectionProps> = (props) => {
+const Section: React.FC<PropsWithChildren<SectionProps>> = (props) => {
   const { className, children, title } = props
 
   return (

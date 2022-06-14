@@ -1,6 +1,6 @@
 import { Button, Layout } from 'antd'
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons'
-import React, { useState, useEffect, ReactNode } from 'react'
+import React, { useState, useEffect, ReactNode, PropsWithChildren } from 'react'
 import { useBreakpoints } from '../../hooks'
 import { HeaderNavigation } from '../navigation'
 import './BasicLayout.less'
@@ -11,7 +11,7 @@ interface BasicLayoutProps {
   sider?: ReactNode
 }
 
-const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
+const BasicLayout: React.FC<PropsWithChildren<BasicLayoutProps>> = (props) => {
   const { children, sider } = props
   const { gtSM, ltMD } = useBreakpoints()
   const [siderCollapsed, setSiderCollapsed] = useState<boolean>(ltMD)
