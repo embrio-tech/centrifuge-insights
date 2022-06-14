@@ -26,23 +26,34 @@ export const usePoolsMetadata = (metadataPaths: string[]): PoolsMetadataInterfac
   const [loading, setLoading] = useState<boolean>(false)
 
   useEffect(() => {
+    const abortControllers: AbortController[] = []
     const loadMetadata = async () => {
       setLoading(true)
       const poolsMetadataList = await Promise.all(
         metadataPaths.map(
-          async (path): Promise<[string, PoolMetadata]> => [
-            path,
-            (await ipfsClient.get<PoolMetadata>(path)).data
-          ]
+          async (path): Promise<[string, PoolMetadata]> => {
+            const controller = new AbortController()
+            abortControllers.push(controller)
+            return [path, (await ipfsClient.get<PoolMetadata>(path, { signal: controller.signal })).data]
+          }
         )
       )
       setPoolsMetadata(Object.fromEntries(poolsMetadataList))
-      setLoading(false)
     }
 
-    loadMetadata().catch((error) => {
-      setError(error)
-    })
+    loadMetadata()
+      .catch((error) => {
+        setError(error)
+      })
+      .finally(() => {
+        setLoading(false)
+      })
+
+    return () => {
+      abortControllers.forEach((controller) => {
+        controller.abort()
+      })
+    }
   }, [setError, metadataPaths])
 
   return { poolsMetadata, loading }
