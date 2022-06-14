@@ -24,7 +24,7 @@ const ErrorContextProvider: React.FC = (props) => {
 
   useEffect(() => {
     // TODO: improve error messaging for different errors (e.g. ApolloError)
-    if (error) {
+    if (error && error.name !== 'CanceledError' ) {
       message.error(error.message, 10)
       console.error(error)
     }

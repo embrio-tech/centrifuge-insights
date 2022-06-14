@@ -70,10 +70,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = (props) => {
             <div id='sider-content'>{sider}</div>
             <div id='navigation'>
               <div className='p-6'>
-                <p>Navigation here...</p>
-                <p>Item 1</p>
-                <p>Item 2</p>
-                <p>Item 3</p>
+                <p>TODO: Navigation here...</p>
               </div>
             </div>
           </div>
