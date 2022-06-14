@@ -44,6 +44,10 @@ describe('abbreviatedNumber should', () => {
   test('should allow config of precision', () => {
     expect(abbreviatedNumber(12345678, { precision: 5 })).toBe('12.346M')
   })
+
+  test('should format rounded values correctly', () => {
+    expect(abbreviatedNumber(999.9999999)).toBe('1.00K')
+  })
 })
 
 export default null

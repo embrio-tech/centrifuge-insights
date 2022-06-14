@@ -9,7 +9,7 @@ export const abbreviatedNumber = (value: string | number | bigint, options: { pr
   const { precision = 3 } = options
   const _value = Number(value)
   if (_value === 0) return '0'
-  const log = Math.floor(Math.log10(_value))
+  const log = Math.floor(Math.log10(Number(_value.toPrecision(precision))))
   const magnitude = log - (log % 3)
   return `${(_value / 10 ** magnitude).toPrecision(precision)}${
     SI_SYMBOLS[magnitude] ? SI_SYMBOLS[magnitude] : magnitude !== 0 ? `e${magnitude}` : ''
