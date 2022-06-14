@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useError } from '../contexts'
 import { PoolMetadata } from '../models'
+import { ipfsClient } from '../clients'
 
 interface PoolsMetadata {
   [path: string]: PoolMetadata
@@ -31,7 +32,7 @@ export const usePoolsMetadata = (metadataPaths: string[]): PoolsMetadataInterfac
         metadataPaths.map(
           async (path): Promise<[string, PoolMetadata]> => [
             path,
-            (await (await fetch(`https://ipfs.io/ipfs/${path}`)).json()) as PoolMetadata,
+            (await ipfsClient.get<PoolMetadata>(path)).data
           ]
         )
       )
