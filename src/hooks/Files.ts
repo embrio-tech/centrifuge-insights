@@ -35,8 +35,8 @@ export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
     const leadFiles = async () => {
       setLoading(true)
 
-      const filesUrlsList = await Promise.all(
-        files.map(async ({ path, mime }): Promise<[string, string]> => {
+      await Promise.all(
+        files.map(async ({ path, mime }): Promise<void> => {
           const headers = { Accept: mime }
           const controller = new AbortController()
           abortControllers.push(controller)
@@ -48,11 +48,9 @@ export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
           const blob = new Blob([file], { type: mime })
           const url = URL.createObjectURL(blob)
           urls.push(url)
-          return [path, url]
+          setFilesUrls((oldFilesUrls) => ({ ...oldFilesUrls, [path]: url }))
         })
       )
-
-      setFilesUrls(Object.fromEntries(filesUrlsList))
     }
 
     leadFiles()
@@ -63,6 +61,7 @@ export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
         setLoading(false)
       })
 
+    // effect cleanup
     return () => {
       urls.forEach((url) => {
         URL.revokeObjectURL(url)
@@ -70,6 +69,7 @@ export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
       abortControllers.forEach((controller) => {
         controller.abort()
       })
+      setFilesUrls({})
     }
   }, [setError, files])
 
