@@ -11,28 +11,42 @@
 
 A single-page application to visualize data and activities on the Centrifuge Parachain on Polkadot.
 
-🚧 We are breeding the next EMBRIO. More soon... 🚀
-
 ## Development
+
+We highly recommend to develop using the overarching [centrifuge-development](https://github.com/embrio-tech/centrifuge-development) repository. It allows to run all required services (frontend and backend) with [Docker Compose](https://docs.docker.com/compose/).
+
+If you prefer to run the frontend without Docker the following instructions get you started.
 
 ### Prerequisites
 
 - [Node Version Manager](https://github.com/nvm-sh/nvm)
   - node: version specified in [`.nvmrc`](/.nvmrc)
+- [Yarn](https://classic.yarnpkg.com/en/)
+- Environment variables file
+  - Copy the template with
+
+        cp .env.sample .env
+    
+- [centrifuge-subql](https://github.com/embrio-tech/centrifuge-subql) backend. 
+  - Set the url of the backend in [`src/config/environment/local.ts`](https://github.com/embrio-tech/centrifuge-insights/blob/main/src/config/environment/local.ts) as `GRAPHQL_SERVER_URL`.
 
 ### Install
 
-    $ yarn install
+    yarn install
 
 ### Run
 
-    $ yarn start
+    yarn start
+    
+### Access
+
+The frontend can be accessed under http://localhost:8010
 
 ### Commit
 
 This repository uses commitlint to enforce commit message conventions. You have to specify the type of the commit in your commit message. Use one of the [supported types](https://github.com/pvdlg/conventional-changelog-metahub).
 
-    $ git commit -m "[type]: foo bar"
+    git commit -m "[type]: foo bar"
 
 ## Contact
 
