@@ -27,7 +27,7 @@ export const PoolFilter: React.FC<PoolFilterProps> = (props) => {
   // fetch list of pools with metadata paths
   const query = gql`
     query GetPoolsMetadata {
-      pools(first: 100) {
+      pools(first: 100, orderBy: CREATED_AT_ASC) {
         nodes {
           id
           metadata

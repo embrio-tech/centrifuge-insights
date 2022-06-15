@@ -1,5 +1,5 @@
 import { message } from 'antd'
-import React, { createContext, useState, useMemo, useContext, useEffect } from 'react'
+import React, { createContext, useState, useMemo, useContext, useEffect, PropsWithChildren } from 'react'
 import { AppError } from '../types'
 
 interface ErrorContextInterface {
@@ -10,7 +10,7 @@ interface ErrorContextInterface {
 
 const ErrorContext = createContext<ErrorContextInterface | undefined>(undefined)
 
-const ErrorContextProvider: React.FC = (props) => {
+const ErrorContextProvider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props
   const [error, setError] = useState<AppError | undefined>(undefined)
 

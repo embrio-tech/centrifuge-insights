@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react'
+import React, { PropsWithChildren, ReactNode } from 'react'
 // import './WidgetLayout.less'
 import { WidgetSpin } from './WidgetSpin'
 
@@ -18,7 +18,7 @@ interface WidgetLayoutProps {
  * @prop {boolean?} loading - flag to show loading spinner (optional, default: false)
  * @prop {string?} className - class names applied to wrapping <div> (optional)
  */
-export const WidgetLayout: React.FC<WidgetLayoutProps> = (props) => {
+export const WidgetLayout: React.FC<PropsWithChildren<WidgetLayoutProps>> = (props) => {
   const { className, children, loading = false, header, footer } = props
 
   return (

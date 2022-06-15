@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { PropsWithChildren } from 'react'
 // import './FilterLabel.less'
 
 interface FilterLabelProps {
@@ -6,7 +6,7 @@ interface FilterLabelProps {
   label: string
 }
 
-export const FilterLabel: React.FC<FilterLabelProps> = (props) => {
+export const FilterLabel: React.FC<PropsWithChildren<FilterLabelProps>> = (props) => {
   const { className, children, label } = props
 
   return (

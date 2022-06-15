@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { parse, ParsedQs, stringify } from 'qs'
 import type { Filter, Selection } from '../types'
@@ -28,7 +28,7 @@ interface FiltersContextProviderProps {
 
 const FiltersContext = createContext<FiltersContextInterface | undefined>(undefined)
 
-const FiltersContextProvider: React.FC<FiltersContextProviderProps> = (props) => {
+const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderProps>> = (props) => {
   const { children, filters } = props
 
   // STATE
