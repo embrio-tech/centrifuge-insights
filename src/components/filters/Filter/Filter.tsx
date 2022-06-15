@@ -12,5 +12,5 @@ export const Filter: React.FC<FilterProps> = (props) => {
 
   const FilterComponent = useMemo(() => components[is], [is])
 
-  return <FilterComponent id={id}  className='dashboard-filter' />
+  return <FilterComponent id={id} className='dashboard-filter' />
 }
