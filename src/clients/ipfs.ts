@@ -1,7 +1,10 @@
 import axios, { AxiosRequestConfig } from 'axios'
+import { environment } from '../config'
+
+const { IPFS_PROXY_URL } = environment
 
 export const ipfsClient = axios.create({
-  baseURL: 'https://ipfs.io/ipfs/',
+  baseURL: IPFS_PROXY_URL,
 })
 
 ipfsClient.interceptors.request.use((config: AxiosRequestConfig) => {
