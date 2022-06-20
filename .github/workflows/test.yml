@@ -15,6 +15,7 @@ concurrency:
 jobs:
   lint:
     name: 'Run Linter'
+    if: ! github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repository'
@@ -29,6 +30,7 @@ jobs:
         run: yarn lint
   unittest:
     name: 'Run Unit Tests'
+    if: ! github.event.pull_request.draft
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout Repository'
