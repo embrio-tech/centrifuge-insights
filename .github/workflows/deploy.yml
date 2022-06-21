@@ -1,4 +1,4 @@
-name: 'Build'
+name: 'Deploy'
 on:
   push:
     branches:
@@ -17,17 +17,42 @@ jobs:
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
+      - name: 'Use Build Cache'
+        id: 'setup-build-cache'
+        uses: actions/cache@v3
+        with:
+          path: build
+          key: build-${{ github.sha }}
       - name: 'Setup Node'
         uses: actions/setup-node@v3
         with:
           node-version: '16.14'
+          cache: 'yarn'
       - name: 'Install Dependencies'
         run: yarn install
       - name: 'Make Production Build'
+        if: steps.setup-build-cache.outputs.cache-hit != 'true'
         run: yarn build
+      # - name: 'Save Build as Artifact'
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: ${{ github.sha }}
+      #     path: build
+      #     retention-days: 1
+  publish:
+    name: 'Publish'
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Use Build Cache'
+        id: 'setup-build-cache'
+        uses: actions/cache@v3
+        with:
+          path: build
+          key: build-${{ github.sha }}
       - name: 'Save Build as Artifact'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.sha }}
           path: build
-          retention-days: 1
+          retention-days: 1 
