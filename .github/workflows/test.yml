@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.14'
+          cache: 'yarn'
       - name: 'Install Dependencies'
         run: yarn install
       - name: 'Run Linter'
@@ -37,6 +38,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '16.14'
+          cache: 'yarn'
       - name: 'Install Dependencies'
         run: yarn install
       - name: 'Run Unit Tests'
