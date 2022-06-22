@@ -59,13 +59,19 @@ jobs:
         uses: 'google-github-actions/auth@v0'
         with:
           credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v0'
       - name: 'Upload Files'
         id: 'upload-files'
         uses: 'google-github-actions/upload-cloud-storage@v0'
         with:
           path: 'build'
-          destination: 'cfg-devops-s-csb-euwe1-static'
+          destination: ${{ secrets.GCP_BUCKET_NAME }}
           parent: false
+      - name: 'Assign specialty pages'
+        env:
+          GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}
+        run: 'gsutil web set -m index.html -e 404.html "gs://$GCP_BUCKET_NAME"'
       # - name: 'Save Build as Artifact'
       #   uses: actions/upload-artifact@v3
       #   with:
