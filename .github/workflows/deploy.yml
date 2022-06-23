@@ -42,6 +42,8 @@ jobs:
       contents: 'read'
       id-token: 'write'
     runs-on: ubuntu-latest
+    env:
+      GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}
     steps:
       - name: 'Checkout Repository'
         uses: actions/checkout@v3
@@ -57,6 +59,8 @@ jobs:
           credentials_json: ${{ secrets.GCP_CREDENTIALS_JSON }}
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v0'
+      - name: 'Remove Prior Version'
+        run: 'gsutil -m rm -a "gs://$GCP_BUCKET_NAME/**"'
       - name: 'Upload Files'
         id: 'upload-files'
         uses: 'google-github-actions/upload-cloud-storage@v0'
@@ -64,7 +68,5 @@ jobs:
           path: 'build'
           destination: ${{ secrets.GCP_BUCKET_NAME }}
           parent: false
-      - name: 'Assign specialty pages'
-        env:
-          GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}
+      - name: 'Assign Specialty Pages'
         run: 'gsutil web set -m index.html -e index.html "gs://$GCP_BUCKET_NAME"'
