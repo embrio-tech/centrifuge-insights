@@ -67,4 +67,4 @@ jobs:
       - name: 'Assign specialty pages'
         env:
           GCP_BUCKET_NAME: ${{ secrets.GCP_BUCKET_NAME }}
-        run: 'gsutil web set -m index.html -e 404.html "gs://$GCP_BUCKET_NAME"'
+        run: 'gsutil web set -m index.html -e index.html "gs://$GCP_BUCKET_NAME"'
