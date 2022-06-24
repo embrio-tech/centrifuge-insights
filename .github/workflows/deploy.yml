@@ -75,7 +75,7 @@ jobs:
           path: 'build/index.html'
           destination: ${{ format('{0}/index.html', secrets.GCP_BUCKET_NAME) }}
           headers: |-
-            Content-Type: text/html
-            Cache-Control: public, max-age=60
+            content-type: text/html
+            cache-control: public, max-age=60
       - name: 'Assign Specialty Pages'
         run: 'gsutil web set -m index.html -e 404.html "gs://$GCP_BUCKET_NAME"'
