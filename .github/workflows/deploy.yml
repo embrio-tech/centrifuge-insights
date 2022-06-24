@@ -2,8 +2,7 @@ name: 'Deploy Staging'
 on:
   push:
     branches:
-      # TODO: change to main
-      - 46-provide-staging-deployment-client
+      - main
 
 # This allows a subsequently queued workflow run to interrupt previous runs
 concurrency:
