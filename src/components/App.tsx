@@ -17,12 +17,9 @@ function App() {
       <GraphQLProvider client={graphQL}>
         <Router>
           <Routes>
-            <Route path='/app'>
-              <Route path='' element={<Navigate to={'pool'} replace={true} />} />
-              <Route path='pool' element={<Pool />} />
-              <Route path='*' element={<Navigate to={''} replace={true} />} />
-            </Route>
-            <Route path='*' element={<Navigate to={'/app'} replace={true} />} />
+            <Route path='/' element={<Navigate to={'/pool'} />} />
+            <Route path='/pool' element={<Pool />} />
+            <Route path='*' element={<Navigate to={'/'} />} />
           </Routes>
         </Router>
       </GraphQLProvider>
