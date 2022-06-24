@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.less'
-import { BrowserRouter as Router } from 'react-router-dom'
-import { Routes } from './routes'
+import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
+import { Pool } from './routes'
 import { ApolloProvider as GraphQLProvider } from '@apollo/client'
 import { graphQL } from '../clients'
 import { Spin } from 'antd'
@@ -16,7 +16,14 @@ function App() {
     <ErrorContextProvider>
       <GraphQLProvider client={graphQL}>
         <Router>
-          <Routes />
+          <Routes>
+            <Route path='/app'>
+              <Route path='' element={<Navigate to={'pool'} replace={true} />} />
+              <Route path='pool' element={<Pool />} />
+              <Route path='*' element={<Navigate to={''} replace={true} />} />
+            </Route>
+            <Route path='*' element={<Navigate to={'/app'} replace={true} />} />
+          </Routes>
         </Router>
       </GraphQLProvider>
     </ErrorContextProvider>
