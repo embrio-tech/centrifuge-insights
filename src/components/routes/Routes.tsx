@@ -24,7 +24,6 @@ export const Routes: React.FC = () => {
           }
         />
         <Route path='pool' element={<Pool />} />
-        <Route path='banane' element={<h1>Banane</h1>} />
         <Route
           path='*'
           element={
