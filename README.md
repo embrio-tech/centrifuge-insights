@@ -11,7 +11,13 @@
 
 A single-page application to visualize data and activities on the Centrifuge Parachain on Polkadot.
 
-## Development
+## :seedling: Staging
+
+Access staging of [`main`](https://github.com/embrio-tech/centrifuge-insights) branch at [https://insights.s.centrifuge.embrio.tech/](https://insights.s.centrifuge.embrio.tech/).
+
+[![20220627_centrifuge_app-preview](https://user-images.githubusercontent.com/16650977/175917219-77a0effc-06b7-432f-93c2-fd4e2d90a84a.png)](https://insights.s.centrifuge.embrio.tech/)
+
+## :construction_worker_man: Development
 
 We highly recommend to develop using the overarching [centrifuge-development](https://github.com/embrio-tech/centrifuge-development) repository. It allows to run all required services (frontend and backend) with [Docker Compose](https://docs.docker.com/compose/).
 
@@ -48,12 +54,12 @@ This repository uses commitlint to enforce commit message conventions. You have 
 
     git commit -m "[type]: foo bar"
 
-## Contact
+## :speech_balloon: Contact
 
 [EMBRIO.tech](https://embrio.tech)  
 [hello@embrio.tech](mailto:hello@embrio.tech)  
 +41 44 552 00 75
 
-## License
+## :lock_with_ink_pen: License
 
 The code is licensed under the [GNU Lesser General Public License v2.1](https://github.com/embrio-tech/centrifuge-insights/blob/main/LICENSE)
