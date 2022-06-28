@@ -52,6 +52,10 @@ describe('abbreviatedNumber should', () => {
   test('should display infinity symbol if value is Infinity', () => {
     expect(abbreviatedNumber(Infinity)).toBe('\u221e\u00a0')
   })
+
+  test('should format negativ values correctly', () => {
+    expect(abbreviatedNumber(-35.71093761964324)).toBe('-35.7')
+  })
 })
 
 export default null
