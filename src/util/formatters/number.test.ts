@@ -49,12 +49,16 @@ describe('abbreviatedNumber should', () => {
     expect(abbreviatedNumber(999.9999999)).toBe('1.00K')
   })
 
-  test('should display infinity symbol if value is Infinity', () => {
+  test('should return infinity symbol if value is Infinity', () => {
     expect(abbreviatedNumber(Infinity)).toBe('\u221e\u00a0')
   })
 
   test('should format negativ values correctly', () => {
     expect(abbreviatedNumber(-35.71093761964324)).toBe('-35.7')
+  })
+
+  test('should return dash if value is NaN', () => {
+    expect(abbreviatedNumber(NaN)).toBe('–\u00a0')
   })
 })
 

@@ -8,6 +8,7 @@ const SI_SYMBOLS: { [k: number]: string } = {
 export const abbreviatedNumber = (value: string | number | bigint, options: { precision?: number } = {}): string => {
   const { precision = 3 } = options
   const _value = Number(value)
+  if (isNaN(_value)) return '–\u00a0'
   if (_value === 0) return '0'
   if (_value === Infinity) return '\u221e\u00a0' // infinity symbol
   const log = Math.floor(Math.log10(Math.abs(Number(_value.toPrecision(precision)))))
