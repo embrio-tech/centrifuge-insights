@@ -210,12 +210,14 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     return [
       {
         label: 'Pool value growth',
-        value: ((100 * (wad(last.netAssetValue) - wad(first.netAssetValue))) / wad(first.netAssetValue)).toPrecision(3),
+        value: abbreviatedNumber(
+          (100 * (wad(last.netAssetValue) - wad(first.netAssetValue))) / wad(first.netAssetValue)
+        ),
         unit: '%',
       },
       {
         label: 'Liquidity reserve as % of pool value',
-        value: ((100 * wad(last.totalReserve)) / wad(last.netAssetValue)).toPrecision(3),
+        value: abbreviatedNumber((100 * wad(last.totalReserve)) / wad(last.netAssetValue)),
         unit: '%',
       },
       {
@@ -227,10 +229,10 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       {
         label: '# of loans growth',
-        value: (
+        value: abbreviatedNumber(
           (100 * (Number(last.totalEverNumberOfLoans) - Number(first.totalEverNumberOfLoans))) /
-          Number(first.totalEverNumberOfLoans)
-        ).toPrecision(3),
+            Number(first.totalEverNumberOfLoans)
+        ),
         unit: '%',
       },
       {

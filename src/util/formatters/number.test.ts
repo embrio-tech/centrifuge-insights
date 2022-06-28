@@ -48,6 +48,10 @@ describe('abbreviatedNumber should', () => {
   test('should format rounded values correctly', () => {
     expect(abbreviatedNumber(999.9999999)).toBe('1.00K')
   })
+
+  test('should display infinity symbol if value is Infinity', () => {
+    expect(abbreviatedNumber(Infinity)).toBe('\u221e\u00a0')
+  })
 })
 
 export default null
