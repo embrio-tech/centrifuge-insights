@@ -5,7 +5,8 @@ import React from 'react'
 export interface WidgetKPI {
   label: string
   value?: number | string
-  unit?: string
+  prefix?: string
+  suffix?: string
 }
 
 interface WidgetKPIsProps {
@@ -21,17 +22,18 @@ export const WidgetKPIs: React.FC<WidgetKPIsProps> = (props) => {
     <div className={className}>
       <h4 className='text-sm'>{title || 'KPIs'}</h4>
       <ul className='text-xs mb-0'>
-        {kpis.map(({ label, value, unit }, index) => (
-          <li key={index} className='flex h-5'>
+        {kpis.map(({ label, value, prefix, suffix }, index) => (
+          <li key={index} className='flex h-5 mb-1'>
             <div className='grow shrink truncate font-light'>{label}</div>
+            {prefix !== undefined && <div className='pl-2'>{prefix}</div>}
             {value !== undefined && (
-              <div className='pl-2'>
+              <div className={prefix !== undefined ? 'pl-1' : 'pl-2'}>
                 <Tooltip placement='left' title={label}>
                   {value}
                 </Tooltip>
               </div>
             )}
-            {unit !== undefined && <div>{unit}</div>}
+            {suffix !== undefined && <div>{suffix}</div>}
           </li>
         ))}
       </ul>

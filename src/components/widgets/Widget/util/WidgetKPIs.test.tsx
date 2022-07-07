@@ -8,12 +8,12 @@ describe('WidgetKPIs should', () => {
       {
         label: 'Pool value growth',
         value: 58.43,
-        unit: '%',
+        suffix: '%',
       },
       {
         label: 'Liquidity reserve as % of pool value',
         value: 24.2,
-        unit: '%',
+        suffix: '%',
       },
       {
         label: '',

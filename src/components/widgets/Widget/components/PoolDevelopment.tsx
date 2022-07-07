@@ -7,6 +7,7 @@ import { abbreviatedNumber, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { useGraphQL } from '../../../../hooks'
 import { useFilters } from '../../../../contexts'
+import { Nodes } from '../../../../types'
 
 // import './PoolDevelopment.less'
 
@@ -14,18 +15,18 @@ interface PoolDevelopmentProps {
   className?: string
 }
 
+interface PoolSnapshot {
+  id: string
+  netAssetValue: string
+  timestamp: string
+  totalEverNumberOfLoans: string
+  totalReserve: string
+  __typename: string
+}
+
 interface ApiData {
   __typename: string
-  poolSnapshots: {
-    nodes: {
-      id: string
-      netAssetValue: string
-      timestamp: string
-      totalEverNumberOfLoans: string
-      totalReserve: string
-      __typename: string
-    }[]
-  }
+  poolSnapshots: Nodes<PoolSnapshot>
 }
 
 interface SharesData {
@@ -54,6 +55,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         orderBy: TIMESTAMP_ASC
         filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
       ) {
+        totalCount
         nodes {
           id
           timestamp
@@ -130,7 +132,9 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   }, [data])
 
   const chartConfig = useMemo<MixConfig>(() => {
-    const maxValue = Math.max(...sumsData.filter(({ sum }) => sum === 'Pool Value').map(({ value }) => value))
+    const maxValue = sumsData.length
+      ? Math.max(...sumsData.filter(({ sum }) => sum === 'Pool Value').map(({ value }) => value))
+      : 1000
 
     const meta: Record<string, Meta> = {
       timestamp: {
@@ -139,7 +143,9 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       value: {
         formatter: (v: number) => abbreviatedNumber(v),
-        max: Math.round(maxValue * 1.3),
+        max: Math.round((maxValue * 1.2) / 100) * 100,
+        tickCount: 6,
+        maxTickCount: 6,
       },
     }
 
@@ -191,6 +197,15 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
             xField: 'timestamp',
             yField: 'value',
             seriesField: 'sum',
+            yAxis: {
+              title: {
+                text: 'DAI',
+                spacing: 5,
+                style: {
+                  fill: '#8d8d8d',
+                },
+              },
+            },
             meta,
             color: ['#2762ff', '#fcbb59', '#ccc'],
           },
@@ -213,12 +228,12 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         value: abbreviatedNumber(
           (100 * (wad(last.netAssetValue) - wad(first.netAssetValue))) / wad(first.netAssetValue)
         ),
-        unit: '%',
+        suffix: '%',
       },
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber((100 * wad(last.totalReserve)) / wad(last.netAssetValue)),
-        unit: '%',
+        value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
+        suffix: '%',
       },
       {
         label: '',
@@ -233,7 +248,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           (100 * (Number(last.totalEverNumberOfLoans) - Number(first.totalEverNumberOfLoans))) /
             Number(first.totalEverNumberOfLoans)
         ),
-        unit: '%',
+        suffix: '%',
       },
       {
         label: '',
@@ -241,6 +256,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       {
         label: 'Avg. loan size',
         value: abbreviatedNumber(wad(last.netAssetValue) / Number(last.totalEverNumberOfLoans)),
+        prefix: 'DAI',
       },
     ]
   }, [data])

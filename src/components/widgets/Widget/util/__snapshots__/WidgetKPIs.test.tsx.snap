@@ -11,7 +11,7 @@ exports[`WidgetKPIs should match snapshot! 1`] = `
     className="text-xs mb-0"
   >
     <li
-      className="flex h-5"
+      className="flex h-5 mb-1"
     >
       <div
         className="grow shrink truncate font-light"
@@ -33,7 +33,7 @@ exports[`WidgetKPIs should match snapshot! 1`] = `
       </div>
     </li>
     <li
-      className="flex h-5"
+      className="flex h-5 mb-1"
     >
       <div
         className="grow shrink truncate font-light"
@@ -55,14 +55,14 @@ exports[`WidgetKPIs should match snapshot! 1`] = `
       </div>
     </li>
     <li
-      className="flex h-5"
+      className="flex h-5 mb-1"
     >
       <div
         className="grow shrink truncate font-light"
       />
     </li>
     <li
-      className="flex h-5"
+      className="flex h-5 mb-1"
     >
       <div
         className="grow shrink truncate font-light"
