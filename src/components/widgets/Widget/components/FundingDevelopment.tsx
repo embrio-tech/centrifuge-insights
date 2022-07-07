@@ -1,8 +1,12 @@
 import React, { useMemo } from 'react'
+import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
-import { abbreviatedNumber, textDate } from '../../../../util'
+import { abbreviatedNumber, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
+import { Nodes } from '../../../../types'
+import { useFilters } from '../../../../contexts'
+import { useGraphQL } from '../../../../hooks'
 
 // import './FundingDevelopment.less'
 
@@ -10,104 +14,184 @@ interface FundingDevelopmentProps {
   className?: string
 }
 
-const mockFlows = [
-  {
-    timestamp: new Date('2022-05-15'),
-    value: 3000,
-    flow: 'Inflow',
-  },
-  {
-    timestamp: new Date('2022-05-16'),
-    value: 8000,
-    flow: 'Inflow',
-  },
-  {
-    timestamp: new Date('2022-05-17'),
-    value: 4000,
-    flow: 'Inflow',
-  },
-  {
-    timestamp: new Date('2022-05-18'),
-    value: 6500,
-    flow: 'Inflow',
-  },
-  {
-    timestamp: new Date('2022-05-15'),
-    value: -500,
-    flow: 'Outflow',
-  },
-  {
-    timestamp: new Date('2022-05-16'),
-    value: -1500,
-    flow: 'Outflow',
-  },
-  {
-    timestamp: new Date('2022-05-17'),
-    value: -750,
-    flow: 'Outflow',
-  },
-  {
-    timestamp: new Date('2022-05-18'),
-    value: -300,
-    flow: 'Outflow',
-  },
-]
+interface TrancheSnapshot {
+  id: string
+  timestamp: string
+  trancheId: string
+  outstandingInvestOrders_: string
+  outstandingRedeemOrders_: string
+}
 
-const mockNetFlow = [
-  {
-    timestamp: new Date('2022-05-15'),
-    value: 2500,
-    netFlow: 'Net in-/outflow',
-  },
-  {
-    timestamp: new Date('2022-05-16'),
-    value: 6500,
-    netFlow: 'Net in-/outflow',
-  },
-  {
-    timestamp: new Date('2022-05-17'),
-    value: 3250,
-    netFlow: 'Net in-/outflow',
-  },
-  {
-    timestamp: new Date('2022-05-18'),
-    value: 6200,
-    netFlow: 'Net in-/outflow',
-  },
-]
+interface PoolSnapshot {
+  id: string
+  timestamp: string
+  totalReserve: string
+  netAssetValue: string
+}
 
-const mockShares = [
-  {
-    timestamp: new Date('2022-05-15'),
-    percentage: 0.69,
-    share: 'Liquidity reserve as % of pool value',
-  },
-  {
-    timestamp: new Date('2022-05-16'),
-    percentage: 0.546,
-    share: 'Liquidity reserve as % of pool value',
-  },
-  {
-    timestamp: new Date('2022-05-17'),
-    percentage: 0.447,
-    share: 'Liquidity reserve as % of pool value',
-  },
-  {
-    timestamp: new Date('2022-05-18'),
-    percentage: 0.19,
-    share: 'Liquidity reserve as % of pool value',
-  },
-]
+interface ApiData {
+  trancheSnapshots: Nodes<TrancheSnapshot>
+  poolSnapshots: Nodes<PoolSnapshot>
+}
+
+interface FlowData {
+  timestamp: Date
+  value: number
+  flow: string
+}
+
+interface NetFlowData {
+  timestamp: Date
+  value: number
+  netFlow: string
+}
+
+interface RelativeLiquidityReserve {
+  timestamp: Date
+  percentage: number
+  share: string
+}
 
 export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => {
   const { className } = props
+  const { selections, filtersReady } = useFilters()
+
+  const query = gql`
+    query getFundingDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
+      trancheSnapshots(
+        first: 1000
+        orderBy: TIMESTAMP_ASC
+        filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
+      ) {
+        totalCount
+        nodes {
+          id
+          trancheId
+          timestamp
+          outstandingInvestOrders_
+          outstandingRedeemOrders_
+        }
+      }
+      poolSnapshots(
+        first: 1000
+        orderBy: TIMESTAMP_ASC
+        filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
+      ) {
+        totalCount
+        nodes {
+          id
+          timestamp
+          totalReserve
+          netAssetValue
+        }
+      }
+    }
+  `
+
+  const variables = useMemo(
+    () => ({
+      poolId: selections.pool?.[0],
+      from: new Date('2022-06-04'),
+      to: new Date(),
+    }),
+    [selections]
+  )
+
+  const skip = useMemo(
+    () =>
+      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
+      !filtersReady,
+    [variables, filtersReady]
+  )
+
+  const { loading, data } = useGraphQL<ApiData>(query, {
+    variables,
+    skip,
+  })
+
+  const flowsData = useMemo<FlowData[]>(() => {
+    const inflows: FlowData[] =
+      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { outstandingInvestOrders_, timestamp }) => {
+        const lastIndex = flowsData.length - 1
+        const snapshotTimestamp = new Date(timestamp)
+        if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
+          flowsData.splice(lastIndex, 1, {
+            ...flowsData[lastIndex],
+            value: flowsData[lastIndex].value + wad(outstandingInvestOrders_),
+          })
+        } else {
+          flowsData.push({
+            timestamp: snapshotTimestamp,
+            value: wad(outstandingInvestOrders_),
+            flow: 'Inflow',
+          })
+        }
+        return flowsData
+      }, []) || []
+
+    const outflows: FlowData[] =
+      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { outstandingRedeemOrders_, timestamp }) => {
+        const lastIndex = flowsData.length - 1
+        const snapshotTimestamp = new Date(timestamp)
+        if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
+          flowsData.splice(lastIndex, 1, {
+            ...flowsData[lastIndex],
+            value: flowsData[lastIndex].value - wad(outstandingRedeemOrders_),
+          })
+        } else {
+          flowsData.push({
+            timestamp: snapshotTimestamp,
+            value: -wad(outstandingRedeemOrders_),
+            flow: 'Outflow',
+          })
+        }
+        return flowsData
+      }, []) || []
+
+    return [...inflows, ...outflows]
+  }, [data])
+
+  const netFlowsData = useMemo<NetFlowData[]>(
+    () =>
+      data?.trancheSnapshots?.nodes?.reduce(
+        (flowsData: NetFlowData[], { outstandingRedeemOrders_, outstandingInvestOrders_, timestamp }) => {
+          const lastIndex = flowsData.length - 1
+          const snapshotTimestamp = new Date(timestamp)
+          if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
+            flowsData.splice(lastIndex, 1, {
+              ...flowsData[lastIndex],
+              value: flowsData[lastIndex].value + wad(outstandingInvestOrders_) - wad(outstandingRedeemOrders_),
+            })
+          } else {
+            flowsData.push({
+              timestamp: snapshotTimestamp,
+              value: wad(outstandingInvestOrders_) - wad(outstandingRedeemOrders_),
+              netFlow: 'Net in-/outflow',
+            })
+          }
+          return flowsData
+        },
+        []
+      ) || [],
+    [data]
+  )
+
+  const relativeLiquidityReserves = useMemo<RelativeLiquidityReserve[]>(
+    () =>
+      data?.poolSnapshots?.nodes?.map(({ timestamp, totalReserve, netAssetValue }) => ({
+        timestamp: new Date(timestamp),
+        percentage: wad(totalReserve) / (wad(totalReserve) + wad(netAssetValue)),
+        share: 'Liquidity reserve as % of pool value',
+      })) || [],
+    [data]
+  )
 
   const chartConfig = useMemo<MixConfig>(() => {
     // axis min and max
     //
-    const flowValues = mockFlows.map(({ value }) => value)
-    const maxValue = Math.round(Math.max(...flowValues))
-    const minValue = Math.round(Math.min(...flowValues))
+    const flowValues = flowsData.map(({ value }) => value)
+    const maxValue = flowValues.length ? Math.round(Math.max(...flowValues)) : 1000
+    const minValue = flowValues.length ? Math.round(Math.min(...flowValues)) : -1000
     //
     const extra = 0.2
     //
@@ -117,11 +201,12 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     const maxValueAxis = maxValue + extraValue
     const minValueAxis = minValue - extraValue
     //
-    const maxPercentage = Math.max(...mockShares.map(({ percentage }) => percentage))
+    const maxPercentage = relativeLiquidityReserves.length
+      ? Math.max(...relativeLiquidityReserves.map(({ percentage }) => percentage || 0))
+      : 1
     //
     const maxPercentageAxis = (1 + extra) * maxPercentage
     const minPercentageAxis = (maxPercentageAxis * minValueAxis) / maxValueAxis
-
     // shared meta object for all subcharts
     //
     const meta: Record<string, Meta> = {
@@ -175,7 +260,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         {
           type: 'column',
           options: {
-            data: mockFlows,
+            data: flowsData,
             xField: 'timestamp',
             yField: 'value',
             isStack: true,
@@ -195,7 +280,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         {
           type: 'line',
           options: {
-            data: mockNetFlow,
+            data: netFlowsData,
             xField: 'timestamp',
             yField: 'value',
             seriesField: 'netFlow',
@@ -211,11 +296,11 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         {
           type: 'line',
           options: {
-            data: mockShares,
+            data: relativeLiquidityReserves,
             xField: 'timestamp',
             yField: 'percentage',
             yAxis: {
-              // grid: null,
+              grid: null,
               position: 'right',
             },
             seriesField: 'share',
@@ -225,14 +310,14 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         },
       ],
     }
-  }, [])
+  }, [flowsData, netFlowsData, relativeLiquidityReserves])
 
   return (
     <ChartLayout
       className={className}
       chart={<MixChart {...chartConfig} />}
       // info={<WidgetKPIs kpis={kpis} />}
-      // loading={loading}
+      loading={loading}
       title='Funding Development'
     />
   )

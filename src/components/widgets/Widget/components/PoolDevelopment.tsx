@@ -7,6 +7,7 @@ import { abbreviatedNumber, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { useGraphQL } from '../../../../hooks'
 import { useFilters } from '../../../../contexts'
+import { Nodes } from '../../../../types'
 
 // import './PoolDevelopment.less'
 
@@ -14,18 +15,18 @@ interface PoolDevelopmentProps {
   className?: string
 }
 
+interface PoolSnapshot {
+  id: string
+  netAssetValue: string
+  timestamp: string
+  totalEverNumberOfLoans: string
+  totalReserve: string
+  __typename: string
+}
+
 interface ApiData {
   __typename: string
-  poolSnapshots: {
-    nodes: {
-      id: string
-      netAssetValue: string
-      timestamp: string
-      totalEverNumberOfLoans: string
-      totalReserve: string
-      __typename: string
-    }[]
-  }
+  poolSnapshots: Nodes<PoolSnapshot>
 }
 
 interface SharesData {
@@ -54,6 +55,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         orderBy: TIMESTAMP_ASC
         filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
       ) {
+        totalCount
         nodes {
           id
           timestamp
@@ -217,7 +219,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber((100 * wad(last.totalReserve)) / wad(last.netAssetValue)),
+        value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
         unit: '%',
       },
       {
