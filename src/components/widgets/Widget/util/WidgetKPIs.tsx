@@ -23,7 +23,7 @@ export const WidgetKPIs: React.FC<WidgetKPIsProps> = (props) => {
       <h4 className='text-sm'>{title || 'KPIs'}</h4>
       <ul className='text-xs mb-0'>
         {kpis.map(({ label, value, prefix, suffix }, index) => (
-          <li key={index} className='flex h-5'>
+          <li key={index} className='flex h-5 mb-1'>
             <div className='grow shrink truncate font-light'>{label}</div>
             {prefix !== undefined && <div className='pl-2'>{prefix}</div>}
             {value !== undefined && (
