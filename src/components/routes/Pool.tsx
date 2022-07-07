@@ -49,7 +49,7 @@ const Pool: React.FC = () => {
         name: 'Pool History',
         widgets: [
           {
-            name: 'FundingDevelopment',
+            name: 'PoolDevelopment',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 0 },
               { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 0 },
@@ -59,7 +59,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
-            name: 'PoolDevelopment',
+            name: 'FundingDevelopment',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 3 },
               { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 2 },
