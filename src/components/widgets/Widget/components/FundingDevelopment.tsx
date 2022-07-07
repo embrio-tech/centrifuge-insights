@@ -289,6 +289,15 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
               line: null,
               label: null,
             },
+            yAxis: {
+              title: {
+                text: 'DAI',
+                spacing: 5,
+                style: {
+                  fill: '#8d8d8d',
+                },
+              },
+            },
             stepType: 'hvh',
             meta,
             color: ['#fcbb59'],

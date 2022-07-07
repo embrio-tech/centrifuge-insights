@@ -197,6 +197,15 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
             xField: 'timestamp',
             yField: 'value',
             seriesField: 'sum',
+            yAxis: {
+              title: {
+                text: 'DAI',
+                spacing: 5,
+                style: {
+                  fill: '#8d8d8d',
+                },
+              },
+            },
             meta,
             color: ['#2762ff', '#fcbb59', '#ccc'],
           },
