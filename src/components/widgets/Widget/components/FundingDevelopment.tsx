@@ -325,16 +325,17 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       {
         label: 'Liquidity reserve as % of pool value',
         value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
-        unit: '%',
+        suffix: '%',
       },
       {
-        label: 'Avg. monthly net funding (net in-/outflows)',
+        label: 'Avg. net funding (net in-/outflows)',
         value: abbreviatedNumber(
           netFlowsData.map(({ value }) => value).reduce((acc, current) => acc + current, 0) / netFlowsData.length
         ),
+        prefix: 'DAI',
       },
       {
-        label: 'Avg. monthly outflows as % of pool value',
+        label: 'Avg. outflows as % of pool value',
         value: abbreviatedNumber(
           poolSnapshots
             .map(
@@ -343,7 +344,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
             )
             .reduce((acc, current) => acc + current || 0, 0) / poolSnapshots.length
         ),
-        unit: '%',
+        suffix: '%',
       },
     ]
   }, [data, netFlowsData, flowsData])

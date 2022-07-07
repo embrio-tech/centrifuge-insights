@@ -219,12 +219,12 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         value: abbreviatedNumber(
           (100 * (wad(last.netAssetValue) - wad(first.netAssetValue))) / wad(first.netAssetValue)
         ),
-        unit: '%',
+        suffix: '%',
       },
       {
         label: 'Liquidity reserve as % of pool value',
         value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
-        unit: '%',
+        suffix: '%',
       },
       {
         label: '',
@@ -239,7 +239,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           (100 * (Number(last.totalEverNumberOfLoans) - Number(first.totalEverNumberOfLoans))) /
             Number(first.totalEverNumberOfLoans)
         ),
-        unit: '%',
+        suffix: '%',
       },
       {
         label: '',
@@ -247,6 +247,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       {
         label: 'Avg. loan size',
         value: abbreviatedNumber(wad(last.netAssetValue) / Number(last.totalEverNumberOfLoans)),
+        prefix: 'DAI',
       },
     ]
   }, [data])
