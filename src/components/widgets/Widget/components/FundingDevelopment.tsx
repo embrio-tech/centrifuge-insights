@@ -7,6 +7,7 @@ import { Meta } from '@antv/g2plot'
 import { Nodes } from '../../../../types'
 import { useFilters } from '../../../../contexts'
 import { useGraphQL } from '../../../../hooks'
+import { WidgetKPI, WidgetKPIs } from '../util'
 
 // import './FundingDevelopment.less'
 
@@ -312,11 +313,46 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     }
   }, [flowsData, netFlowsData, relativeLiquidityReserves])
 
+  const kpis = useMemo<WidgetKPI[]>(() => {
+    const poolSnapshots = data?.poolSnapshots?.nodes || []
+    const outflows = flowsData.filter(({ flow }) => flow === 'Outflow').map(({ value }) => value)
+
+    if (!poolSnapshots.length || !outflows.length) return []
+
+    const last = poolSnapshots[poolSnapshots.length - 1]
+
+    return [
+      {
+        label: 'Liquidity reserve as % of pool value',
+        value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
+        unit: '%',
+      },
+      {
+        label: 'Avg. monthly net funding (net in-/outflows)',
+        value: abbreviatedNumber(
+          netFlowsData.map(({ value }) => value).reduce((acc, current) => acc + current, 0) / netFlowsData.length
+        ),
+      },
+      {
+        label: 'Avg. monthly outflows as % of pool value',
+        value: abbreviatedNumber(
+          poolSnapshots
+            .map(
+              ({ totalReserve, netAssetValue }, index) =>
+                (100 * outflows[index]) / (wad(totalReserve) + wad(netAssetValue))
+            )
+            .reduce((acc, current) => acc + current || 0, 0) / poolSnapshots.length
+        ),
+        unit: '%',
+      },
+    ]
+  }, [data, netFlowsData, flowsData])
+
   return (
     <ChartLayout
       className={className}
       chart={<MixChart {...chartConfig} />}
-      // info={<WidgetKPIs kpis={kpis} />}
+      info={<WidgetKPIs kpis={kpis} />}
       loading={loading}
       title='Funding Development'
     />
