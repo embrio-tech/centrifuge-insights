@@ -6,7 +6,7 @@
  * @prop {string} value - WAD string
  * @returns {number} - numerical value
  */
-export const wad = (value: string): number => Number(value) * 10 ** -18
+export const wad = (value: string | null): number => Number(value) * 10 ** -18
 
 /**
  * converts DS-Math RAY value string into number
@@ -16,4 +16,4 @@ export const wad = (value: string): number => Number(value) * 10 ** -18
  * @prop {string} value - WAD string
  * @returns {number} - numerical value
  */
-export const ray = (value: string): number => Number(value) * 10 ** -27
+export const ray = (value: string | null): number => Number(value) * 10 ** -27
