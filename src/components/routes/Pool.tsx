@@ -1,5 +1,6 @@
 import React from 'react'
 import { FiltersContextProvider } from '../../contexts'
+import { PoolContextProvider } from '../../contexts/PoolContext'
 import { Dashboard as DashboardInterface, Filter } from '../../types'
 import { Filters } from '../filters'
 import { BasicLayout } from '../layouts'
@@ -82,9 +83,11 @@ const Pool: React.FC = () => {
 
   return (
     <FiltersContextProvider filters={filters}>
-      <BasicLayout sider={<Filters filters={filters} />}>
-        <Dashboard dashboard={dashboard} />
-      </BasicLayout>
+      <PoolContextProvider>
+        <BasicLayout sider={<Filters filters={filters} />}>
+          <Dashboard dashboard={dashboard} />
+        </BasicLayout>
+      </PoolContextProvider>
     </FiltersContextProvider>
   )
 }

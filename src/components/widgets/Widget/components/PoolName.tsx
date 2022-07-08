@@ -1,8 +1,7 @@
-import { gql } from '@apollo/client'
 import { Tooltip } from 'antd'
 import React, { useMemo } from 'react'
-import { useFilters } from '../../../../contexts'
-import { useFiles, useGraphQL, usePoolsMetadata } from '../../../../hooks'
+import { usePool } from '../../../../contexts'
+import { useFiles } from '../../../../hooks'
 import { WidgetLayout } from '../util'
 import './PoolName.less'
 
@@ -10,53 +9,9 @@ interface PoolNameProps {
   className?: string
 }
 
-interface ApiData {
-  pool: {
-    id: string
-    metadata: string
-  }
-}
-
 export const PoolName: React.FC<PoolNameProps> = (props) => {
   const { className } = props
-  const { selections, filtersReady } = useFilters()
-
-  const query = gql`
-    query getPoolMetadata($poolId: String!) {
-      pool(id: $poolId) {
-        id
-        metadata
-      }
-    }
-  `
-
-  const variables = useMemo(
-    () => ({
-      poolId: selections.pool?.[0],
-    }),
-    [selections]
-  )
-
-  const skip = useMemo(
-    () =>
-      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
-      !filtersReady,
-    [variables, filtersReady]
-  )
-
-  const { loading: poolLoading, data } = useGraphQL<ApiData>(query, {
-    variables,
-    skip,
-  })
-
-  // fetch metadata
-  const metadataPaths = useMemo(() => (data?.pool.metadata ? [data.pool.metadata] : []), [data])
-  const { poolsMetadata, loading: metadataLoading } = usePoolsMetadata(metadataPaths)
-
-  const poolMetadata = useMemo(
-    () => (data?.pool.metadata ? poolsMetadata?.[data.pool.metadata] : undefined),
-    [poolsMetadata, data]
-  )
+  const { poolMetadata, loading: poolLoading } = usePool()
 
   const iconFiles = useMemo(
     () => (poolMetadata?.pool.icon ? [{ path: poolMetadata.pool.icon, mime: 'image/svg+xml' }] : []),
@@ -67,13 +22,11 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
   return (
     <WidgetLayout
       className={className}
-      loading={poolLoading || metadataLoading || iconLoading}
+      loading={poolLoading || iconLoading}
       footer={
         poolMetadata && (
           <Tooltip title={poolMetadata.pool.name}>
-            <h3 className='pool-name-text'>
-              {poolMetadata.pool.name}
-            </h3>
+            <h3 className='pool-name-text'>{poolMetadata.pool.name}</h3>
           </Tooltip>
         )
       }
