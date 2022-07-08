@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
-import { abbreviatedNumber, textDate, wad } from '../../../../util'
+import { abbreviatedNumber, syncAxes, textDate, wad } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { Nodes } from '../../../../types'
 import { useFilters } from '../../../../contexts'
@@ -188,28 +188,13 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
   )
 
   const chartConfig = useMemo<MixConfig>(() => {
-    // axis min and max
-    //
-    const flowValues = flowsData.map(({ value }) => value)
-    const maxValue = flowValues.length ? Math.round(Math.max(...flowValues)) : 1000
-    const minValue = flowValues.length ? Math.round(Math.min(...flowValues)) : -1000
-    //
-    const extra = 0.2
-    //
-    const minValueAbs = Math.min(Math.abs(maxValue), Math.abs(minValue))
-    const extraValue = extra * minValueAbs
-    //
-    const maxValueAxis = maxValue + extraValue
-    const minValueAxis = minValue - extraValue
-    //
-    const maxPercentage = relativeLiquidityReserves.length
-      ? Math.max(...relativeLiquidityReserves.map(({ percentage }) => percentage || 0))
-      : 1
-    //
-    const maxPercentageAxis = (1 + extra) * maxPercentage
-    const minPercentageAxis = (maxPercentageAxis * minValueAxis) / maxValueAxis
+    // sync axes
+    const { primaryAxisMin, primaryAxisMax, secondaryAxisMin, secondaryAxisMax } = syncAxes(
+      flowsData.map(({ value }) => value),
+      relativeLiquidityReserves.map(({ percentage }) => percentage || 0)
+    )
+
     // shared meta object for all subcharts
-    //
     const meta: Record<string, Meta> = {
       timestamp: {
         type: 'timeCat',
@@ -218,23 +203,22 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       value: {
         type: 'linear',
         formatter: (v: number) => abbreviatedNumber(v),
-        max: maxValueAxis,
-        min: minValueAxis,
+        max: primaryAxisMax,
+        min: primaryAxisMin,
         tickCount: 6,
         maxTickCount: 6,
       },
       percentage: {
         type: 'linear',
         formatter: (v: number) => abbreviatedNumber(v * 100) + '%',
-        max: maxPercentageAxis,
-        min: minPercentageAxis,
+        max: secondaryAxisMax,
+        min: secondaryAxisMin,
         tickCount: 6,
         maxTickCount: 6,
       },
     }
 
     // return chart config
-    //
     return {
       tooltip: {
         shared: true,
