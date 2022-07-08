@@ -43,7 +43,7 @@ export const syncAxes = (
     extra = 0.2,
     primaryAxisDefaultMin = -1000,
     primaryAxisDefaultMax = 1000,
-    secondaryAxisDefaultMin = 0,
+    secondaryAxisDefaultMin = -1,
     secondaryAxisDefaultMax = 1,
   } = options
 
