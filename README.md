@@ -32,9 +32,13 @@ If you prefer to run the frontend without Docker the following instructions get 
   - Copy the template with
 
         cp .env.sample .env
+- Tenant config file with `TENANT_ID`
+  - Copy the template with
+
+        cp public/tenant.json.sample public/tenant.json
     
-- [centrifuge-subql](https://github.com/embrio-tech/centrifuge-subql) backend. 
-  - Set the url of the backend in [`src/config/environment/local.ts`](https://github.com/embrio-tech/centrifuge-insights/blob/main/src/config/environment/local.ts) as `GRAPHQL_SERVER_URL`.
+- [centrifuge-subql](https://github.com/embrio-tech/centrifuge-subql) backend.
+  - You can set the url of the backend in [`src/config/tenant/local.ts`](https://github.com/embrio-tech/centrifuge-insights/blob/main/src/config/environment/local.ts) as `graphQLServerUrl`.
 
 ### Install
 
