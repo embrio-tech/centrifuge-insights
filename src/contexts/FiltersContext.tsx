@@ -1,7 +1,6 @@
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
-import { parse, ParsedQs, stringify } from 'qs'
 import type { Filter, Selection } from '../types'
+import { useQuery } from '../hooks'
 
 interface FiltersContextInterface {
   // stores selections of all filters
@@ -43,24 +42,7 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
   )
 
   // reading and writing of URLSearchParams with qs notation
-  const [searchParams, setSearchParams] = useSearchParams()
-  const params = useMemo(() => parse(searchParams.toString()) || {}, [searchParams])
-
-  // SETTERS
-  // ---------------------------------------
-
-  /**
-   * set query params in qs notation
-   *
-   * @prop {type} name - description
-   */
-  const setParams = useCallback(
-    (params: ParsedQs) => {
-      const newSearchParams = new URLSearchParams(stringify(params))
-      setSearchParams(newSearchParams, { replace: true })
-    },
-    [setSearchParams]
-  )
+  const [params, setParams] = useQuery()
 
   /**
    * set the selections of one filter
