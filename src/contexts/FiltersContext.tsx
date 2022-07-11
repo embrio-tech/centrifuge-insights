@@ -1,6 +1,7 @@
 import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { Filter, Selection } from '../types'
 import { useQuery } from '../hooks'
+import { ParsedQs } from 'qs'
 
 interface FiltersContextInterface {
   // stores selections of all filters
@@ -52,7 +53,7 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
    */
   const setSelection = useCallback(
     (id: string, selection: Selection) => {
-      const newParams = { ...params, [id]: selection.length === 1 ? selection[0] : selection }
+      const newParams: ParsedQs = { ...params, [id]: selection.length === 1 ? selection[0] : selection }
       setParams(newParams)
       setSelections((oldSelections) => ({ ...oldSelections, [id]: selection }))
     },

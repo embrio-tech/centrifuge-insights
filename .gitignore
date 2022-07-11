@@ -128,3 +128,6 @@ yarn-error.log*
 
 # Ignore generated credentials from google-github-actions/auth
 gha-creds-*.json
+
+# Ignore tenantId config file
+/public/tenant.json
