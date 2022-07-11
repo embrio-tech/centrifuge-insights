@@ -1,5 +1,6 @@
 import React from 'react'
 import { FiltersContextProvider } from '../../contexts'
+import { PoolContextProvider } from '../../contexts/PoolContext'
 import { Dashboard as DashboardInterface, Filter } from '../../types'
 import { Filters } from '../filters'
 import { BasicLayout } from '../layouts'
@@ -68,6 +69,16 @@ const Pool: React.FC = () => {
               { breakpoint: 'xl', w: 6, h: 3, x: 6, y: 0 },
             ],
           },
+          {
+            name: 'Returns',
+            coordinates: [
+              { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 6 },
+              { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 4 },
+              { breakpoint: 'md', w: 6, h: 2, x: 0, y: 4 },
+              { breakpoint: 'lg', w: 5, h: 3, x: 0, y: 3 },
+              { breakpoint: 'xl', w: 6, h: 3, x: 0, y: 3 },
+            ],
+          },
         ],
       },
     ],
@@ -82,9 +93,11 @@ const Pool: React.FC = () => {
 
   return (
     <FiltersContextProvider filters={filters}>
-      <BasicLayout sider={<Filters filters={filters} />}>
-        <Dashboard dashboard={dashboard} />
-      </BasicLayout>
+      <PoolContextProvider>
+        <BasicLayout sider={<Filters filters={filters} />}>
+          <Dashboard dashboard={dashboard} />
+        </BasicLayout>
+      </PoolContextProvider>
     </FiltersContextProvider>
   )
 }

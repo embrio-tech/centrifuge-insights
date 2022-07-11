@@ -3,7 +3,7 @@ export interface Pool {
   metadata: string
 }
 
-interface TranchesMeta {
+interface TranchesMetadata {
   [key: string]: {
     name: string
     symbol: string
