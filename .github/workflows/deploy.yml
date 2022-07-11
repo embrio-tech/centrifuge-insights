@@ -34,6 +34,10 @@ jobs:
         env:
           REACT_APP_OPS_ENV: 'staging'
         run: yarn build
+      - name: 'Set tenant'
+        env:
+          TENANT_ID: ${{ secrets.TENANT_ID }}
+        run: 'echo "{ \"TENANT_ID\": \"$TENANT_ID\" }" > build/tenant.json'
   publish:
     name: 'Publish'
     needs: build
@@ -75,6 +79,15 @@ jobs:
           destination: ${{ secrets.GCP_BUCKET_NAME }}
           headers: |-
             content-type: text/html
+            cache-control: public, max-age=60
+      - name: 'Upload tenant.json'
+        id: 'upload-index'
+        uses: 'google-github-actions/upload-cloud-storage@v0'
+        with:
+          path: 'build/tenant.json'
+          destination: ${{ secrets.GCP_BUCKET_NAME }}
+          headers: |-
+            content-type: application/json
             cache-control: public, max-age=60
       - name: 'Assign Specialty Pages'
         run: 'gsutil web set -m index.html -e 404.html "gs://$GCP_BUCKET_NAME"'
