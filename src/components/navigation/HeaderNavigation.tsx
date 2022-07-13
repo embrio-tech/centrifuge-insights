@@ -1,9 +1,8 @@
 import React from 'react'
 import './HeaderNavigation.less'
-import logos from '../../svg'
-import { Link } from 'react-router-dom'
 import { Button } from 'antd'
 import { useTenant } from '../../contexts'
+import { HeaderLogo } from './util'
 
 const HeaderNavigation: React.FC = () => {
   const {
@@ -12,11 +11,7 @@ const HeaderNavigation: React.FC = () => {
 
   return (
     <div className='header-navigation'>
-      <div className='logo'>
-        <Link to='/'>
-          <img src={logos[logo]} alt='logo' className='h-full' />
-        </Link>
-      </div>
+      <HeaderLogo logo={logo} className='logo' />
 
       <h1 className='title' style={{ lineHeight: 'inherit' }}>
         {`${name} Insights`}
