@@ -16,7 +16,8 @@ function App() {
         <TenantContextProvider>
           <GraphQLContextProvider>
             <Routes>
-              <Route path='/' element={<Navigate to={'/pools'} />} />
+              {/* TODO: set /pools as default path */}
+              <Route path='/' element={<Navigate to={'/pool'} />} />
               <Route path='/pool' element={<Pool />} />
               <Route path='/pools' element={<Pools />} />
               <Route path='*' element={<Navigate to={'/'} />} />

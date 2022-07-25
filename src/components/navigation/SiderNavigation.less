@@ -1,0 +1,16 @@
+.sider-navigation {
+  @apply divide-y border-t;
+  @apply border-r-0;
+
+  .ant-menu-item {
+    @apply my-0 h-14 leading-14 text-base font-medium;
+  }
+
+  .ant-menu-item:not(:last-child) {
+    @apply my-0;
+  }
+
+  .ant-menu-item::after {
+    @apply right-auto left-0;
+  }
+}
