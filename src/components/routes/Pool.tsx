@@ -1,6 +1,5 @@
 import React from 'react'
-import { FiltersContextProvider } from '../../contexts'
-import { PoolContextProvider } from '../../contexts/PoolContext'
+import { FiltersContextProvider, PoolContextProvider } from '../../contexts'
 import { Dashboard as DashboardInterface, Filter } from '../../types'
 import { Filters } from '../filters'
 import { BasicLayout } from '../layouts'
