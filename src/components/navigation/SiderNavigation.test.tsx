@@ -1,4 +1,4 @@
-describe('LoanVolume should', () => {
+describe('SiderNavigation should', () => {
   test.skip('have tests!', () => {
     // TODO: write tests
   })
