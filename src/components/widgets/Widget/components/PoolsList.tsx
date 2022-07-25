@@ -1,5 +1,5 @@
 import React from 'react'
-import { WidgetLayout, WidgetTitle } from '../util'
+import { WidgetLayout } from '../util'
 import { Table } from 'antd'
 import type { ColumnsType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
@@ -51,7 +51,7 @@ const mockPoolData: PoolData[] = [
 
 const columns: ColumnsType<PoolData> = [
   {
-    title: 'Name',
+    title: 'Pool Name',
     dataIndex: 'name',
     key: 'name',
     render: (text, record) => <Link to={`/pool?pool=${record.id}`}>{text}</Link>,
@@ -72,11 +72,9 @@ const columns: ColumnsType<PoolData> = [
 export const PoolsList: React.FC<PoolsListProps> = (props) => {
   const { className } = props
 
-  const title = 'Pools'
-
   return (
     <div className={className}>
-      <WidgetLayout className='h-full' header={title && <WidgetTitle title={title} />}>
+      <WidgetLayout className='h-full'>
         <Table columns={columns} dataSource={mockPoolData} rowKey={({ id }) => id} />
       </WidgetLayout>
     </div>

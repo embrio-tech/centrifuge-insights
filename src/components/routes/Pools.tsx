@@ -11,7 +11,7 @@ const Pools: React.FC = () => {
     name: 'Pools',
     sections: [
       {
-        name: 'Available Pools',
+        name: 'Pools',
         widgets: [
           {
             name: 'PoolsList',
