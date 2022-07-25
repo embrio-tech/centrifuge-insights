@@ -21,7 +21,7 @@ export const useQuery = (): Query => {
 
   const params = useMemo(() => parse(searchParams.toString()) || {}, [searchParams])
 
-   /**
+  /**
    * set query params in qs notation
    *
    * @prop {type} name - description
@@ -40,5 +40,7 @@ export const useQuery = (): Query => {
     [setSearchParams, params]
   )
 
-  return [params, setParams]
+  const query = useMemo<Query>(() => [params, setParams], [params, setParams])
+
+  return query
 }

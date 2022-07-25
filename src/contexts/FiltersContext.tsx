@@ -34,6 +34,9 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
   // STATE
   // ---------------------------------------
 
+  // stores readiness of context
+  const [contextReady, setContextReady] = useState<boolean>(false)
+
   // stores selections of filters
   const [selections, setSelections] = useState<{ [id: string]: Selection }>({})
 
@@ -53,11 +56,13 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
    */
   const setSelection = useCallback(
     (id: string, selection: Selection) => {
-      const newParams: ParsedQs = { ...params, [id]: selection.length === 1 ? selection[0] : selection }
-      setParams(newParams)
-      setSelections((oldSelections) => ({ ...oldSelections, [id]: selection }))
+      if (contextReady) {
+        const newParams: ParsedQs = { ...params, [id]: selection.length === 1 ? selection[0] : selection }
+        setParams(newParams)
+        setSelections((oldSelections) => ({ ...oldSelections, [id]: selection }))
+      }
     },
-    [params, setParams]
+    [params, setParams, contextReady]
   )
 
   /**
@@ -67,17 +72,24 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
    * @prop {boolean}  ready     - flag to indicate readyness of filter
    */
   const setFilterStatus = useCallback((id: string, ready: boolean) => {
-    setFiltersStatus((oldFiltersStatus) => {
-      const newFiltersStatus = [...oldFiltersStatus]
-      const index = oldFiltersStatus.findIndex(({ id: listId }) => listId === id)
-      if (index === -1) throw new Error(`No status entry found for filter "${id}"!`)
-      newFiltersStatus.splice(index, 1, { id, ready })
-      return newFiltersStatus
-    })
-  }, [])
+    if (contextReady) {
+      setFiltersStatus((oldFiltersStatus) => {
+        const newFiltersStatus = [...oldFiltersStatus]
+        const index = oldFiltersStatus.findIndex(({ id: listId }) => listId === id)
+        if (index === -1) throw new Error(`No status entry found for filter "${id}"!`)
+        newFiltersStatus.splice(index, 1, { id, ready })
+        return newFiltersStatus
+      })
+    }
+  }, [contextReady])
 
   // EFFECTS
   // ---------------------------------------
+
+  // effect to initialize context
+  useEffect(() => {
+    setContextReady(true)
+  }, [])
 
   // effect to initialize filter status of all filters if filters list change
   useEffect(() => {
