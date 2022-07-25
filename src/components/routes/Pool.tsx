@@ -34,7 +34,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
-            name: 'LoanVolume',
+            name: 'AssetVolume',
             coordinates: [
               { breakpoint: 'xs', w: 1, h: 1, x: 0, y: 2 },
               { breakpoint: 'sm', w: 2, h: 1, x: 2, y: 1 },
