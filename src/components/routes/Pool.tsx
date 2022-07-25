@@ -79,6 +79,16 @@ const Pool: React.FC = () => {
               { breakpoint: 'xl', w: 6, h: 3, x: 0, y: 3 },
             ],
           },
+          {
+            name: 'TradingVolume',
+            coordinates: [
+              { breakpoint: 'xs', w: 2, h: 2, x: 0, y: 9 },
+              { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 6 },
+              { breakpoint: 'md', w: 6, h: 2, x: 0, y: 6 },
+              { breakpoint: 'lg', w: 5, h: 3, x: 5, y: 3 },
+              { breakpoint: 'xl', w: 6, h: 3, x: 6, y: 3 },
+            ],
+          },
         ],
       },
     ],
