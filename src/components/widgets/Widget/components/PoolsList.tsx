@@ -1,10 +1,11 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import { gql } from '@apollo/client'
-import { WidgetLayout } from '../util'
-import { Table } from 'antd'
-import type { ColumnsType } from 'antd/es/table'
+import { WidgetLayout, WidgetTable } from '../util'
+import type { ColumnsType, TableData } from '../util'
+import type { PaginationProps } from 'antd'
+// import type { ColumnsType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
-import { useFiles, useGraphQL, usePoolsMetadata } from '../../../../hooks'
+import { useDebounce, useFiles, useGraphQL, usePoolsMetadata, useSize } from '../../../../hooks'
 import type { FileMetaInterface } from '../../../../hooks'
 import { Nodes } from '../../../../types'
 import { abbreviatedNumber, wad } from '../../../../util'
@@ -28,7 +29,7 @@ interface ApiData {
   pools: Nodes<Pool>
 }
 
-interface PoolData {
+interface PoolData extends TableData {
   name: string
   id: string
   icon?: string
@@ -46,7 +47,7 @@ const columns: ColumnsType<PoolData> = [
         <div className='grow-0 shrink-0 w-6'>
           <img src={icon} alt={`icon ${value}`} />
         </div>
-        <div className='grow pl-2'>
+        <div className='grow pl-2 shrink truncate'>
           <Link to={`/pool?pool=${id}`}>{value}</Link>
         </div>
       </div>
@@ -55,7 +56,6 @@ const columns: ColumnsType<PoolData> = [
   {
     title: 'Asset Class',
     dataIndex: 'assetClass',
-    responsive: ['sm'],
     key: 'assetClass',
   },
   {
@@ -69,10 +69,17 @@ const columns: ColumnsType<PoolData> = [
 
 export const PoolsList: React.FC<PoolsListProps> = (props) => {
   const { className } = props
+  const ref = useRef(null)
+  const { height } = useSize(ref)
+  const debouncedHeight = useDebounce(height)
+  const [current, setCurrent] = useState<number>(1)
+  const pageSize = useMemo(() => Math.floor(Math.max(debouncedHeight - 40 - 48, 0) / 48), [debouncedHeight])
 
+  // fetch api data
   const query = gql`
-    query getPools {
-      pools(first: 100) {
+    query getPools($first: Int!, $offset: Int!) {
+      pools(first: $first, offset: $offset) {
+        totalCount
         nodes {
           id
           metadata
@@ -85,7 +92,32 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
     }
   `
 
-  const { loading: apiLoading, data } = useGraphQL<ApiData>(query)
+  const variables = useMemo(
+    () => ({
+      first: pageSize,
+      offset: (current - 1) * pageSize,
+    }),
+    [pageSize, current]
+  )
+
+  const skip = useMemo<boolean>(() => !pageSize, [pageSize])
+
+  const { loading: apiLoading, data } = useGraphQL<ApiData>(query, { skip, variables })
+
+  // pagination
+  const pagination = useMemo<PaginationProps>(
+    () => ({
+      hideOnSinglePage: true,
+      current,
+      pageSize,
+      total: data?.pools?.totalCount,
+      size: 'small',
+      onChange: (page: number) => {
+        setCurrent(page || 1)
+      },
+    }),
+    [pageSize, data, current]
+  )
 
   // fetch metadata
   const metadataPaths = useMemo(
@@ -113,6 +145,7 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
     [data, poolsMetadata, iconsUrls]
   )
 
+  // global loading
   const loading = useMemo(
     () => apiLoading || metadataLoading || iconsLoading,
     [apiLoading, metadataLoading, iconsLoading]
@@ -121,7 +154,9 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
   return (
     <div className={className}>
       <WidgetLayout className='h-full' loading={loading}>
-        <Table columns={columns} dataSource={poolsData} rowKey={({ id }) => id} />
+        <div ref={ref} className='h-full'>
+          <WidgetTable dataSource={poolsData} columns={columns} rowKey={({ id }) => id} pagination={pagination} />
+        </div>
       </WidgetLayout>
     </div>
   )
