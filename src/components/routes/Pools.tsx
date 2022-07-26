@@ -11,16 +11,16 @@ const Pools: React.FC = () => {
     name: 'Pools',
     sections: [
       {
-        name: 'Available Pools',
+        name: 'Pools',
         widgets: [
           {
-            name: 'DemoB',
+            name: 'PoolsList',
             coordinates: [
-              { breakpoint: 'xs', w: 2, h: 1, x: 0, y: 0 },
-              { breakpoint: 'sm', w: 2, h: 2, x: 0, y: 0 },
-              { breakpoint: 'md', w: 2, h: 1, x: 0, y: 0 },
-              { breakpoint: 'lg', w: 4, h: 2, x: 0, y: 0 },
-              { breakpoint: 'xl', w: 3, h: 1, x: 0, y: 0 },
+              { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 0 },
+              { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 0 },
+              { breakpoint: 'md', w: 6, h: 2, x: 0, y: 0 },
+              { breakpoint: 'lg', w: 10, h: 3, x: 0, y: 0 },
+              { breakpoint: 'xl', w: 12, h: 3, x: 0, y: 0 },
             ],
           },
         ],

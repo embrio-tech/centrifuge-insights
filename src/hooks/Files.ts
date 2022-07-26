@@ -6,7 +6,7 @@ interface FilesUrls {
   [path: string]: string
 }
 
-interface FileMetaInterface {
+export interface FileMetaInterface {
   path: string // ipfs path
   mime: string // mime type
 }
