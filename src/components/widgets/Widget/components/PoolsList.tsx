@@ -45,11 +45,9 @@ const columns: ColumnsType<PoolData> = [
     render: (value, { icon, id }) => (
       <div className='flex items-center'>
         <div className='grow-0 shrink-0 w-6'>
-          <img src={icon} alt={`icon ${value}`} />
+          <img src={icon} alt={`icon ${value || id}`} />
         </div>
-        <div className='grow pl-2 shrink truncate'>
-          <Link to={`/pool?pool=${id}`}>{value}</Link>
-        </div>
+        <div className='grow pl-2 shrink truncate'>{value && <Link to={`/pool?pool=${id}`}>{value}</Link>}</div>
       </div>
     ),
   },
@@ -128,20 +126,30 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
 
   // fetch icons
   const iconsFiles = useMemo<FileMetaInterface[]>(
-    () => Object.values(poolsMetadata).map(({ pool: { icon } }) => ({ path: icon, mime: 'image/svg+xml' })),
+    () =>
+      Object.values(poolsMetadata).map(({ pool: { icon } }) => {
+        if (typeof icon === 'string') return { path: icon, mime: 'image/svg+xml' }
+        return { path: icon.uri, mime: 'image/svg+xml' }
+      }),
     [poolsMetadata]
   )
   const { filesUrls: iconsUrls, loading: iconsLoading } = useFiles(iconsFiles)
 
   const poolsData = useMemo<PoolData[]>(
     () =>
-      (data?.pools?.nodes || []).map(({ id, metadata, state: { netAssetValue, totalReserve } }) => ({
-        id,
-        name: poolsMetadata[metadata]?.pool.name || '',
-        icon: poolsMetadata[metadata]?.pool.icon ? iconsUrls[poolsMetadata[metadata].pool.icon] : undefined,
-        assetClass: poolsMetadata[metadata]?.pool.asset.class,
-        poolValue: wad(netAssetValue) + wad(totalReserve),
-      })),
+      (data?.pools?.nodes || []).map(({ id, metadata, state: { netAssetValue, totalReserve } }) => {
+        const iconUri: string | undefined =
+          typeof poolsMetadata[metadata]?.pool?.icon === 'string'
+            ? (poolsMetadata[metadata].pool.icon as string)
+            : (poolsMetadata[metadata]?.pool.icon as { uri: string })?.uri
+        return {
+          id,
+          name: poolsMetadata[metadata]?.pool.name || '',
+          icon: iconUri ? iconsUrls[iconUri] : undefined,
+          assetClass: poolsMetadata[metadata]?.pool.asset.class,
+          poolValue: wad(netAssetValue) + wad(totalReserve),
+        }
+      }),
     [data, poolsMetadata, iconsUrls]
   )
 

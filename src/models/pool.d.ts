@@ -23,7 +23,7 @@ interface RiskGroupMetadata {
 export interface PoolMetadata {
   pool: {
     name: string
-    icon: string
+    icon: string | { uri: string; ipfsHash: string }
     asset: { class: string }
     issuer: {
       name: string
