@@ -1,26 +1,26 @@
 import { Tooltip } from 'antd'
-import React from 'react'
+import React, { ReactNode } from 'react'
 // import './WidgetKPIs.less'
 
 export interface WidgetKPI {
   label: string
-  value?: number | string
+  value?: ReactNode
   prefix?: string
   suffix?: string
 }
 
 interface WidgetKPIsProps {
   kpis: WidgetKPI[]
-  title?: string
+  title?: string | null
   className?: string
 }
 
 export const WidgetKPIs: React.FC<WidgetKPIsProps> = (props) => {
-  const { className, kpis, title } = props
+  const { className, kpis, title = 'KPIs' } = props
 
   return (
     <div className={className}>
-      <h4 className='text-sm'>{title || 'KPIs'}</h4>
+      {title && <h4 className='text-sm'>{title}</h4>}
       <ul className='text-xs mb-0'>
         {kpis.map(({ label, value, prefix, suffix }, index) => (
           <li key={index} className='flex h-5 mb-1'>

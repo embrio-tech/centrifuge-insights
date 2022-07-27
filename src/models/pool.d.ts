@@ -32,11 +32,11 @@ export interface PoolMetadata {
       logo: string
     }
     links: {
-      executiveSummary: string
-      forum: string
-      website: string
+      executiveSummary?: string
+      forum?: string
+      website?: string
     }
-    status: 'open' | 'close' // TODO: complete list of possible status
+    status: 'open' | 'closed' // TODO: complete list of possible status
   }
   tranches: TranchesMetadata
   riskGroups: RiskGroupMetadata[]
