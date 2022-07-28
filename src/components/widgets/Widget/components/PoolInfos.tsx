@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 import { PoolStatus } from '../../../util'
 import { WidgetKPIs, WidgetLayout, WidgetTitle } from '../util'
+import type { WidgetKPI } from '../util'
 import { FilePdfTwoTone, MessageTwoTone } from '@ant-design/icons'
 import { usePool } from '../../../../contexts'
-import { environment } from '../../../../config'
-
-const { IPFS_PROXY_URL } = environment
+import { getIpfsHash } from '../../../../util'
+import { useFiles } from '../../../../hooks'
 
 // import './PoolInfos.less'
 
@@ -15,23 +15,22 @@ interface PoolInfosProps {
 
 export const PoolInfos: React.FC<PoolInfosProps> = (props) => {
   const { className } = props
-  const { poolMetadata, loading } = usePool()
+  const { poolMetadata, loading: poolLoading } = usePool()
 
-  const kpis = useMemo(() => {
+  const pdfHash = useMemo(() => getIpfsHash(poolMetadata?.pool.links.executiveSummary), [poolMetadata])
+  const hashes = useMemo<string[]>(() => (pdfHash ? [pdfHash] : []), [pdfHash])
+  const { filesUrls: pdfUrls, loading: pdfLoading } = useFiles(hashes)
+
+  const kpis = useMemo<WidgetKPI[]>(() => {
     if (!poolMetadata) return []
     const {
       pool: { asset, links, status },
     } = poolMetadata
 
-    const executiveSummaryParts = links.executiveSummary?.split('/') || []
-    const executiveSummaryUri = executiveSummaryParts.length
-      ? `${IPFS_PROXY_URL}${executiveSummaryParts[executiveSummaryParts.length - 1]}`
-      : undefined
-
     return [
       {
         label: 'Asset Class',
-        value: <span className='font-medium'>{asset.class}</span>,
+        value: <span className='font-medium truncate'>{asset.class}</span>,
       },
       {
         label: '',
@@ -43,38 +42,50 @@ export const PoolInfos: React.FC<PoolInfosProps> = (props) => {
       {
         label: '',
       },
-      {
-        label: links.website ? 'Website' : '',
-        value: links.website && (
-          <a className='font-medium truncate' href={links.website} target='_blank' rel='noreferrer'>
-            {links.website.replace('https://', '').replace('http://', '').split('/')[0]}
-          </a>
-        ),
-      },
-      {
-        label: '',
-      },
-      {
-        label: executiveSummaryUri ? 'Executive Summary' : '',
-        value: executiveSummaryUri && (
-          <a href={executiveSummaryUri} target='_blank' rel='noreferrer'>
-            <FilePdfTwoTone className='text-xl leading-0' />
-          </a>
-        ),
-      },
-      {
-        label: '',
-      },
-      {
-        label: links.forum ? 'Forum' : '',
-        value: links.forum && (
-          <a href={links.forum} target='_blank' rel='noreferrer'>
-            <MessageTwoTone className='text-xl leading-0' />
-          </a>
-        ),
-      },
-    ]
-  }, [poolMetadata])
+      links.website
+        ? {
+            label: links.website ? 'Website' : '',
+            value: links.website && (
+              <a className='font-medium truncate' href={links.website} target='_blank' rel='noreferrer'>
+                {links.website.replace('https://', '').replace('http://', '').split('/')[0]}
+              </a>
+            ),
+          }
+        : undefined,
+      links.website
+        ? {
+            label: '',
+          }
+        : undefined,
+      pdfHash
+        ? {
+            label: pdfHash ? 'Executive Summary' : '',
+            value: pdfHash && (
+              <a href={pdfHash ? pdfUrls[pdfHash] : undefined} target='_blank' rel='noreferrer'>
+                <FilePdfTwoTone className='text-xl leading-0' />
+              </a>
+            ),
+          }
+        : undefined,
+      pdfHash
+        ? {
+            label: '',
+          }
+        : undefined,
+      links.forum
+        ? {
+            label: links.forum ? 'Forum' : '',
+            value: links.forum && (
+              <a href={links.forum} target='_blank' rel='noreferrer'>
+                <MessageTwoTone className='text-xl leading-0' />
+              </a>
+            ),
+          }
+        : undefined,
+    ].filter((item) => !!item) as WidgetKPI[]
+  }, [poolMetadata, pdfHash, pdfUrls])
+
+  const loading = useMemo<boolean>(() => pdfLoading || poolLoading, [pdfLoading, poolLoading])
 
   return (
     <div className={className}>

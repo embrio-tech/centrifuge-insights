@@ -43,6 +43,16 @@ const Pool: React.FC = () => {
               { breakpoint: 'xl', w: 2, h: 1, x: 3, y: 0 },
             ],
           },
+          {
+            name: 'PoolIssuer',
+            coordinates: [
+              { breakpoint: 'xs', w: 2, h: 1, x: 0, y: 4 },
+              { breakpoint: 'sm', w: 2, h: 1, x: 2, y: 2 },
+              { breakpoint: 'md', w: 2, h: 2, x: 4, y: 0 },
+              { breakpoint: 'lg', w: 4, h: 1, x: 0, y: 1 },
+              { breakpoint: 'xl', w: 5, h: 1, x: 0, y: 1 },
+            ],
+          },
         ],
       },
       {

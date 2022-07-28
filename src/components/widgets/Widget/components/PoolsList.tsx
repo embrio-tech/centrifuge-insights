@@ -6,9 +6,8 @@ import type { PaginationProps } from 'antd'
 // import type { ColumnsType } from 'antd/es/table'
 import { Link } from 'react-router-dom'
 import { useDebounce, useFiles, useGraphQL, usePoolsMetadata, useSize } from '../../../../hooks'
-import type { FileMetaInterface } from '../../../../hooks'
 import { Nodes } from '../../../../types'
-import { abbreviatedNumber, wad } from '../../../../util'
+import { abbreviatedNumber, getIpfsHash, wad } from '../../../../util'
 
 // import './PoolsList.less'
 
@@ -125,27 +124,25 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
   const { poolsMetadata, loading: metadataLoading } = usePoolsMetadata(metadataPaths)
 
   // fetch icons
-  const iconsFiles = useMemo<FileMetaInterface[]>(
+  const iconsHashes = useMemo<string[]>(
     () =>
       Object.values(poolsMetadata).map(({ pool: { icon } }) => {
-        if (typeof icon === 'string') return { path: icon, mime: 'image/svg+xml' }
-        return { path: icon.uri, mime: 'image/svg+xml' }
+        const ipfsHash = getIpfsHash(icon)
+        if (!ipfsHash) throw new Error('Pool icon ipfs hash is undefined!')
+        return ipfsHash
       }),
     [poolsMetadata]
   )
-  const { filesUrls: iconsUrls, loading: iconsLoading } = useFiles(iconsFiles)
+  const { filesUrls: iconsUrls, loading: iconsLoading } = useFiles(iconsHashes)
 
   const poolsData = useMemo<PoolData[]>(
     () =>
       (data?.pools?.nodes || []).map(({ id, metadata, state: { netAssetValue, totalReserve } }) => {
-        const iconUri: string | undefined =
-          typeof poolsMetadata[metadata]?.pool?.icon === 'string'
-            ? (poolsMetadata[metadata].pool.icon as string)
-            : (poolsMetadata[metadata]?.pool.icon as { uri: string })?.uri
+        const iconHash = getIpfsHash(poolsMetadata[metadata]?.pool.icon)
         return {
           id,
           name: poolsMetadata[metadata]?.pool.name || '',
-          icon: iconUri ? iconsUrls[iconUri] : undefined,
+          icon: iconHash ? iconsUrls[iconHash] : undefined,
           assetClass: poolsMetadata[metadata]?.pool.asset.class,
           poolValue: wad(netAssetValue) + wad(totalReserve),
         }

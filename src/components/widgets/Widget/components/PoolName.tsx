@@ -2,9 +2,9 @@ import { Tooltip } from 'antd'
 import React, { useMemo } from 'react'
 import { usePool } from '../../../../contexts'
 import { useFiles } from '../../../../hooks'
-import type { FileMetaInterface } from '../../../../hooks'
 import { WidgetLayout } from '../util'
 import './PoolName.less'
+import { getIpfsHash } from '../../../../util'
 
 interface PoolNameProps {
   className?: string
@@ -14,17 +14,13 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
   const { className } = props
   const { poolMetadata, loading: poolLoading } = usePool()
 
-  const iconUri = useMemo<string | undefined>(() => {
-    if (!poolMetadata?.pool?.icon) return undefined
-    if (typeof poolMetadata.pool.icon === 'string') return poolMetadata.pool.icon
-    return poolMetadata.pool.icon.uri
-  }, [poolMetadata])
+  const iconHash = useMemo<string | undefined>(() => getIpfsHash(poolMetadata?.pool.icon), [poolMetadata])
 
-  const iconFiles = useMemo<FileMetaInterface[]>(
-    () => (iconUri ? [{ path: iconUri, mime: 'image/svg+xml' }] : []),
-    [iconUri]
+  const iconHashes = useMemo<string[]>(
+    () => (iconHash ? [iconHash] : []),
+    [iconHash]
   )
-  const { filesUrls: iconUrls, loading: iconLoading } = useFiles(iconFiles)
+  const { filesUrls: iconUrls, loading: iconLoading } = useFiles(iconHashes)
 
   return (
     <WidgetLayout
@@ -40,7 +36,7 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
     >
       {poolMetadata?.pool.icon ? (
         <div className='pool-name-icon'>
-          <img className='h-full mx-auto' src={iconUri && iconUrls[iconUri]} alt={`icon ${poolMetadata.pool.name}`} />
+          <img className='h-full mx-auto' src={iconHash && iconUrls[iconHash]} alt={`icon ${poolMetadata.pool.name}`} />
         </div>
       ) : null}
     </WidgetLayout>

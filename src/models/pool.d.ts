@@ -1,3 +1,5 @@
+import type { IpfsFile } from '../types/ipfs'
+
 export interface Pool {
   id: string
   metadata: string
@@ -23,16 +25,16 @@ interface RiskGroupMetadata {
 export interface PoolMetadata {
   pool: {
     name: string
-    icon: string | { uri: string; ipfsHash: string }
+    icon: string | IpfsFile
     asset: { class: string }
     issuer: {
       name: string
       description: string
       email: string
-      logo: string
+      logo: string | IpfsFile
     }
     links: {
-      executiveSummary?: string
+      executiveSummary?: string | IpfsFile
       forum?: string
       website?: string
     }
