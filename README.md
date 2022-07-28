@@ -15,7 +15,8 @@ A single-page application to visualize data and activities on the Centrifuge Par
 
 Access staging of [`main`](https://github.com/embrio-tech/centrifuge-insights) branch at [https://insights.s.centrifuge.embrio.tech/](https://insights.s.centrifuge.embrio.tech/).
 
-[![Screen Shot 2022-07-27 at 14 16 14](https://user-images.githubusercontent.com/16650977/181244663-4035abc9-1cfb-4bc9-b861-665e5c9b82af.png)](https://insights.s.centrifuge.embrio.tech/)
+[![Screen Shot 2022-07-28 at 11 50 10](https://user-images.githubusercontent.com/16650977/181477369-6a563446-7e8b-45c4-a837-6ace275d28f5.png)](https://insights.s.centrifuge.embrio.tech/)
+
 
 ## :construction_worker_man: Development
 
