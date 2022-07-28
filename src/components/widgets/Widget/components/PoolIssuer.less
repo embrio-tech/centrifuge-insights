@@ -1,0 +1,51 @@
+.pool-issuer {
+  @apply h-full flex;
+  @apply text-xs font-light;
+
+  .name {
+    @apply flex h-full;
+
+    .logo-container {
+      // @apply p-2 pl-0;
+
+      .logo {
+        @apply h-full mx-auto;
+      }
+    }
+
+    .text-container {
+      @apply grow;
+      @apply flex flex-col;
+
+      .text {
+        @apply h-auto;
+        @apply text-ellipsis overflow-hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+
+        @apply font-medium text-sm;
+      }
+      
+    }
+  }
+
+  .description {
+    @apply flex flex-col h-full;
+
+    .text-container {
+      @apply h-0 grow shrink;
+      // @apply truncate;
+
+      .text {
+        @apply h-auto;
+        @apply text-ellipsis overflow-hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+      }
+    }
+
+    .contact {
+      @apply font-normal;
+    }
+  }
+}
