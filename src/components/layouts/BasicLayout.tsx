@@ -2,7 +2,7 @@ import { Button, Layout } from 'antd'
 import { CloseOutlined, MenuOutlined } from '@ant-design/icons'
 import React, { useState, useEffect, ReactNode, PropsWithChildren } from 'react'
 import { useBreakpoints } from '../../hooks'
-import { HeaderNavigation } from '../navigation'
+import { HeaderNavigation, SiderNavigation } from '../navigation'
 import './BasicLayout.less'
 
 const { Header, Content, Footer, Sider } = Layout
@@ -69,9 +69,7 @@ const BasicLayout: React.FC<PropsWithChildren<BasicLayoutProps>> = (props) => {
           <div className='sider-container'>
             <div id='sider-content'>{sider}</div>
             <div id='navigation'>
-              <div className='p-6'>
-                {/* <p>TODO: Navigation here...</p> */}
-              </div>
+              <SiderNavigation />
             </div>
           </div>
         </Sider>

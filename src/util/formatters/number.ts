@@ -5,7 +5,11 @@ const SI_SYMBOLS: { [k: number]: string } = {
   12: 'T',
 }
 
-export const abbreviatedNumber = (value: string | number | bigint, options: { precision?: number } = {}): string => {
+export const abbreviatedNumber = (
+  value: string | number | bigint | undefined,
+  options: { precision?: number } = {}
+): string => {
+  if (value === undefined) return '\u00a0'
   const { precision = 3 } = options
   const _value = Number(value)
   if (isNaN(_value)) return '–\u00a0'

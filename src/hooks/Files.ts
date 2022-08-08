@@ -3,12 +3,7 @@ import { ipfsClient } from '../clients'
 import { useError } from '../contexts'
 
 interface FilesUrls {
-  [path: string]: string
-}
-
-interface FileMetaInterface {
-  path: string // ipfs path
-  mime: string // mime type
+  [hash: string]: string
 }
 
 interface FilesInterface {
@@ -17,13 +12,13 @@ interface FilesInterface {
 }
 
 /**
- * hook to fetch files from ipfs
+ * hook to fetch files from ipfs by ipfs hash
  *
- * @prop {FileMetaInterface[]} files - list of files `{ path: string; mime: string }[]`
+ * @prop {string[]} hashes - list of file hashes `string[]`
  *
  * @returns {FilesInterface} object containing `filesUrls` and `loading` indicator
  */
-export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
+export const useFiles = (hashes: string[]): FilesInterface => {
   const { setError } = useError()
 
   const [filesUrls, setFilesUrls] = useState<FilesUrls>({})
@@ -36,19 +31,20 @@ export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
       setLoading(true)
 
       await Promise.all(
-        files.map(async ({ path, mime }): Promise<void> => {
-          const headers = { Accept: mime }
+        hashes.map(async (hash): Promise<void> => {
+          if (!hash) throw new Error('File hash undefined!')
+          const headers = { Accept: '*/*' }
           const controller = new AbortController()
           abortControllers.push(controller)
-          const { data: file } = await ipfsClient.get<Blob>(path, {
+          const { data: file, headers: responseHeaders } = await ipfsClient.get<Blob>(hash, {
             signal: controller.signal,
             headers,
             responseType: 'blob',
           })
-          const blob = new Blob([file], { type: mime })
+          const blob = new Blob([file], { type: responseHeaders['content-type'] })
           const url = URL.createObjectURL(blob)
           urls.push(url)
-          setFilesUrls((oldFilesUrls) => ({ ...oldFilesUrls, [path]: url }))
+          setFilesUrls((oldFilesUrls) => ({ ...oldFilesUrls, [hash]: url }))
         })
       )
     }
@@ -71,7 +67,7 @@ export const useFiles = (files: FileMetaInterface[]): FilesInterface => {
       })
       setFilesUrls({})
     }
-  }, [setError, files])
+  }, [setError, hashes])
 
   return { loading, filesUrls }
 }

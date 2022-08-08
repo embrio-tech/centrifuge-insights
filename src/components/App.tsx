@@ -1,7 +1,7 @@
 import React from 'react'
 import './App.less'
 import { BrowserRouter as Router, Navigate, Route, Routes } from 'react-router-dom'
-import { Pool } from './routes'
+import { Pool, Pools } from './routes'
 import { Spin } from 'antd'
 import { LoadingOutlined } from '@ant-design/icons'
 import { ErrorContextProvider, TenantContextProvider, GraphQLContextProvider } from '../contexts'
@@ -16,8 +16,9 @@ function App() {
         <TenantContextProvider>
           <GraphQLContextProvider>
             <Routes>
-              <Route path='/' element={<Navigate to={'/pool'} />} />
+              <Route path='/' element={<Navigate to={'/pools'} />} />
               <Route path='/pool' element={<Pool />} />
+              <Route path='/pools' element={<Pools />} />
               <Route path='*' element={<Navigate to={'/'} />} />
             </Routes>
           </GraphQLContextProvider>

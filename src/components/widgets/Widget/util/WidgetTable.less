@@ -1,0 +1,29 @@
+.widget-table {
+  @apply flex;
+
+  .column {
+    @apply min-w-0 grow;
+    @apply divide-y border-b;
+
+    &.right {
+      @apply text-right;
+    }
+
+    &.center {
+      @apply text-center;
+    }
+
+    &.left {
+      @apply text-left;
+    }
+
+    .row {
+      @apply h-12 leading-12 px-3;
+      @apply truncate;
+
+      &.header {
+        @apply bg-neutral-50 font-medium;
+      }
+    }
+  }
+}

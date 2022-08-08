@@ -4,6 +4,7 @@ import { usePool } from '../../../../contexts'
 import { useFiles } from '../../../../hooks'
 import { WidgetLayout } from '../util'
 import './PoolName.less'
+import { getIpfsHash } from '../../../../util'
 
 interface PoolNameProps {
   className?: string
@@ -13,11 +14,13 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
   const { className } = props
   const { poolMetadata, loading: poolLoading } = usePool()
 
-  const iconFiles = useMemo(
-    () => (poolMetadata?.pool.icon ? [{ path: poolMetadata.pool.icon, mime: 'image/svg+xml' }] : []),
-    [poolMetadata]
+  const iconHash = useMemo<string | undefined>(() => getIpfsHash(poolMetadata?.pool.icon), [poolMetadata])
+
+  const iconHashes = useMemo<string[]>(
+    () => (iconHash ? [iconHash] : []),
+    [iconHash]
   )
-  const { filesUrls: iconUrls, loading: iconLoading } = useFiles(iconFiles)
+  const { filesUrls: iconUrls, loading: iconLoading } = useFiles(iconHashes)
 
   return (
     <WidgetLayout
@@ -33,11 +36,7 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
     >
       {poolMetadata?.pool.icon ? (
         <div className='pool-name-icon'>
-          <img
-            className='h-full mx-auto'
-            src={iconUrls[poolMetadata.pool.icon]}
-            alt={`icon ${poolMetadata.pool.name}`}
-          />
+          <img className='h-full mx-auto' src={iconHash && iconUrls[iconHash]} alt={`icon ${poolMetadata.pool.name}`} />
         </div>
       ) : null}
     </WidgetLayout>

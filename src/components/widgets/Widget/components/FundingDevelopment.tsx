@@ -19,8 +19,8 @@ interface TrancheSnapshot {
   id: string
   timestamp: string
   trancheId: string
-  outstandingInvestOrders_: string
-  outstandingRedeemOrders_: string
+  fulfilledInvestOrders_: string
+  fulfilledRedeemOrders_: string
 }
 
 interface PoolSnapshot {
@@ -69,8 +69,8 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
           id
           trancheId
           timestamp
-          outstandingInvestOrders_
-          outstandingRedeemOrders_
+          fulfilledInvestOrders_
+          fulfilledRedeemOrders_
         }
       }
       poolSnapshots(
@@ -112,18 +112,18 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
 
   const flowsData = useMemo<FlowData[]>(() => {
     const inflows: FlowData[] =
-      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { outstandingInvestOrders_, timestamp }) => {
+      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { fulfilledInvestOrders_, timestamp }) => {
         const lastIndex = flowsData.length - 1
         const snapshotTimestamp = new Date(timestamp)
         if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
           flowsData.splice(lastIndex, 1, {
             ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value + wad(outstandingInvestOrders_),
+            value: flowsData[lastIndex].value + wad(fulfilledInvestOrders_),
           })
         } else {
           flowsData.push({
             timestamp: snapshotTimestamp,
-            value: wad(outstandingInvestOrders_),
+            value: wad(fulfilledInvestOrders_),
             flow: 'Inflow',
           })
         }
@@ -131,18 +131,18 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       }, []) || []
 
     const outflows: FlowData[] =
-      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { outstandingRedeemOrders_, timestamp }) => {
+      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { fulfilledRedeemOrders_, timestamp }) => {
         const lastIndex = flowsData.length - 1
         const snapshotTimestamp = new Date(timestamp)
         if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
           flowsData.splice(lastIndex, 1, {
             ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value - wad(outstandingRedeemOrders_),
+            value: flowsData[lastIndex].value - wad(fulfilledRedeemOrders_),
           })
         } else {
           flowsData.push({
             timestamp: snapshotTimestamp,
-            value: -wad(outstandingRedeemOrders_),
+            value: -wad(fulfilledRedeemOrders_),
             flow: 'Outflow',
           })
         }
@@ -155,18 +155,18 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
   const netFlowsData = useMemo<NetFlowData[]>(
     () =>
       data?.trancheSnapshots?.nodes?.reduce(
-        (flowsData: NetFlowData[], { outstandingRedeemOrders_, outstandingInvestOrders_, timestamp }) => {
+        (flowsData: NetFlowData[], { fulfilledRedeemOrders_, fulfilledInvestOrders_, timestamp }) => {
           const lastIndex = flowsData.length - 1
           const snapshotTimestamp = new Date(timestamp)
           if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
             flowsData.splice(lastIndex, 1, {
               ...flowsData[lastIndex],
-              value: flowsData[lastIndex].value + wad(outstandingInvestOrders_) - wad(outstandingRedeemOrders_),
+              value: flowsData[lastIndex].value + wad(fulfilledInvestOrders_) - wad(fulfilledRedeemOrders_),
             })
           } else {
             flowsData.push({
               timestamp: snapshotTimestamp,
-              value: wad(outstandingInvestOrders_) - wad(outstandingRedeemOrders_),
+              value: wad(fulfilledInvestOrders_) - wad(fulfilledRedeemOrders_),
               netFlow: 'Net in-/outflow',
             })
           }

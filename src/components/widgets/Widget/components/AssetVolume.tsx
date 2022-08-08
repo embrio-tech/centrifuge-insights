@@ -5,9 +5,9 @@ import { FigureLayout } from '../layouts'
 import { useGraphQL } from '../../../../hooks'
 import { useFilters } from '../../../../contexts'
 
-// import './LoanVolume.less'
+// import './AssetVolume.less'
 
-interface LoanVolumeProps {
+interface AssetVolumeProps {
   className?: string
 }
 
@@ -23,12 +23,12 @@ interface ApiData {
   }
 }
 
-export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
+export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
 
   const query = gql`
-    query getPoolLoanVolume($poolId: String!, $to: Datetime!) {
+    query getPoolAssetVolume($poolId: String!, $to: Datetime!) {
       poolSnapshots(
         first: 1
         orderBy: TIMESTAMP_DESC
@@ -71,5 +71,5 @@ export const LoanVolume: React.FC<LoanVolumeProps> = (props) => {
     return abbreviatedNumber(wad(poolSnapshots[0].totalEverBorrowed))
   }, [data])
 
-  return <FigureLayout className={className} value={value} name='Loan Volume' loading={loading} color={'#fcbb59'} />
+  return <FigureLayout className={className} value={value} name='Asset Volume' loading={loading} color={'#fcbb59'} />
 }
