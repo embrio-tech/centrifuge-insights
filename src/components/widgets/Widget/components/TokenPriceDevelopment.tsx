@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { useFilters, usePool } from '../../../../contexts'
 import { useGraphQL } from '../../../../hooks'
 import { Nodes } from '../../../../types'
-import { abbreviatedNumber, syncAxes, textDate, ray } from '../../../../util'
+import { abbreviatedNumber, textDate, ray, fitAxis } from '../../../../util'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
@@ -88,10 +88,13 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
   )
 
   const chartConfig = useMemo<MixConfig>(() => {
-    const { primaryAxisMin, primaryAxisMax } = syncAxes(
-      priceData.map(({ value }) => value),
-      [0, 1] // TODO: replace with real vals
-    )
+    // TODO: uncomment for secondary axis
+    // const { primaryAxisMin, primaryAxisMax } = syncAxes(
+    //   priceData.map(({ value }) => value),
+    //   [0, 1] // TODO: replace with real vals
+    // )
+
+    const { axisMin, axisMax } = fitAxis(priceData.map(({ value }) => value))
 
     const meta: Record<string, Meta> = {
       timestamp: {
@@ -101,8 +104,8 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
       value: {
         type: 'linear',
         formatter: (v: number) => abbreviatedNumber(v),
-        max: primaryAxisMax,
-        min: primaryAxisMin,
+        max: axisMax,
+        min: axisMin,
         tickCount: 6,
         maxTickCount: 6,
       },
