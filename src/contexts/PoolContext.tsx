@@ -24,7 +24,7 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
   const { selections, filtersReady } = useFilters()
 
   const query = gql`
-    query getPoolMetadata($poolId: String!) {
+    query GetPoolMetadata($poolId: String!) {
       pool(id: $poolId) {
         id
         metadata

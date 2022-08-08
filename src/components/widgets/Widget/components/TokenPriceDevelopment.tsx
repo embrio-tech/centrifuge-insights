@@ -34,7 +34,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
   const { poolMetadata, loading: poolLoading } = usePool()
 
   const query = gql`
-    query getTokenPrices($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetTokenPrices($poolId: String!, $from: Datetime!, $to: Datetime!) {
       trancheSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC

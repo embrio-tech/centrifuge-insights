@@ -74,7 +74,7 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
 
   // fetch api data
   const query = gql`
-    query getPools($first: Int!, $offset: Int!) {
+    query GetPools($first: Int!, $offset: Int!) {
       pools(first: $first, offset: $offset) {
         totalCount
         nodes {

@@ -46,7 +46,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { selections, filtersReady } = useFilters()
 
   const query = gql`
-    query getPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
       poolSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC

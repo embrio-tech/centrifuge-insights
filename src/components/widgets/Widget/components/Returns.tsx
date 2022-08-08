@@ -41,7 +41,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
   const { poolMetadata, loading: poolLoading } = usePool()
 
   const query = gql`
-    query getReturns($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetReturns($poolId: String!, $from: Datetime!, $to: Datetime!) {
       trancheSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC
