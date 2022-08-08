@@ -1,4 +1,4 @@
-describe('TradingVolume should', () => {
+describe('InvestmentVolume should', () => {
   test.skip('have tests!', () => {
     // TODO: write tests
   })

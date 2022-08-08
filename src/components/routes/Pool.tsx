@@ -99,7 +99,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
-            name: 'TradingVolume',
+            name: 'InvestmentVolume',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 12 },
               { breakpoint: 'sm', w: 4, h: 2, x: 0, y: 8 },
