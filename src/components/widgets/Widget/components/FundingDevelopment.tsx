@@ -58,7 +58,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
   const { selections, filtersReady } = useFilters()
 
   const query = gql`
-    query getFundingDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetFundingDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
       trancheSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC

@@ -28,7 +28,7 @@ export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
   const { selections, filtersReady } = useFilters()
 
   const query = gql`
-    query getPoolAssetVolume($poolId: String!, $to: Datetime!) {
+    query GetPoolAssetVolume($poolId: String!, $to: Datetime!) {
       poolSnapshots(
         first: 1
         orderBy: TIMESTAMP_DESC
