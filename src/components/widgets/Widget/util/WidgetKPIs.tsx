@@ -3,7 +3,7 @@ import React, { ReactNode } from 'react'
 // import './WidgetKPIs.less'
 
 export interface WidgetKPI {
-  label: string
+  label: ReactNode
   value?: ReactNode
   prefix?: string
   suffix?: string
