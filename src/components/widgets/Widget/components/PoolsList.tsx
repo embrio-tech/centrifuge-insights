@@ -7,7 +7,8 @@ import type { PaginationProps } from 'antd'
 import { Link } from 'react-router-dom'
 import { useDebounce, useFiles, useGraphQL, usePoolsMetadata, useSize } from '../../../../hooks'
 import { Nodes } from '../../../../types'
-import { abbreviatedNumber, getIpfsHash, wad } from '../../../../util'
+import { abbreviatedNumber, decimal, getIpfsHash } from '../../../../util'
+import type { Currency } from '../../../../models'
 
 // import './PoolsList.less'
 
@@ -22,6 +23,7 @@ interface Pool {
     totalReserve: string
     netAssetValue: string
   }
+  currency: Currency
 }
 
 interface ApiData {
@@ -84,6 +86,10 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
             totalReserve
             netAssetValue
           }
+          currency {
+            id
+            decimals
+          }
         }
       }
     }
@@ -137,16 +143,18 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
 
   const poolsData = useMemo<PoolData[]>(
     () =>
-      (data?.pools?.nodes || []).map(({ id, metadata, state: { netAssetValue, totalReserve } }) => {
-        const iconHash = getIpfsHash(poolsMetadata[metadata]?.pool.icon)
-        return {
-          id,
-          name: poolsMetadata[metadata]?.pool.name || '',
-          icon: iconHash ? iconsUrls[iconHash] : undefined,
-          assetClass: poolsMetadata[metadata]?.pool.asset.class,
-          poolValue: wad(netAssetValue) + wad(totalReserve),
+      (data?.pools?.nodes || []).map(
+        ({ id, metadata, state: { netAssetValue, totalReserve }, currency: { decimals } }) => {
+          const iconHash = getIpfsHash(poolsMetadata[metadata]?.pool.icon)
+          return {
+            id,
+            name: poolsMetadata[metadata]?.pool.name || '',
+            icon: iconHash ? iconsUrls[iconHash] : undefined,
+            assetClass: poolsMetadata[metadata]?.pool.asset.class,
+            poolValue: decimal(netAssetValue, decimals) + decimal(totalReserve, decimals),
+          }
         }
-      }),
+      ),
     [data, poolsMetadata, iconsUrls]
   )
 
