@@ -32,7 +32,7 @@ export const useFiles = (hashes: string[]): FilesInterface => {
 
       await Promise.all(
         hashes.map(async (hash): Promise<void> => {
-          if (!hash) throw new Error('File hash undefined!')
+          if (!hash) throw new Error('File hash missing!')
           const headers = { Accept: '*/*' }
           const controller = new AbortController()
           abortControllers.push(controller)

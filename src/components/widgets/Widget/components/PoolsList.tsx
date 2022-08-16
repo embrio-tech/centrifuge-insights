@@ -132,12 +132,15 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
   // fetch icons
   const iconsHashes = useMemo<string[]>(
     () =>
-      Object.values(poolsMetadata).map(({ pool: { icon } }) => {
-        const ipfsHash = getIpfsHash(icon)
-        if (!ipfsHash) throw new Error('Pool icon ipfs hash is undefined!')
-        return ipfsHash
-      }),
-    [poolsMetadata]
+      // if all metadata objects are fetched, generate list of icon hashes
+      metadataPaths.length && metadataPaths.length === Object.values(poolsMetadata).length
+        ? Object.values(poolsMetadata).map(({ pool: { icon, name } }) => {
+            const ipfsHash = getIpfsHash(icon)
+            if (ipfsHash === undefined) throw new Error(`Icon ipfs hash is undefined for pool ${name}!`)
+            return ipfsHash
+          })
+        : [],
+    [poolsMetadata, metadataPaths]
   )
   const { filesUrls: iconsUrls, loading: iconsLoading } = useFiles(iconsHashes)
 
