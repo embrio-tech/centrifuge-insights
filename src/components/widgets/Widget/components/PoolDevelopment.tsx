@@ -91,7 +91,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, totalReserve }): SharesData => ({
           share: 'Liquidity Reserve',
-          value: Number(decimal(totalReserve, decimals)),
+          value: decimal(totalReserve, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -99,7 +99,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, netAssetValue }): SharesData => ({
           share: 'Pool NAV',
-          value: Number(decimal(netAssetValue, decimals)),
+          value: decimal(netAssetValue, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -113,7 +113,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, totalReserve, netAssetValue }): SumsData => ({
           sum: 'Pool Value',
-          value: Number(decimal(totalReserve, decimals)) + Number(decimal(netAssetValue, decimals)),
+          value: decimal(totalReserve, decimals) + decimal(netAssetValue, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -121,7 +121,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, netAssetValue }): SumsData => ({
           sum: 'Pool NAV',
-          value: Number(decimal(netAssetValue, decimals)),
+          value: decimal(netAssetValue, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
