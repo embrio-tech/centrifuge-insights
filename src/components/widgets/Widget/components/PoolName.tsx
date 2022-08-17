@@ -1,6 +1,6 @@
 import { Tooltip } from 'antd'
 import React, { useMemo } from 'react'
-import { usePool } from '../../../../contexts'
+import { useError, usePool } from '../../../../contexts'
 import { useFiles } from '../../../../hooks'
 import { WidgetLayout } from '../util'
 import './PoolName.less'
@@ -13,13 +13,15 @@ interface PoolNameProps {
 export const PoolName: React.FC<PoolNameProps> = (props) => {
   const { className } = props
   const { poolMetadata, loading: poolLoading } = usePool()
+  const { setError } = useError()
 
-  const iconHash = useMemo<string | undefined>(() => getIpfsHash(poolMetadata?.pool.icon), [poolMetadata])
+  const iconHash = useMemo<string>(() => {
+    if (poolMetadata && poolMetadata.pool.icon === undefined)
+      setError(new Error(`Icon ipfs hash is undefined for pool ${poolMetadata?.pool.name}!`))
+    return getIpfsHash(poolMetadata?.pool.icon)
+  }, [poolMetadata, setError])
 
-  const iconHashes = useMemo<string[]>(
-    () => (iconHash ? [iconHash] : []),
-    [iconHash]
-  )
+  const iconHashes = useMemo<string[]>(() => (iconHash !== undefined ? [iconHash] : []), [iconHash])
   const { filesUrls: iconUrls, loading: iconLoading } = useFiles(iconHashes)
 
   return (
@@ -34,9 +36,9 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
         )
       }
     >
-      {poolMetadata?.pool.icon ? (
+      {poolMetadata?.pool ? (
         <div className='pool-name-icon'>
-          <img className='h-full mx-auto' src={iconHash && iconUrls[iconHash]} alt={`icon ${poolMetadata.pool.name}`} />
+          <img className='h-full mx-auto' src={iconUrls[iconHash]} alt={`icon ${poolMetadata.pool.name}`} />
         </div>
       ) : null}
     </WidgetLayout>
