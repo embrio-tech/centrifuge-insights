@@ -15,7 +15,7 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
   const { poolMetadata, loading: poolLoading } = usePool()
   const { setError } = useError()
 
-  const iconHash = useMemo<string>(() => {
+  const iconHash = useMemo<string | undefined>(() => {
     if (poolMetadata && poolMetadata.pool.icon === undefined)
       setError(new Error(`Icon ipfs hash is undefined for pool ${poolMetadata?.pool.name}!`))
     return getIpfsHash(poolMetadata?.pool.icon)
@@ -38,7 +38,11 @@ export const PoolName: React.FC<PoolNameProps> = (props) => {
     >
       {poolMetadata?.pool ? (
         <div className='pool-name-icon'>
-          <img className='h-full mx-auto' src={iconUrls[iconHash]} alt={`icon ${poolMetadata.pool.name}`} />
+          <img
+            className='h-full mx-auto'
+            src={iconHash ? iconUrls[iconHash] : undefined}
+            alt={`icon ${poolMetadata.pool.name}`}
+          />
         </div>
       ) : null}
     </WidgetLayout>
