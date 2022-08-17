@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 import { gql } from '@apollo/client'
-import { abbreviatedNumber, wad } from '../../../../util'
+import { abbreviatedNumber, decimal } from '../../../../util'
 import { FigureLayout } from '../layouts'
 import { useGraphQL } from '../../../../hooks'
-import { useFilters } from '../../../../contexts'
+import { useFilters, usePool } from '../../../../contexts'
 
 // import './AssetVolume.less'
 
@@ -26,6 +26,7 @@ interface ApiData {
 export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
+  const { decimals } = usePool()
 
   const query = gql`
     query GetPoolAssetVolume($poolId: String!, $to: Datetime!) {
@@ -68,8 +69,8 @@ export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
 
     if (poolSnapshots.length !== 1) return '-'
 
-    return abbreviatedNumber(wad(poolSnapshots[0].totalEverBorrowed))
-  }, [data])
+    return abbreviatedNumber(decimal(poolSnapshots[0].totalEverBorrowed, decimals))
+  }, [data, decimals])
 
   return <FigureLayout className={className} value={value} name='Asset Volume' loading={loading} color={'#fcbb59'} />
 }

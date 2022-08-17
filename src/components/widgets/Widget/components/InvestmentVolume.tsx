@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { useFilters, usePool } from '../../../../contexts'
 import { useGraphQL } from '../../../../hooks'
 import type { Nodes } from '../../../../types'
-import { abbreviatedNumber, syncAxes, textDate, wad } from '../../../../util'
+import { abbreviatedNumber, syncAxes, textDate, decimal } from '../../../../util'
 import { ChartLayout } from '../layouts'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { Meta } from '@antv/g2plot'
@@ -51,7 +51,7 @@ interface RelativeInvestmentData {
 export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { poolMetadata, loading: poolLoading } = usePool()
+  const { poolMetadata, loading: poolLoading, decimals } = usePool()
 
   const query = gql`
     query GetInvestmentVolume($poolId: String!, $from: Datetime!, $to: Datetime!) {
@@ -131,7 +131,7 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
             ({ timestamp, debt, tranche: { trancheId } }, index): InvestmentData => ({
               timestamp: new Date(timestamp),
               // debt_t(i) - debt_t(i-1)
-              value: wad(debt) - wad(trancheSnapshots[index].debt),
+              value: decimal(debt, decimals) - decimal(trancheSnapshots[index].debt, decimals),
               volume: poolMetadata?.tranches[trancheId]
                 ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
                 : trancheId,
@@ -140,7 +140,7 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
       )
     }
     return []
-  }, [data, poolMetadata, tranchesIds])
+  }, [data, poolMetadata, tranchesIds, decimals])
 
   const poolInvestmentData = useMemo<InvestmentData[]>(() => {
     if (investmentData.length && tranchesIds.length) {
@@ -170,7 +170,7 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
       return poolInvestmentData.map(({ value, timestamp }, index): RelativeInvestmentData => {
         return {
           timestamp,
-          percentage: value / wad(poolSnapshots[index].netAssetValue),
+          percentage: value / decimal(poolSnapshots[index].netAssetValue),
           delta: 'Investment volume in % of NAV',
         }
       })

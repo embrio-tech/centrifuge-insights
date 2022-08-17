@@ -3,10 +3,10 @@ import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
-import { abbreviatedNumber, textDate, wad } from '../../../../util'
+import { abbreviatedNumber, textDate, decimal } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { useGraphQL } from '../../../../hooks'
-import { useFilters } from '../../../../contexts'
+import { useFilters, usePool } from '../../../../contexts'
 import { Nodes } from '../../../../types'
 
 // import './PoolDevelopment.less'
@@ -44,6 +44,7 @@ interface SumsData {
 export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
+  const { decimals } = usePool()
 
   const query = gql`
     query GetPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
@@ -90,7 +91,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, totalReserve }): SharesData => ({
           share: 'Liquidity Reserve',
-          value: Number(wad(totalReserve)),
+          value: decimal(totalReserve, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -98,21 +99,21 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, netAssetValue }): SharesData => ({
           share: 'Pool NAV',
-          value: Number(wad(netAssetValue)),
+          value: decimal(netAssetValue, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
 
     // TODO: replace ...netAssetValues by ...trancheAValues, ...trancheBValues, etc.
     return [...totalReserves, ...netAssetValues]
-  }, [data])
+  }, [data, decimals])
 
   const sumsData = useMemo<SumsData[]>(() => {
     const poolValues =
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, totalReserve, netAssetValue }): SumsData => ({
           sum: 'Pool Value',
-          value: Number(wad(totalReserve)) + Number(wad(netAssetValue)),
+          value: decimal(totalReserve, decimals) + decimal(netAssetValue, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -120,13 +121,13 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       data?.poolSnapshots?.nodes?.map(
         ({ timestamp, netAssetValue }): SumsData => ({
           sum: 'Pool NAV',
-          value: Number(wad(netAssetValue)),
+          value: decimal(netAssetValue, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
 
     return [...poolValues, ...netAssetValues]
-  }, [data])
+  }, [data, decimals])
 
   const chartConfig = useMemo<MixConfig>(() => {
     const maxValue = sumsData.length
@@ -223,13 +224,17 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       {
         label: 'Pool value growth',
         value: abbreviatedNumber(
-          (100 * (wad(last.netAssetValue) - wad(first.netAssetValue))) / wad(first.netAssetValue)
+          (100 * (decimal(last.netAssetValue, decimals) - decimal(first.netAssetValue, decimals))) /
+            decimal(first.netAssetValue, decimals)
         ),
         suffix: '%',
       },
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
+        value: abbreviatedNumber(
+          (100 * decimal(last.totalReserve, decimals)) /
+            (decimal(last.totalReserve, decimals) + decimal(last.netAssetValue, decimals))
+        ),
         suffix: '%',
       },
       {
@@ -252,11 +257,11 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       {
         label: 'Avg. loan size',
-        value: abbreviatedNumber(wad(last.netAssetValue) / Number(last.totalEverNumberOfLoans)),
+        value: abbreviatedNumber(decimal(last.netAssetValue, decimals) / Number(last.totalEverNumberOfLoans)),
         prefix: 'DAI',
       },
     ]
-  }, [data])
+  }, [data, decimals])
 
   return (
     <ChartLayout

@@ -1,8 +1,14 @@
 import type { IpfsFile } from '../types/ipfs'
 
+export interface Currency {
+  id: string
+  decimals: number
+}
+
 export interface Pool {
   id: string
   metadata: string
+  currency: Currency
 }
 
 interface TranchesMetadata {

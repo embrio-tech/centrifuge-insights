@@ -2,10 +2,10 @@ import React, { useMemo } from 'react'
 import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
-import { abbreviatedNumber, syncAxes, textDate, wad } from '../../../../util'
+import { abbreviatedNumber, syncAxes, textDate, decimal } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { Nodes } from '../../../../types'
-import { useFilters } from '../../../../contexts'
+import { useFilters, usePool } from '../../../../contexts'
 import { useGraphQL } from '../../../../hooks'
 import { WidgetKPI, WidgetKPIs } from '../util'
 
@@ -27,7 +27,7 @@ interface PoolSnapshot {
   id: string
   timestamp: string
   totalReserve: string
-  netAssetValue: string
+  value: string
 }
 
 interface ApiData {
@@ -56,6 +56,7 @@ interface RelativeLiquidityReserve {
 export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
+  const { decimals } = usePool()
 
   const query = gql`
     query GetFundingDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
@@ -83,7 +84,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
           id
           timestamp
           totalReserve
-          netAssetValue
+          value
         }
       }
     }
@@ -118,12 +119,12 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
           flowsData.splice(lastIndex, 1, {
             ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value + wad(fulfilledInvestOrders_),
+            value: flowsData[lastIndex].value + decimal(fulfilledInvestOrders_, decimals),
           })
         } else {
           flowsData.push({
             timestamp: snapshotTimestamp,
-            value: wad(fulfilledInvestOrders_),
+            value: decimal(fulfilledInvestOrders_, decimals),
             flow: 'Inflow',
           })
         }
@@ -137,12 +138,12 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
           flowsData.splice(lastIndex, 1, {
             ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value - wad(fulfilledRedeemOrders_),
+            value: flowsData[lastIndex].value - decimal(fulfilledRedeemOrders_, decimals),
           })
         } else {
           flowsData.push({
             timestamp: snapshotTimestamp,
-            value: -wad(fulfilledRedeemOrders_),
+            value: -decimal(fulfilledRedeemOrders_, decimals),
             flow: 'Outflow',
           })
         }
@@ -150,7 +151,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       }, []) || []
 
     return [...inflows, ...outflows]
-  }, [data])
+  }, [data, decimals])
 
   const netFlowsData = useMemo<NetFlowData[]>(
     () =>
@@ -161,12 +162,15 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
           if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
             flowsData.splice(lastIndex, 1, {
               ...flowsData[lastIndex],
-              value: flowsData[lastIndex].value + wad(fulfilledInvestOrders_) - wad(fulfilledRedeemOrders_),
+              value:
+                flowsData[lastIndex].value +
+                decimal(fulfilledInvestOrders_, decimals) -
+                decimal(fulfilledRedeemOrders_, decimals),
             })
           } else {
             flowsData.push({
               timestamp: snapshotTimestamp,
-              value: wad(fulfilledInvestOrders_) - wad(fulfilledRedeemOrders_),
+              value: decimal(fulfilledInvestOrders_, decimals) - decimal(fulfilledRedeemOrders_, decimals),
               netFlow: 'Net in-/outflow',
             })
           }
@@ -174,17 +178,17 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         },
         []
       ) || [],
-    [data]
+    [data, decimals]
   )
 
   const relativeLiquidityReserves = useMemo<RelativeLiquidityReserve[]>(
     () =>
-      data?.poolSnapshots?.nodes?.map(({ timestamp, totalReserve, netAssetValue }) => ({
+      data?.poolSnapshots?.nodes?.map(({ timestamp, totalReserve, value }) => ({
         timestamp: new Date(timestamp),
-        percentage: wad(totalReserve) / (wad(totalReserve) + wad(netAssetValue)),
+        percentage: decimal(totalReserve, decimals) / decimal(value, decimals),
         share: 'Liquidity reserve as % of pool value',
       })) || [],
-    [data]
+    [data, decimals]
   )
 
   const chartConfig = useMemo<MixConfig>(() => {
@@ -317,7 +321,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     return [
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber((100 * wad(last.totalReserve)) / (wad(last.totalReserve) + wad(last.netAssetValue))),
+        value: abbreviatedNumber((100 * decimal(last.totalReserve, decimals)) / decimal(last.value, decimals)),
         suffix: '%',
       },
       {
@@ -331,16 +335,13 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         label: 'Avg. outflows as % of pool value',
         value: abbreviatedNumber(
           poolSnapshots
-            .map(
-              ({ totalReserve, netAssetValue }, index) =>
-                (100 * outflows[index]) / (wad(totalReserve) + wad(netAssetValue))
-            )
+            .map(({ value }, index) => (100 * outflows[index]) / decimal(value, decimals))
             .reduce((acc, current) => acc + current || 0, 0) / poolSnapshots.length
         ),
         suffix: '%',
       },
     ]
-  }, [data, netFlowsData, flowsData])
+  }, [data, netFlowsData, flowsData, decimals])
 
   return (
     <ChartLayout

@@ -1,19 +1,21 @@
 import React, { createContext, PropsWithChildren, useContext, useMemo } from 'react'
 import { gql } from '@apollo/client'
 import { useGraphQL, usePoolsMetadata } from '../hooks'
-import { PoolMetadata } from '../models'
+import type { Currency, PoolMetadata } from '../models'
 import { useFilters } from './FiltersContext'
 
 interface PoolContextInterface {
   poolId?: string
   poolMetadata?: PoolMetadata
   loading: boolean
+  decimals?: number
 }
 
 interface ApiData {
   pool: {
     id: string
     metadata: string
+    currency: Currency
   }
 }
 
@@ -28,6 +30,10 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
       pool(id: $poolId) {
         id
         metadata
+        currency {
+          id
+          decimals
+        }
       }
     }
   `
@@ -62,6 +68,8 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
     [poolsMetadata, data]
   )
 
+  const decimals = useMemo(() => data?.pool?.currency.decimals, [data])
+
   const loading = useMemo(() => poolLoading || metadataLoading, [poolLoading, metadataLoading])
 
   const value = useMemo<PoolContextInterface>(
@@ -69,8 +77,9 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
       poolId,
       poolMetadata,
       loading,
+      decimals,
     }),
-    [poolId, poolMetadata, loading]
+    [poolId, poolMetadata, loading, decimals]
   )
 
   return <PoolContext.Provider value={value}>{children}</PoolContext.Provider>
