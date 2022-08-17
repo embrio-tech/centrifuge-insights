@@ -27,7 +27,7 @@ interface PoolSnapshot {
   id: string
   timestamp: string
   totalReserve: string
-  netAssetValue: string
+  value: string
 }
 
 interface ApiData {
@@ -84,7 +84,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
           id
           timestamp
           totalReserve
-          netAssetValue
+          value
         }
       }
     }
@@ -183,10 +183,9 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
 
   const relativeLiquidityReserves = useMemo<RelativeLiquidityReserve[]>(
     () =>
-      data?.poolSnapshots?.nodes?.map(({ timestamp, totalReserve, netAssetValue }) => ({
+      data?.poolSnapshots?.nodes?.map(({ timestamp, totalReserve, value }) => ({
         timestamp: new Date(timestamp),
-        percentage:
-          decimal(totalReserve, decimals) / (decimal(totalReserve, decimals) + decimal(netAssetValue, decimals)),
+        percentage: decimal(totalReserve, decimals) / decimal(value, decimals),
         share: 'Liquidity reserve as % of pool value',
       })) || [],
     [data, decimals]
@@ -322,10 +321,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     return [
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber(
-          (100 * decimal(last.totalReserve, decimals)) /
-            (decimal(last.totalReserve, decimals) + decimal(last.netAssetValue, decimals))
-        ),
+        value: abbreviatedNumber((100 * decimal(last.totalReserve, decimals)) / decimal(last.value, decimals)),
         suffix: '%',
       },
       {
@@ -339,10 +335,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         label: 'Avg. outflows as % of pool value',
         value: abbreviatedNumber(
           poolSnapshots
-            .map(
-              ({ totalReserve, netAssetValue }, index) =>
-                (100 * outflows[index]) / (decimal(totalReserve, decimals) + decimal(netAssetValue, decimals))
-            )
+            .map(({ value }, index) => (100 * outflows[index]) / decimal(value, decimals))
             .reduce((acc, current) => acc + current || 0, 0) / poolSnapshots.length
         ),
         suffix: '%',
