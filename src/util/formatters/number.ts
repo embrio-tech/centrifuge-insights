@@ -18,7 +18,7 @@ export const abbreviatedNumber = (
   if (_value === -Infinity) return '-\u221e\u00a0' // infinity symbol
   const log = Math.floor(Math.log10(Math.abs(Number(_value.toPrecision(precision)))))
   const magnitude = log - (log % 3)
-  return `${(_value / 10 ** magnitude).toPrecision(precision)}${
+  return `${Number((_value / 10 ** magnitude).toPrecision(precision))}${
     SI_SYMBOLS[magnitude] ? SI_SYMBOLS[magnitude] : magnitude !== 0 ? `e${magnitude}` : ''
   }`
 }

@@ -45,8 +45,12 @@ describe('abbreviatedNumber should', () => {
     expect(abbreviatedNumber(12345678, { precision: 5 })).toBe('12.346M')
   })
 
+  test('remove trailing zeros', () => {
+    expect(abbreviatedNumber(1000)).toBe('1K')
+  })
+
   test('format rounded values correctly', () => {
-    expect(abbreviatedNumber(999.9999999)).toBe('1.00K')
+    expect(abbreviatedNumber(999.9999999)).toBe('1K')
   })
 
   test('return infinity symbol if value is Infinity', () => {
