@@ -14,11 +14,24 @@ export const abbreviatedNumber = (
   const _value = Number(value)
   if (isNaN(_value)) return '–\u00a0'
   if (_value === 0) return '0'
-  if (_value === Infinity ) return '\u221e\u00a0' // infinity symbol
-  if (_value === -Infinity ) return '-\u221e\u00a0' // infinity symbol
+  if (_value === Infinity) return '\u221e\u00a0' // infinity symbol
+  if (_value === -Infinity) return '-\u221e\u00a0' // infinity symbol
   const log = Math.floor(Math.log10(Math.abs(Number(_value.toPrecision(precision)))))
   const magnitude = log - (log % 3)
   return `${(_value / 10 ** magnitude).toPrecision(precision)}${
     SI_SYMBOLS[magnitude] ? SI_SYMBOLS[magnitude] : magnitude !== 0 ? `e${magnitude}` : ''
   }`
+}
+
+export const roundedNumber = (
+  value: string | number | bigint | undefined,
+  { decimals }: { decimals: number } = { decimals: 0 }
+): string => {
+  if (value === undefined) return '\u00a0'
+  const _value = Number(value)
+  if (isNaN(_value)) return '–\u00a0'
+  if (_value === 0) return '0'
+  if (_value === Infinity) return '\u221e\u00a0' // infinity symbol
+  if (_value === -Infinity) return '-\u221e\u00a0' // infinity symbol
+  return (Math.round(_value * (10 ** decimals)) / (10 ** decimals)).toString()
 }
