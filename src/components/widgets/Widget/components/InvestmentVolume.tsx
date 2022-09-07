@@ -3,7 +3,7 @@ import React, { useMemo } from 'react'
 import { useFilters, usePool } from '../../../../contexts'
 import { useGraphQL } from '../../../../hooks'
 import type { Nodes } from '../../../../types'
-import { abbreviatedNumber, syncAxes, textDate, decimal } from '../../../../util'
+import { abbreviatedNumber, syncAxes, textDate, decimal, roundedNumber } from '../../../../util'
 import { ChartLayout } from '../layouts'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { Meta } from '@antv/g2plot'
@@ -201,7 +201,7 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
       },
       percentage: {
         type: 'linear',
-        formatter: (v: number) => abbreviatedNumber(v * 100) + '%',
+        formatter: (v: number) => roundedNumber(v * 100, { decimals: 2 }) + '%',
         max: secondaryAxisMax,
         min: secondaryAxisMin,
         tickCount: 6,
@@ -280,10 +280,11 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
       return [
         {
           label: 'Avg. investment volume in % of NAV',
-          value: abbreviatedNumber(
+          value: roundedNumber(
             (relativePoolInvestmentData.map(({ percentage }) => percentage).reduce((acc, val) => acc + val, 0) /
               relativePoolInvestmentData.length) *
-              100
+              100,
+            { decimals: 1 }
           ),
           suffix: '%',
         },
@@ -295,10 +296,11 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
         },
         ...tranchesNames.map((trancheName) => ({
           label: <span className='ml-2'>• {trancheName}</span>,
-          value: abbreviatedNumber(
+          value: roundedNumber(
             (investmentData.filter(({ volume }) => volume === trancheName).reduce((acc, { value }) => acc + value, 0) /
               totalInvestments) *
-              100
+              100,
+            { decimals: 1 }
           ),
           suffix: '%',
         })),
