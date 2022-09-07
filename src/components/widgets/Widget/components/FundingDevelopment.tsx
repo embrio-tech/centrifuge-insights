@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
-import { abbreviatedNumber, syncAxes, textDate, decimal } from '../../../../util'
+import { abbreviatedNumber, syncAxes, textDate, decimal, roundedNumber } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { Nodes } from '../../../../types'
 import { useFilters, usePool } from '../../../../contexts'
@@ -214,7 +214,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       },
       percentage: {
         type: 'linear',
-        formatter: (v: number) => abbreviatedNumber(v * 100) + '%',
+        formatter: (v: number) => roundedNumber(v * 100, { decimals: 2 }) + '%',
         max: secondaryAxisMax,
         min: secondaryAxisMin,
         tickCount: 6,
@@ -321,7 +321,9 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     return [
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber((100 * decimal(last.totalReserve, decimals)) / decimal(last.value, decimals)),
+        value: roundedNumber((100 * decimal(last.totalReserve, decimals)) / decimal(last.value, decimals), {
+          decimals: 1,
+        }),
         suffix: '%',
       },
       {
@@ -333,10 +335,11 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       },
       {
         label: 'Avg. outflows as % of pool value',
-        value: abbreviatedNumber(
+        value: roundedNumber(
           poolSnapshots
             .map(({ value }, index) => (100 * outflows[index]) / decimal(value, decimals))
-            .reduce((acc, current) => acc + current || 0, 0) / poolSnapshots.length
+            .reduce((acc, current) => acc + current || 0, 0) / poolSnapshots.length,
+          { decimals: 1 }
         ),
         suffix: '%',
       },

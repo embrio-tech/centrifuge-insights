@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
-import { abbreviatedNumber, textDate, decimal } from '../../../../util'
+import { abbreviatedNumber, textDate, decimal, roundedNumber } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { useGraphQL } from '../../../../hooks'
 import { useFilters, usePool } from '../../../../contexts'
@@ -223,17 +223,19 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
     return [
       {
         label: 'Pool value growth',
-        value: abbreviatedNumber(
+        value: roundedNumber(
           (100 * (decimal(last.netAssetValue, decimals) - decimal(first.netAssetValue, decimals))) /
-            decimal(first.netAssetValue, decimals)
+            decimal(first.netAssetValue, decimals),
+          { decimals: 1 }
         ),
         suffix: '%',
       },
       {
         label: 'Liquidity reserve as % of pool value',
-        value: abbreviatedNumber(
+        value: roundedNumber(
           (100 * decimal(last.totalReserve, decimals)) /
-            (decimal(last.totalReserve, decimals) + decimal(last.netAssetValue, decimals))
+            (decimal(last.totalReserve, decimals) + decimal(last.netAssetValue, decimals)),
+          { decimals: 1 }
         ),
         suffix: '%',
       },
@@ -246,9 +248,10 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       {
         label: '# of loans growth',
-        value: abbreviatedNumber(
+        value: roundedNumber(
           (100 * (Number(last.totalEverNumberOfLoans) - Number(first.totalEverNumberOfLoans))) /
-            Number(first.totalEverNumberOfLoans)
+            Number(first.totalEverNumberOfLoans),
+          { decimals: 1 }
         ),
         suffix: '%',
       },

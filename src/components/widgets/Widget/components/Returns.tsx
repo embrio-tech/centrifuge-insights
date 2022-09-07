@@ -3,7 +3,7 @@ import { gql } from '@apollo/client'
 import { Mix as MixChart, MixConfig } from '@ant-design/plots'
 import { ChartLayout } from '../layouts'
 import { WidgetKPI, WidgetKPIs } from '../util'
-import { abbreviatedNumber, ray, syncAxes, textDate } from '../../../../util'
+import { abbreviatedNumber, ray, roundedNumber, syncAxes, textDate } from '../../../../util'
 import { Meta } from '@antv/g2plot'
 import { useGraphQL } from '../../../../hooks'
 import { useFilters, usePool } from '../../../../contexts'
@@ -97,7 +97,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
   const chartConfig = useMemo<MixConfig>(() => {
     const { primaryAxisMin, primaryAxisMax, secondaryAxisMin, secondaryAxisMax } = syncAxes(
       yieldData.map(({ percentage }) => percentage),
-      [-100, 5000] // TODO: replace with real vals
+      [-1000, 5000] // TODO: replace with real vals
     )
 
     const meta: Record<string, Meta> = {
@@ -107,7 +107,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
       },
       percentage: {
         type: 'linear',
-        formatter: (v: number) => abbreviatedNumber(v * 100) + '%',
+        formatter: (v: number) => roundedNumber(v * 100, { decimals: 2 }) + '%',
         max: primaryAxisMax,
         min: primaryAxisMin,
         tickCount: 6,
@@ -202,7 +202,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
             ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
             : trancheId
         }`,
-        value: abbreviatedNumber(ray(yieldSinceInception) * 100),
+        value: roundedNumber(ray(yieldSinceInception) * 100, { decimals: 1 }),
         suffix: '%',
       })),
     ]
