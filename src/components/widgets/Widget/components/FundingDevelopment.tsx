@@ -214,7 +214,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       },
       percentage: {
         type: 'linear',
-        formatter: (v: number) => roundedNumber(v * 100, { decimals: 2 }) + '%',
+        formatter: (v: number) => roundedNumber(v * 100, { decimals: 1 }) + '%',
         max: secondaryAxisMax,
         min: secondaryAxisMin,
         tickCount: 6,

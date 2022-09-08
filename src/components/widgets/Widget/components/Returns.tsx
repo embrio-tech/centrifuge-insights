@@ -107,7 +107,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
       },
       percentage: {
         type: 'linear',
-        formatter: (v: number) => roundedNumber(v * 100, { decimals: 2 }) + '%',
+        formatter: (v: number) => roundedNumber(v * 100, { decimals: 1 }) + '%',
         max: primaryAxisMax,
         min: primaryAxisMin,
         tickCount: 6,
