@@ -170,19 +170,23 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
       return poolInvestmentData.map(({ value, timestamp }, index): RelativeInvestmentData => {
         return {
           timestamp,
-          percentage: value / decimal(poolSnapshots[index].netAssetValue),
+          percentage: value / decimal(poolSnapshots.slice(1)[index].netAssetValue, decimals),
           delta: 'Investment volume in % of NAV',
         }
       })
     }
     return []
-  }, [data, poolInvestmentData])
+  }, [data, poolInvestmentData, decimals])
 
   const chartConfig = useMemo<MixConfig>(() => {
     // sync axes
     const { primaryAxisMin, primaryAxisMax, secondaryAxisMin, secondaryAxisMax } = syncAxes(
       poolInvestmentData.map(({ value }) => value),
-      relativePoolInvestmentData.map(({ percentage }) => percentage || 0)
+      relativePoolInvestmentData.map(({ percentage }) => {
+        if (percentage === Infinity) return 1
+        if (!percentage) return 0
+        return percentage
+      })
     )
 
     // shared meta object for all subcharts
@@ -201,7 +205,7 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
       },
       percentage: {
         type: 'linear',
-        formatter: (v: number) => roundedNumber(v * 100, { decimals: 2 }) + '%',
+        formatter: (v: number) => roundedNumber(v * 100, { decimals: 1 }) + '%',
         max: secondaryAxisMax,
         min: secondaryAxisMin,
         tickCount: 6,
