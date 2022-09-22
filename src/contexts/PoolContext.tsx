@@ -23,7 +23,7 @@ const PoolContext = createContext<PoolContextInterface | undefined>(undefined)
 
 const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
   const { children } = props
-  const { selections, filtersReady } = useFilters()
+  const { selection, filterReady } = useFilters('pool')
 
   const query = gql`
     query GetPoolMetadata($poolId: String!) {
@@ -38,7 +38,7 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
     }
   `
 
-  const poolId = useMemo(() => selections.pool?.[0], [selections])
+  const poolId = useMemo(() => selection?.[0], [selection])
 
   const variables = useMemo(
     () => ({
@@ -50,8 +50,8 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
   const skip = useMemo(
     () =>
       Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
-      !filtersReady,
-    [variables, filtersReady]
+      !filterReady,
+    [variables, filterReady]
   )
 
   const { loading: poolLoading, data } = useGraphQL<ApiData>(query, {
