@@ -34,11 +34,15 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
   const { poolMetadata, loading: poolLoading } = usePool()
 
   const query = gql`
-    query GetTokenPrices($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetTokenPrices($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
       trancheSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC
-        filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
+        filter: {
+          id: { startsWith: $poolId }
+          timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to }
+          or: $tranches
+        }
       ) {
         totalCount
         nodes {
@@ -59,6 +63,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
       poolId: selections.pool?.[0],
       from: new Date('2022-06-04'),
       to: new Date(),
+      tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
     }),
     [selections]
   )
