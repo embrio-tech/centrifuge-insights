@@ -1,2 +1,2 @@
 export * from './PoolFilter'
-export * from './TrancheFilter'
+export * from './TranchesFilter'

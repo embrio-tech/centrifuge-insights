@@ -119,8 +119,8 @@ const Pool: React.FC = () => {
       type: 'PoolFilter',
     },
     {
-      id: 'tranche',
-      type: 'TrancheFilter',
+      id: 'tranches',
+      type: 'TranchesFilter',
     },
   ]
 

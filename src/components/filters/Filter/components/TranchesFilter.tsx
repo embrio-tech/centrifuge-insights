@@ -3,14 +3,14 @@ import type { CustomTagProps } from 'rc-select/lib/BaseSelect'
 import React, { useCallback, useEffect, useMemo } from 'react'
 import { useFilters, usePool } from '../../../../contexts'
 import { FilterLabel } from '../util'
-// import './TrancheFilter.less'
+// import './TranchesFilter.less'
 
-interface TrancheFilterProps {
+interface TranchesFilterProps {
   className?: string
   id: string
 }
 
-export const TrancheFilter: React.FC<TrancheFilterProps> = (props) => {
+export const TranchesFilter: React.FC<TranchesFilterProps> = (props) => {
   const { className, id } = props
   const { poolMetadata, loading: metadataLoading } = usePool()
   const { setSelection, selection, setFilterStatus, filterReady } = useFilters(id)
