@@ -59,11 +59,20 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
   const { decimals } = usePool()
 
   const query = gql`
-    query GetFundingDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetFundingDevelopment(
+      $poolId: String!
+      $from: Datetime!
+      $to: Datetime!
+      $tranches: [TrancheSnapshotFilter!]
+    ) {
       trancheSnapshots(
         first: 1000
         orderBy: TIMESTAMP_ASC
-        filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
+        filter: {
+          id: { startsWith: $poolId }
+          timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to }
+          or: $tranches
+        }
       ) {
         totalCount
         nodes {
@@ -95,6 +104,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       poolId: selections.pool?.[0],
       from: new Date('2022-06-04'),
       to: new Date(),
+      tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
     }),
     [selections]
   )

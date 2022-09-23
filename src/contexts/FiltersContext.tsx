@@ -57,7 +57,7 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
   const setSelection = useCallback(
     (id: string, selection: Selection) => {
       if (contextReady) {
-        const newParams: ParsedQs = { ...params, [id]: selection.length === 1 ? selection[0] : selection }
+        const newParams: ParsedQs = { ...params, [id]: selection }
         setParams(newParams)
         setSelections((oldSelections) => ({ ...oldSelections, [id]: selection }))
       }
@@ -71,17 +71,20 @@ const FiltersContextProvider: React.FC<PropsWithChildren<FiltersContextProviderP
    * @prop {string}   id        - id of filter (e.g. pool)
    * @prop {boolean}  ready     - flag to indicate readyness of filter
    */
-  const setFilterStatus = useCallback((id: string, ready: boolean) => {
-    if (contextReady) {
-      setFiltersStatus((oldFiltersStatus) => {
-        const newFiltersStatus = [...oldFiltersStatus]
-        const index = oldFiltersStatus.findIndex(({ id: listId }) => listId === id)
-        if (index === -1) throw new Error(`No status entry found for filter "${id}"!`)
-        newFiltersStatus.splice(index, 1, { id, ready })
-        return newFiltersStatus
-      })
-    }
-  }, [contextReady])
+  const setFilterStatus = useCallback(
+    (id: string, ready: boolean) => {
+      if (contextReady) {
+        setFiltersStatus((oldFiltersStatus) => {
+          const newFiltersStatus = [...oldFiltersStatus]
+          const index = oldFiltersStatus.findIndex(({ id: listId }) => listId === id)
+          if (index === -1) throw new Error(`No status entry found for filter "${id}"!`)
+          newFiltersStatus.splice(index, 1, { id, ready })
+          return newFiltersStatus
+        })
+      }
+    },
+    [contextReady]
+  )
 
   // EFFECTS
   // ---------------------------------------
