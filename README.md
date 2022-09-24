@@ -1,5 +1,6 @@
 # Centrifuge Insights
 
+[![Pipeline](https://github.com/embrio-tech/centrifuge-insights/actions/workflows/deploy.yml/badge.svg)](https://github.com/embrio-tech/centrifuge-insights/actions/workflows/deploy.yml)
 [![React](https://img.shields.io/static/v1?label=built+with&message=React&color=61dafb)](https://reactjs.org/)
 [![Ant Design](https://img.shields.io/static/v1?label=built+with&message=Ant+Design&color=0170fe)](https://ant.design/)
 [![tailwindcss](https://img.shields.io/static/v1?label=built+with&message=Tailwind+CSS&color=38bef8)](https://tailwindcss.com/)
