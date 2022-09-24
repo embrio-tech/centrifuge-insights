@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useMemo } from 'react'
+import { abbreviatedNumber, decimal } from '../../../../util'
 import { FigureLayout } from '../layouts'
+import { usePool } from '../../../../contexts'
 // import './PoolValue.less'
 
 interface PoolValueProps {
@@ -8,14 +10,15 @@ interface PoolValueProps {
 
 export const PoolValue: React.FC<PoolValueProps> = (props) => {
   const { className } = props
+  const { decimals, poolState, loading } = usePool()
 
-  return (
-    <FigureLayout
-      className={className}
-      value={'5Mio'}
-      name='Pool Value'
-      loading={false}
-      color='#2762ff'
-    />
-  )
+  const value = useMemo<string>(() => {
+    const poolValue = poolState?.value
+
+    if (!poolValue) return '-'
+
+    return abbreviatedNumber(decimal(poolValue, decimals))
+  }, [poolState, decimals])
+
+  return <FigureLayout className={className} value={value} name='Pool Value' loading={loading} color='#2762ff' />
 }
