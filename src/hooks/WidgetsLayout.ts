@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { WidgetAppearance } from '../types'
 import { gridBreakpointNames } from '../config'
 import { Layout, Layouts } from 'react-grid-layout'
@@ -79,9 +79,10 @@ export const useWidgetsLayout = (initialWidgets: WidgetAppearance[]): WidgetsLay
     })
   }, [])
 
-  // useEffect(() => {
-  //   console.log('widgets changed: ', widgets)
-  // }, [widgets])
+  useEffect(() => {
+    // TODO: uncomment to log widgets layout to console after update
+    // console.log('updated widgets: ', JSON.stringify(widgets))
+  }, [widgets])
 
   return { widgets, layouts, handleLayoutsChange }
 }
