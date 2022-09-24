@@ -20,5 +20,7 @@ export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
     return abbreviatedNumber(decimal(totalEverBorrowed, decimals))
   }, [poolState, decimals])
 
-  return <FigureLayout className={className} value={value} name='Asset Volume' loading={loading} color={'#fcbb59'} />
+  return (
+    <FigureLayout className={className} value={value} name='Asset Volume (NAV)' loading={loading} color={'#fcbb59'} />
+  )
 }

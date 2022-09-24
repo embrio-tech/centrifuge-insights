@@ -20,5 +20,5 @@ export const PoolValue: React.FC<PoolValueProps> = (props) => {
     return abbreviatedNumber(decimal(poolValue, decimals))
   }, [poolState, decimals])
 
-  return <FigureLayout className={className} value={value} name='Pool Value' loading={loading} color='#2762ff' />
+  return <FigureLayout className={className} value={value} name='Pool Value (TVL)' loading={loading} color='#2762ff' />
 }
