@@ -7,8 +7,14 @@ import { useFilters } from './FiltersContext'
 interface PoolContextInterface {
   poolId?: string
   poolMetadata?: PoolMetadata
+  poolState?: PoolState
   loading: boolean
   decimals?: number
+}
+
+interface PoolState {
+  value: string
+  totalEverBorrowed: string
 }
 
 interface ApiData {
@@ -17,6 +23,7 @@ interface ApiData {
     metadata: string
     currency: Currency
   }
+  poolState: PoolState
 }
 
 const PoolContext = createContext<PoolContextInterface | undefined>(undefined)
@@ -26,7 +33,7 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
   const { selection, filterReady } = useFilters('pool')
 
   const query = gql`
-    query GetPoolMetadata($poolId: String!) {
+    query GetPool($poolId: String!) {
       pool(id: $poolId) {
         id
         metadata
@@ -34,6 +41,10 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
           id
           decimals
         }
+      }
+      poolState(id: $poolId) {
+        value
+        totalEverBorrowed
       }
     }
   `
@@ -48,9 +59,7 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
   )
 
   const skip = useMemo(
-    () =>
-      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
-      !filterReady,
+    () => Object.values(variables).every((variable) => !variable) || !filterReady,
     [variables, filterReady]
   )
 
@@ -58,6 +67,8 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
     variables,
     skip,
   })
+
+  const poolState = useMemo(() => data?.poolState, [data])
 
   // fetch metadata
   const metadataPaths = useMemo(() => (data?.pool.metadata ? [data.pool.metadata] : []), [data])
@@ -76,10 +87,11 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
     () => ({
       poolId,
       poolMetadata,
+      poolState,
       loading,
       decimals,
     }),
-    [poolId, poolMetadata, loading, decimals]
+    [poolId, poolMetadata, poolState, loading, decimals]
   )
 
   return <PoolContext.Provider value={value}>{children}</PoolContext.Provider>
