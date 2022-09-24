@@ -13,6 +13,8 @@ A single-page application to visualize data and activities on the Centrifuge Par
 
 ## :seedling: Staging
 
+[![Pipeline](https://github.com/embrio-tech/centrifuge-insights/actions/workflows/deploy.yml/badge.svg)](https://github.com/embrio-tech/centrifuge-insights/actions/workflows/deploy.yml)
+
 Access staging of [`main`](https://github.com/embrio-tech/centrifuge-insights) branch at [https://insights.s.centrifuge.embrio.tech/](https://insights.s.centrifuge.embrio.tech/).
 
 [![Screen Shot 2022-07-28 at 11 50 10](https://user-images.githubusercontent.com/16650977/181477369-6a563446-7e8b-45c4-a837-6ace275d28f5.png)](https://insights.s.centrifuge.embrio.tech/)
