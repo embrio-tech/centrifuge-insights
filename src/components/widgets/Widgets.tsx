@@ -15,8 +15,8 @@ const Widgets: React.FC<WidgetsProps> = (props) => {
   return (
     <div className={className}>
       <WidgetsLayout widgets={widgets}>
-        {widgets.map(({ name }) => (
-          <div key={name}>
+        {widgets.map(({ _id, name }) => (
+          <div key={_id}>
             <Widget is={name} />
           </div>
         ))}

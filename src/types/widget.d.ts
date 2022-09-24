@@ -9,7 +9,13 @@ export interface Coordinates {
   h: number
 }
 
-export interface WidgetAppearance {
-  name: keyof typeof components
+type WidgetName = keyof typeof components
+
+interface WidgetMeta {
+  _id: string
+  name: WidgetName
+}
+
+export interface WidgetAppearance extends WidgetMeta {
   coordinates: Coordinates[]
 }

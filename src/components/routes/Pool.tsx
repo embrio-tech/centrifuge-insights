@@ -14,43 +14,58 @@ const Pool: React.FC = () => {
         name: 'About Pool',
         widgets: [
           {
+            _id: '01',
             name: 'PoolName',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 1, x: 0, y: 0 },
               { breakpoint: 'sm', w: 2, h: 1, x: 0, y: 0 },
               { breakpoint: 'md', w: 2, h: 1, x: 0, y: 0 },
               { breakpoint: 'lg', w: 4, h: 1, x: 0, y: 0 },
-              { breakpoint: 'xl', w: 3, h: 1, x: 0, y: 0 },
+              { breakpoint: 'xl', w: 4, h: 1, x: 0, y: 0 },
             ],
           },
           {
+            _id: '02',
             name: 'PoolInfos',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 2, x: 0, y: 1 },
               { breakpoint: 'sm', w: 2, h: 2, x: 2, y: 0 },
               { breakpoint: 'md', w: 2, h: 2, x: 2, y: 0 },
               { breakpoint: 'lg', w: 4, h: 2, x: 4, y: 0 },
-              { breakpoint: 'xl', w: 5, h: 2, x: 5, y: 0 },
+              { breakpoint: 'xl', w: 4, h: 2, x: 4, y: 0 },
             ],
           },
           {
-            name: 'AssetVolume',
+            _id: '03',
+            name: 'PoolValue',
             coordinates: [
               { breakpoint: 'xs', w: 1, h: 1, x: 0, y: 3 },
               { breakpoint: 'sm', w: 2, h: 1, x: 0, y: 1 },
               { breakpoint: 'md', w: 2, h: 1, x: 0, y: 1 },
               { breakpoint: 'lg', w: 2, h: 1, x: 8, y: 0 },
-              { breakpoint: 'xl', w: 2, h: 1, x: 3, y: 0 },
+              { breakpoint: 'xl', w: 2, h: 1, x: 0, y: 1 },
             ],
           },
           {
+            _id: '04',
+            name: 'AssetVolume',
+            coordinates: [
+              { breakpoint: 'xs', w: 1, h: 1, x: 1, y: 3 },
+              { breakpoint: 'sm', w: 2, h: 1, x: 0, y: 2 },
+              { breakpoint: 'md', w: 2, h: 1, x: 0, y: 2 },
+              { breakpoint: 'lg', w: 2, h: 1, x: 8, y: 1 },
+              { breakpoint: 'xl', w: 2, h: 1, x: 2, y: 1 },
+            ],
+          },
+          {
+            _id: '05',
             name: 'PoolIssuer',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 1, x: 0, y: 4 },
-              { breakpoint: 'sm', w: 2, h: 1, x: 2, y: 2 },
+              { breakpoint: 'sm', w: 2, h: 2, x: 2, y: 2 },
               { breakpoint: 'md', w: 2, h: 2, x: 4, y: 0 },
               { breakpoint: 'lg', w: 4, h: 1, x: 0, y: 1 },
-              { breakpoint: 'xl', w: 5, h: 1, x: 0, y: 1 },
+              { breakpoint: 'xl', w: 4, h: 2, x: 8, y: 0 },
             ],
           },
         ],
@@ -59,6 +74,7 @@ const Pool: React.FC = () => {
         name: 'Pool History',
         widgets: [
           {
+            _id: '11',
             name: 'PoolDevelopment',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 0 },
@@ -69,6 +85,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
+            _id: '12',
             name: 'FundingDevelopment',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 3 },
@@ -79,6 +96,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
+            _id: '13',
             name: 'Returns',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 6 },
@@ -89,6 +107,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
+            _id: '14',
             name: 'TokenPriceDevelopment',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 9 },
@@ -99,6 +118,7 @@ const Pool: React.FC = () => {
             ],
           },
           {
+            _id: '15',
             name: 'InvestmentVolume',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 12 },
