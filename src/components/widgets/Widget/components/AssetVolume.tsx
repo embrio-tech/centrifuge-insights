@@ -21,6 +21,12 @@ export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
   }, [poolState, decimals])
 
   return (
-    <FigureLayout className={className} value={value} name='Asset Volume (NAV)' loading={loading} color={'#fcbb59'} />
+    <FigureLayout
+      className={className}
+      value={value}
+      name='Asset Volume (cumulated)'
+      loading={loading}
+      color={'#fcbb59'}
+    />
   )
 }
