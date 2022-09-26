@@ -18,7 +18,7 @@ const WidgetsLayout: React.FC<PropsWithChildren<WidgetsLayoutProps>> = (props) =
   const ref = useRef(null)
   const { width } = useSize(ref)
 
-  const layouts = useWidgetsLayout(widgets)
+  const { layouts, handleLayoutsChange } = useWidgetsLayout(widgets)
 
   return (
     <div ref={ref} className={className}>
@@ -36,11 +36,10 @@ const WidgetsLayout: React.FC<PropsWithChildren<WidgetsLayoutProps>> = (props) =
         //   // TODO: handle breakpoint change
         //   console.log('breakpoint: ', breakpoint, cols)
         // }}
-        // onLayoutChange={(layout, allLayouts) => {
-        //   // TODO: handle layout change
-        //   console.log('layout: ', layout)
-        //   // console.log('allLayouts: ', allLayouts)
-        // }}
+        onLayoutChange={(layout, layouts) => {
+          // TODO: handle layout change
+          handleLayoutsChange(layouts)
+        }}
       >
         {children}
       </ResponsiveGridLayout>

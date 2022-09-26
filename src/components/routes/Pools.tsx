@@ -14,6 +14,7 @@ const Pools: React.FC = () => {
         name: 'Pools',
         widgets: [
           {
+            _id: '21',
             name: 'PoolsList',
             coordinates: [
               { breakpoint: 'xs', w: 2, h: 3, x: 0, y: 0 },
