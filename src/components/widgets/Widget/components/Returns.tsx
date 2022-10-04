@@ -43,7 +43,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
   const query = gql`
     query GetReturns($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
       trancheSnapshots(
-        first: 1000
+        first: 100
         orderBy: TIMESTAMP_ASC
         filter: {
           id: { startsWith: $poolId }
@@ -65,20 +65,22 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
     }
   `
 
-  const variables = useMemo(
-    () => ({
+  const variables = useMemo(() => {
+    const to = new Date()
+    const days = Math.floor(100 / (selections.tranches?.length || 1))
+    const from = new Date()
+    from.setDate(from.getDate() - days)
+
+    return {
       poolId: selections.pool?.[0],
-      from: new Date('2022-06-04'),
-      to: new Date(),
+      to,
+      from,
       tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
-    }),
-    [selections]
-  )
+    }
+  }, [selections])
 
   const skip = useMemo(
-    () =>
-      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
-      !filtersReady,
+    () => Object.values(variables).every((variable) => !variable) || !filtersReady,
     [variables, filtersReady]
   )
 

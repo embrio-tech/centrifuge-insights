@@ -66,7 +66,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
       $tranches: [TrancheSnapshotFilter!]
     ) {
       trancheSnapshots(
-        first: 1000
+        first: 100
         orderBy: TIMESTAMP_ASC
         filter: {
           id: { startsWith: $poolId }
@@ -84,7 +84,7 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
         }
       }
       poolSnapshots(
-        first: 1000
+        first: 100
         orderBy: TIMESTAMP_ASC
         filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
       ) {
@@ -99,20 +99,22 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     }
   `
 
-  const variables = useMemo(
-    () => ({
-      poolId: selections.pool?.[0],
-      from: new Date('2022-06-04'),
-      to: new Date(),
-      tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
-    }),
-    [selections]
-  )
+const variables = useMemo(() => {
+  const to = new Date()
+  const days = Math.floor(100 / (selections.tranches?.length || 1))
+  const from = new Date()
+  from.setDate(from.getDate() - days)
+
+  return {
+    poolId: selections.pool?.[0],
+    to,
+    from,
+    tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
+  }
+}, [selections])
 
   const skip = useMemo(
-    () =>
-      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
-      !filtersReady,
+    () => Object.values(variables).every((variable) => !variable) || !filtersReady,
     [variables, filtersReady]
   )
 
