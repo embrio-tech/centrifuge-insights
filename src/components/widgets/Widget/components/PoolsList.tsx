@@ -36,6 +36,7 @@ interface PoolData extends TableData {
   icon?: string
   assetClass?: string
   poolValue?: number
+  currency: string
 }
 
 const columns: ColumnsType<PoolData> = [
@@ -62,7 +63,7 @@ const columns: ColumnsType<PoolData> = [
     dataIndex: 'poolValue',
     key: 'poolValue',
     align: 'right',
-    render: (value) => abbreviatedNumber(value),
+    render: (value, { currency }) => `${currency} ${abbreviatedNumber(value)}`,
   },
 ]
 
@@ -147,7 +148,7 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
   const poolsData = useMemo<PoolData[]>(
     () =>
       (data?.pools?.nodes || []).map(
-        ({ id, metadata, state: { netAssetValue, totalReserve }, currency: { decimals } }) => {
+        ({ id, metadata, state: { netAssetValue, totalReserve }, currency: { decimals, id: currency } }) => {
           const iconHash = getIpfsHash(poolsMetadata[metadata]?.pool.icon)
           return {
             id,
@@ -155,6 +156,7 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
             icon: iconHash ? iconsUrls[iconHash] : undefined,
             assetClass: poolsMetadata[metadata]?.pool.asset.class,
             poolValue: decimal(netAssetValue, decimals) + decimal(totalReserve, decimals),
+            currency,
           }
         }
       ),
