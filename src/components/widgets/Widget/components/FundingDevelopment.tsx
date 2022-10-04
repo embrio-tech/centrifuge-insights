@@ -56,7 +56,7 @@ interface RelativeLiquidityReserve {
 export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { decimals } = usePool()
+  const { decimals, currency } = usePool()
 
   const query = gql`
     query GetFundingDevelopment(
@@ -291,7 +291,7 @@ const variables = useMemo(() => {
             },
             yAxis: {
               title: {
-                text: 'DAI',
+                text: currency,
                 spacing: 5,
                 style: {
                   fill: '#8d8d8d',
@@ -320,7 +320,7 @@ const variables = useMemo(() => {
         },
       ],
     }
-  }, [flowsData, netFlowsData, relativeLiquidityReserves])
+  }, [flowsData, netFlowsData, relativeLiquidityReserves, currency])
 
   const kpis = useMemo<WidgetKPI[]>(() => {
     const poolSnapshots = data?.poolSnapshots?.nodes || []
@@ -343,7 +343,7 @@ const variables = useMemo(() => {
         value: abbreviatedNumber(
           netFlowsData.map(({ value }) => value).reduce((acc, current) => acc + current, 0) / netFlowsData.length
         ),
-        prefix: 'DAI',
+        prefix: currency,
       },
       {
         label: 'Avg. outflows as % of pool value',
@@ -356,7 +356,7 @@ const variables = useMemo(() => {
         suffix: '%',
       },
     ]
-  }, [data, netFlowsData, flowsData, decimals])
+  }, [data, netFlowsData, flowsData, decimals, currency])
 
   return (
     <ChartLayout

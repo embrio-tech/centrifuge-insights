@@ -31,7 +31,7 @@ interface ApiData {
 export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { poolMetadata, loading: poolLoading } = usePool()
+  const { poolMetadata, loading: poolLoading, currency } = usePool()
 
   const query = gql`
     query GetTokenPrices($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
@@ -179,7 +179,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
             seriesField: 'price',
             yAxis: {
               title: {
-                text: 'DAI',
+                text: currency,
                 spacing: 5,
                 style: {
                   fill: '#8d8d8d',
@@ -192,7 +192,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
         },
       ],
     }
-  }, [priceData])
+  }, [priceData, currency])
 
   const kpis = useMemo<WidgetKPI[]>(() => {
     const trancheSnapshots = data?.trancheSnapshots?.nodes || []
@@ -211,10 +211,10 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
             : trancheId
         }`,
         value: abbreviatedNumber(ray(price)),
-        prefix: 'DAI',
+        prefix: currency,
       })),
     ]
-  }, [data, poolMetadata])
+  }, [data, poolMetadata, currency])
 
   return (
     <ChartLayout
