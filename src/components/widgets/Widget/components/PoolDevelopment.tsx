@@ -24,9 +24,20 @@ interface PoolSnapshot {
   __typename: string
 }
 
+interface TrancheSnapshot {
+  id: string
+  timestamp: string
+  trancheId: string
+  debt: string
+  tranche: {
+    trancheId: string
+  }
+}
+
 interface ApiData {
   __typename: string
   poolSnapshots: Nodes<PoolSnapshot>
+  trancheSnapshots: Nodes<TrancheSnapshot>
 }
 
 interface SharesData {
@@ -44,12 +55,12 @@ interface SumsData {
 export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { decimals } = usePool()
+  const { decimals, poolMetadata, loading: poolLoading } = usePool()
 
   const query = gql`
-    query GetPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!) {
+    query GetPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
       poolSnapshots(
-        first: 1000
+        first: 100
         orderBy: TIMESTAMP_ASC
         filter: { id: { startsWith: $poolId }, timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to } }
       ) {
@@ -62,26 +73,49 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           totalEverNumberOfLoans
         }
       }
+      trancheSnapshots(
+        first: 100
+        orderBy: TIMESTAMP_ASC
+        filter: {
+          id: { startsWith: $poolId }
+          timestamp: { greaterThanOrEqualTo: $from, lessThanOrEqualTo: $to }
+          or: $tranches
+        }
+      ) {
+        totalCount
+        nodes {
+          id
+          trancheId
+          timestamp
+          debt
+          tranche {
+            trancheId
+          }
+        }
+      }
     }
   `
 
-  const variables = useMemo(
-    () => ({
+  const variables = useMemo(() => {
+    const to = new Date()
+    const days = Math.floor(100 / (selections.tranches?.length || 1))
+    const from = new Date()
+    from.setDate(from.getDate() - days)
+
+    return {
       poolId: selections.pool?.[0],
-      from: new Date('2022-06-04'),
-      to: new Date(),
-    }),
-    [selections]
-  )
+      to,
+      from,
+      tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
+    }
+  }, [selections])
 
   const skip = useMemo(
-    () =>
-      Object.values(variables).reduce((variableMissing, variable) => variableMissing || !variable, false) ||
-      !filtersReady,
+    () => Object.values(variables).every((variable) => !variable) || !filtersReady,
     [variables, filtersReady]
   )
 
-  const { loading, data } = useGraphQL<ApiData>(query, {
+  const { loading: dataLoading, data } = useGraphQL<ApiData>(query, {
     variables,
     skip,
   })
@@ -95,18 +129,20 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           timestamp: new Date(timestamp),
         })
       ) || []
-    const netAssetValues =
-      data?.poolSnapshots?.nodes?.map(
-        ({ timestamp, netAssetValue }): SharesData => ({
-          share: 'Pool NAV',
-          value: decimal(netAssetValue, decimals),
+
+    const trancheDebtValues =
+      data?.trancheSnapshots?.nodes?.map(
+        ({ timestamp, debt, tranche: { trancheId } }): SharesData => ({
+          share: poolMetadata?.tranches[trancheId]
+            ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
+            : trancheId,
+          value: decimal(debt, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
 
-    // TODO: replace ...netAssetValues by ...trancheAValues, ...trancheBValues, etc.
-    return [...totalReserves, ...netAssetValues]
-  }, [data, decimals])
+    return [...totalReserves, ...trancheDebtValues]
+  }, [data, decimals, poolMetadata])
 
   const sumsData = useMemo<SumsData[]>(() => {
     const poolValues =
@@ -185,7 +221,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
             },
             line: false,
             meta,
-            color: ['#2762ff', '#fcbb59', '#ccc'],
+            color: ['#2762ff', '#fcbb59', '#e6017a', '#ccc', '#20B880'],
           },
         },
         {
@@ -205,7 +241,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
               },
             },
             meta,
-            color: ['#2762ff', '#fcbb59', '#ccc'],
+            color: ['#2762ff', '#fcbb59', '#e6017a', '#ccc', '#20B880'],
           },
         },
       ],
@@ -271,7 +307,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       className={className}
       chart={<MixChart {...chartConfig} />}
       info={<WidgetKPIs kpis={kpis} />}
-      loading={loading}
+      loading={dataLoading || poolLoading}
       title='Pool Development'
     />
   )
