@@ -38,7 +38,7 @@ interface YieldData {
 export const Returns: React.FC<ReturnsProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { poolMetadata, loading: poolLoading } = usePool()
+  const { poolMetadata, loading: poolLoading, currency } = usePool()
 
   const query = gql`
     query GetReturns($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
@@ -167,7 +167,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
               grid: null,
               position: 'right',
               title: {
-                text: 'DAI',
+                text: currency,
                 spacing: 5,
                 style: {
                   fill: '#8d8d8d',
@@ -191,7 +191,7 @@ export const Returns: React.FC<ReturnsProps> = (props) => {
         },
       ],
     }
-  }, [yieldData])
+  }, [yieldData, currency])
 
   const kpis = useMemo<WidgetKPI[]>(() => {
     const trancheSnapshots = data?.trancheSnapshots?.nodes || []

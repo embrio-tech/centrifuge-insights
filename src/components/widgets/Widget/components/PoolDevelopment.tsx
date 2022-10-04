@@ -55,7 +55,7 @@ interface SumsData {
 export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { decimals, poolMetadata, loading: poolLoading } = usePool()
+  const { decimals, poolMetadata, loading: poolLoading, currency } = usePool()
 
   const query = gql`
     query GetPoolDevelopment($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
@@ -233,7 +233,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
             seriesField: 'sum',
             yAxis: {
               title: {
-                text: 'DAI',
+                text: currency,
                 spacing: 5,
                 style: {
                   fill: '#8d8d8d',
@@ -246,7 +246,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         },
       ],
     }
-  }, [sumsData, sharesData])
+  }, [sumsData, sharesData, currency])
 
   const kpis = useMemo<WidgetKPI[]>(() => {
     const poolSnapshots = data?.poolSnapshots?.nodes || []
@@ -297,10 +297,10 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       {
         label: 'Avg. loan size',
         value: abbreviatedNumber(decimal(last.netAssetValue, decimals) / Number(last.totalEverNumberOfLoans)),
-        prefix: 'DAI',
+        prefix: currency,
       },
     ]
-  }, [data, decimals])
+  }, [data, decimals, currency])
 
   return (
     <ChartLayout

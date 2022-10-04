@@ -10,6 +10,7 @@ interface PoolContextInterface {
   poolState?: PoolState
   loading: boolean
   decimals?: number
+  currency?: string
 }
 
 interface PoolState {
@@ -81,6 +82,8 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
 
   const decimals = useMemo(() => data?.pool?.currency.decimals, [data])
 
+  const currency = useMemo(() => data?.pool?.currency.id, [data])
+
   const loading = useMemo(() => poolLoading || metadataLoading, [poolLoading, metadataLoading])
 
   const value = useMemo<PoolContextInterface>(
@@ -90,8 +93,9 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
       poolState,
       loading,
       decimals,
+      currency,
     }),
-    [poolId, poolMetadata, poolState, loading, decimals]
+    [poolId, poolMetadata, poolState, loading, decimals, currency]
   )
 
   return <PoolContext.Provider value={value}>{children}</PoolContext.Provider>

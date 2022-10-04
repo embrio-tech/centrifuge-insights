@@ -51,7 +51,7 @@ interface RelativeInvestmentData {
 export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
   const { className } = props
   const { selections, filtersReady } = useFilters()
-  const { poolMetadata, loading: poolLoading, decimals } = usePool()
+  const { poolMetadata, loading: poolLoading, decimals, currency } = usePool()
 
   const query = gql`
     query GetInvestmentVolume($poolId: String!, $from: Datetime!, $to: Datetime!, $tranches: [TrancheSnapshotFilter!]) {
@@ -253,7 +253,7 @@ const variables = useMemo(() => {
             },
             yAxis: {
               title: {
-                text: 'DAI',
+                text: currency,
                 spacing: 5,
                 style: {
                   fill: '#8d8d8d',
@@ -281,7 +281,7 @@ const variables = useMemo(() => {
         },
       ],
     }
-  }, [investmentData, poolInvestmentData, relativePoolInvestmentData])
+  }, [investmentData, poolInvestmentData, relativePoolInvestmentData, currency])
 
   const kpis = useMemo<WidgetKPI[]>(() => {
     if (tranchesIds.length && relativePoolInvestmentData.length && investmentData.length) {

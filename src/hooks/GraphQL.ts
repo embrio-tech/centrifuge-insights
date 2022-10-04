@@ -23,7 +23,8 @@ export const useGraphQL = <Data = any, Variables = OperationVariables>(
 
   // raise error if not all documents are fetched with one request (workaround). TODO: find better solution.
   useEffect(() => {
-    if (data) {
+    const { variables } = options || {}
+    if (data && variables && !('offset' in variables) ) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       Object.values<any>(data)
         .filter((value) => typeof value === 'object')
@@ -35,7 +36,7 @@ export const useGraphQL = <Data = any, Variables = OperationVariables>(
           }
         })
     }
-  }, [data, setError])
+  }, [data, setError, options])
 
   return { data, ...rest }
 }
