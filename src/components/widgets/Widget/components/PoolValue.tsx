@@ -10,15 +10,13 @@ interface PoolValueProps {
 
 export const PoolValue: React.FC<PoolValueProps> = (props) => {
   const { className } = props
-  const { decimals, poolState, loading } = usePool()
+  const { decimals, poolValue, loading } = usePool()
 
   const value = useMemo<string>(() => {
-    const poolValue = poolState?.value
-
     if (!poolValue) return '-'
 
     return abbreviatedNumber(decimal(poolValue, decimals))
-  }, [poolState, decimals])
+  }, [poolValue, decimals])
 
   return <FigureLayout className={className} value={value} name='Pool Value (TVL)' loading={loading} color='#2762ff' />
 }

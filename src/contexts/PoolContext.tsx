@@ -7,15 +7,11 @@ import { useFilters } from './FiltersContext'
 interface PoolContextInterface {
   poolId?: string
   poolMetadata?: PoolMetadata
-  poolState?: PoolState
+  poolValue?: string
+  sumBorrowedAmount?: string
   loading: boolean
   decimals?: number
   currency?: string
-}
-
-interface PoolState {
-  value: string
-  totalEverBorrowed: string
 }
 
 interface ApiData {
@@ -23,8 +19,9 @@ interface ApiData {
     id: string
     metadata: string
     currency: Currency
+    value: string
+    sumBorrowedAmount: string
   }
-  poolState: PoolState
 }
 
 const PoolContext = createContext<PoolContextInterface | undefined>(undefined)
@@ -42,10 +39,8 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
           id
           decimals
         }
-      }
-      poolState(id: $poolId) {
         value
-        totalEverBorrowed
+        sumBorrowedAmount
       }
     }
   `
@@ -69,7 +64,9 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
     skip,
   })
 
-  const poolState = useMemo(() => data?.poolState, [data])
+  const poolValue = useMemo(() => data?.pool?.value, [data])
+
+  const sumBorrowedAmount = useMemo(() => data?.pool?.sumBorrowedAmount, [data])
 
   // fetch metadata
   const metadataPaths = useMemo(() => (data?.pool.metadata ? [data.pool.metadata] : []), [data])
@@ -90,12 +87,13 @@ const PoolContextProvider: React.FC<PropsWithChildren> = (props) => {
     () => ({
       poolId,
       poolMetadata,
-      poolState,
+      poolValue,
+      sumBorrowedAmount,
       loading,
       decimals,
       currency,
     }),
-    [poolId, poolMetadata, poolState, loading, decimals, currency]
+    [poolId, poolMetadata, poolValue, sumBorrowedAmount, loading, decimals, currency]
   )
 
   return <PoolContext.Provider value={value}>{children}</PoolContext.Provider>

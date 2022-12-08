@@ -10,15 +10,13 @@ interface AssetVolumeProps {
 
 export const AssetVolume: React.FC<AssetVolumeProps> = (props) => {
   const { className } = props
-  const { decimals, poolState, loading } = usePool()
+  const { decimals, sumBorrowedAmount, loading } = usePool()
 
   const value = useMemo<string>(() => {
-    const totalEverBorrowed = poolState?.totalEverBorrowed
+    if (!sumBorrowedAmount) return '-'
 
-    if (!totalEverBorrowed) return '-'
-
-    return abbreviatedNumber(decimal(totalEverBorrowed, decimals))
-  }, [poolState, decimals])
+    return abbreviatedNumber(decimal(sumBorrowedAmount, decimals))
+  }, [sumBorrowedAmount, decimals])
 
   return (
     <FigureLayout
