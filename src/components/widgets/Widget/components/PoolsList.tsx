@@ -19,10 +19,8 @@ interface PoolsListProps {
 interface Pool {
   id: string
   metadata: string
-  state: {
-    totalReserve: string
-    netAssetValue: string
-  }
+  totalReserve: string
+  portfolioValuation: string
   currency: Currency
 }
 
@@ -83,10 +81,8 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
         nodes {
           id
           metadata
-          state {
-            totalReserve
-            netAssetValue
-          }
+          portfolioValuation
+          totalReserve
           currency {
             id
             decimals
@@ -148,14 +144,14 @@ export const PoolsList: React.FC<PoolsListProps> = (props) => {
   const poolsData = useMemo<PoolData[]>(
     () =>
       (data?.pools?.nodes || []).map(
-        ({ id, metadata, state: { netAssetValue, totalReserve }, currency: { decimals, id: currency } }) => {
+        ({ id, metadata, portfolioValuation, totalReserve, currency: { decimals, id: currency } }) => {
           const iconHash = getIpfsHash(poolsMetadata[metadata]?.pool.icon)
           return {
             id,
             name: poolsMetadata[metadata]?.pool.name || '',
             icon: iconHash ? iconsUrls[iconHash] : undefined,
             assetClass: poolsMetadata[metadata]?.pool.asset.class,
-            poolValue: decimal(netAssetValue, decimals) + decimal(totalReserve, decimals),
+            poolValue: decimal(portfolioValuation, decimals) + decimal(totalReserve, decimals),
             currency,
           }
         }
