@@ -18,7 +18,7 @@ interface TrancheSnapshot {
   id: string
   timestamp: string
   trancheId: string
-  price: string | null
+  tokenPrice: string | null
   tranche: {
     trancheId: string
   }
@@ -49,7 +49,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
           id
           trancheId
           timestamp
-          price
+          tokenPrice
           tranche {
             trancheId
           }
@@ -84,9 +84,9 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
 
   const priceData = useMemo(
     () =>
-      data?.trancheSnapshots?.nodes?.map(({ price, timestamp, tranche: { trancheId } }) => ({
-        value: ray(price),
-        price: poolMetadata?.tranches[trancheId]
+      data?.trancheSnapshots?.nodes?.map(({ tokenPrice, timestamp, tranche: { trancheId } }) => ({
+        value: ray(tokenPrice),
+        tokenPrice: poolMetadata?.tranches[trancheId]
           ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
           : trancheId,
         timestamp: new Date(timestamp),
@@ -133,7 +133,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
         reversed: false,
       },
       legend: {
-        price: {
+        tokenPrice: {
           layout: 'horizontal',
           position: 'bottom',
           reversed: true,
@@ -176,7 +176,7 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
             data: priceData,
             xField: 'timestamp',
             yField: 'value',
-            seriesField: 'price',
+            seriesField: 'tokenPrice',
             yAxis: {
               title: {
                 text: currency,
@@ -204,13 +204,13 @@ export const TokenPriceDevelopment: React.FC<TokenPriceDevelopmentProps> = (prop
     const lastTrancheSnapshots = trancheSnapshots.slice(-tranchesIds.length)
 
     return [
-      ...lastTrancheSnapshots.map(({ price, tranche: { trancheId } }) => ({
+      ...lastTrancheSnapshots.map(({ tokenPrice, tranche: { trancheId } }) => ({
         label: `Price ${
           poolMetadata.tranches[trancheId]
             ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
             : trancheId
         }`,
-        value: abbreviatedNumber(ray(price)),
+        value: abbreviatedNumber(ray(tokenPrice)),
         prefix: currency,
       })),
     ]

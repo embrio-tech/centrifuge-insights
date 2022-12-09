@@ -19,7 +19,7 @@ interface TrancheSnapshot {
   id: string
   timestamp: string
   trancheId: string
-  debt: string
+  sumDebt: string
   tranche: {
     trancheId: string
   }
@@ -28,7 +28,7 @@ interface TrancheSnapshot {
 interface PoolSnapshot {
   id: string
   timestamp: string
-  netAssetValue: string
+  portfolioValuation: string
 }
 
 interface ApiData {
@@ -69,7 +69,7 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
           id
           timestamp
           trancheId
-          debt
+          sumDebt
           tranche {
             trancheId
           }
@@ -84,25 +84,25 @@ export const InvestmentVolume: React.FC<InvestmentVolumeProps> = (props) => {
         nodes {
           id
           timestamp
-          netAssetValue
+          portfolioValuation
         }
       }
     }
   `
 
-const variables = useMemo(() => {
-  const to = new Date()
-  const days = Math.floor(100 / (selections.tranches?.length || 1))
-  const from = new Date()
-  from.setDate(from.getDate() - days)
+  const variables = useMemo(() => {
+    const to = new Date()
+    const days = Math.floor(100 / (selections.tranches?.length || 1))
+    const from = new Date()
+    from.setDate(from.getDate() - days)
 
-  return {
-    poolId: selections.pool?.[0],
-    to,
-    from,
-    tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
-  }
-}, [selections])
+    return {
+      poolId: selections.pool?.[0],
+      to,
+      from,
+      tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
+    }
+  }, [selections])
 
   const skip = useMemo(
     () => Object.values(variables).every((variable) => !variable) || !filtersReady,
@@ -135,10 +135,10 @@ const variables = useMemo(() => {
           // remove trancheSnapshots of first timestamp (t_0)
           .slice(tranchesIds.length)
           .map(
-            ({ timestamp, debt, tranche: { trancheId } }, index): InvestmentData => ({
+            ({ timestamp, sumDebt, tranche: { trancheId } }, index): InvestmentData => ({
               timestamp: new Date(timestamp),
               // debt_t(i) - debt_t(i-1)
-              value: decimal(debt, decimals) - decimal(trancheSnapshots[index].debt, decimals),
+              value: decimal(sumDebt, decimals) - decimal(trancheSnapshots[index].sumDebt, decimals),
               volume: poolMetadata?.tranches[trancheId]
                 ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
                 : trancheId,
@@ -177,7 +177,7 @@ const variables = useMemo(() => {
       return poolInvestmentData.map(({ value, timestamp }, index): RelativeInvestmentData => {
         return {
           timestamp,
-          percentage: value / decimal(poolSnapshots.slice(1)[index].netAssetValue, decimals),
+          percentage: value / decimal(poolSnapshots.slice(1)[index].portfolioValuation, decimals),
           delta: 'Investment volume in % of NAV',
         }
       })
@@ -187,7 +187,7 @@ const variables = useMemo(() => {
 
   const chartConfig = useMemo<MixConfig>(() => {
     // sync axes
-    const { primaryAxisMin, primaryAxisMax, secondaryAxisMin, secondaryAxisMax } = syncAxes(
+    const { primaryAxisMax, secondaryAxisMin, secondaryAxisMax } = syncAxes(
       poolInvestmentData.map(({ value }) => value),
       relativePoolInvestmentData.map(({ percentage }) => {
         if (percentage === Infinity) return 1
@@ -206,7 +206,7 @@ const variables = useMemo(() => {
         type: 'linear',
         formatter: (v: number) => abbreviatedNumber(v),
         max: primaryAxisMax,
-        min: primaryAxisMin,
+        min: 0,
         tickCount: 6,
         maxTickCount: 6,
       },

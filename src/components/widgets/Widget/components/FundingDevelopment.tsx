@@ -19,8 +19,8 @@ interface TrancheSnapshot {
   id: string
   timestamp: string
   trancheId: string
-  fulfilledInvestOrders_: string
-  fulfilledRedeemOrders_: string
+  sumFulfilledInvestOrdersR: string
+  sumFulfilledRedeemOrdersR: string
 }
 
 interface PoolSnapshot {
@@ -79,8 +79,8 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
           id
           trancheId
           timestamp
-          fulfilledInvestOrders_
-          fulfilledRedeemOrders_
+          sumFulfilledInvestOrdersR
+          sumFulfilledRedeemOrdersR
         }
       }
       poolSnapshots(
@@ -99,19 +99,19 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
     }
   `
 
-const variables = useMemo(() => {
-  const to = new Date()
-  const days = Math.floor(100 / (selections.tranches?.length || 1))
-  const from = new Date()
-  from.setDate(from.getDate() - days)
+  const variables = useMemo(() => {
+    const to = new Date()
+    const days = Math.floor(100 / (selections.tranches?.length || 1))
+    const from = new Date()
+    from.setDate(from.getDate() - days)
 
-  return {
-    poolId: selections.pool?.[0],
-    to,
-    from,
-    tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
-  }
-}, [selections])
+    return {
+      poolId: selections.pool?.[0],
+      to,
+      from,
+      tranches: selections.tranches?.map((trancheId) => ({ trancheId: { endsWith: trancheId } })),
+    }
+  }, [selections])
 
   const skip = useMemo(
     () => Object.values(variables).every((variable) => !variable) || !filtersReady,
@@ -125,18 +125,18 @@ const variables = useMemo(() => {
 
   const flowsData = useMemo<FlowData[]>(() => {
     const inflows: FlowData[] =
-      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { fulfilledInvestOrders_, timestamp }) => {
+      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { sumFulfilledInvestOrdersR, timestamp }) => {
         const lastIndex = flowsData.length - 1
         const snapshotTimestamp = new Date(timestamp)
         if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
           flowsData.splice(lastIndex, 1, {
             ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value + decimal(fulfilledInvestOrders_, decimals),
+            value: flowsData[lastIndex].value + decimal(sumFulfilledInvestOrdersR, decimals),
           })
         } else {
           flowsData.push({
             timestamp: snapshotTimestamp,
-            value: decimal(fulfilledInvestOrders_, decimals),
+            value: decimal(sumFulfilledInvestOrdersR, decimals),
             flow: 'Inflow',
           })
         }
@@ -144,18 +144,18 @@ const variables = useMemo(() => {
       }, []) || []
 
     const outflows: FlowData[] =
-      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { fulfilledRedeemOrders_, timestamp }) => {
+      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { sumFulfilledRedeemOrdersR, timestamp }) => {
         const lastIndex = flowsData.length - 1
         const snapshotTimestamp = new Date(timestamp)
         if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
           flowsData.splice(lastIndex, 1, {
             ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value - decimal(fulfilledRedeemOrders_, decimals),
+            value: flowsData[lastIndex].value - decimal(sumFulfilledRedeemOrdersR, decimals),
           })
         } else {
           flowsData.push({
             timestamp: snapshotTimestamp,
-            value: -decimal(fulfilledRedeemOrders_, decimals),
+            value: -decimal(sumFulfilledRedeemOrdersR, decimals),
             flow: 'Outflow',
           })
         }
@@ -168,7 +168,7 @@ const variables = useMemo(() => {
   const netFlowsData = useMemo<NetFlowData[]>(
     () =>
       data?.trancheSnapshots?.nodes?.reduce(
-        (flowsData: NetFlowData[], { fulfilledRedeemOrders_, fulfilledInvestOrders_, timestamp }) => {
+        (flowsData: NetFlowData[], { sumFulfilledRedeemOrdersR, sumFulfilledInvestOrdersR, timestamp }) => {
           const lastIndex = flowsData.length - 1
           const snapshotTimestamp = new Date(timestamp)
           if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
@@ -176,13 +176,13 @@ const variables = useMemo(() => {
               ...flowsData[lastIndex],
               value:
                 flowsData[lastIndex].value +
-                decimal(fulfilledInvestOrders_, decimals) -
-                decimal(fulfilledRedeemOrders_, decimals),
+                decimal(sumFulfilledInvestOrdersR, decimals) -
+                decimal(sumFulfilledRedeemOrdersR, decimals),
             })
           } else {
             flowsData.push({
               timestamp: snapshotTimestamp,
-              value: decimal(fulfilledInvestOrders_, decimals) - decimal(fulfilledRedeemOrders_, decimals),
+              value: decimal(sumFulfilledInvestOrdersR, decimals) - decimal(sumFulfilledRedeemOrdersR, decimals),
               netFlow: 'Net in-/outflow',
             })
           }

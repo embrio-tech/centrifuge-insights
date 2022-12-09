@@ -49,7 +49,7 @@ If you prefer to run the frontend without Docker the following instructions get 
 
 ### Run
 
-    yarn start
+    yarn develop
     
 ### Access
 

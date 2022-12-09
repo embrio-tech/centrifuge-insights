@@ -17,9 +17,9 @@ interface PoolDevelopmentProps {
 
 interface PoolSnapshot {
   id: string
-  netAssetValue: string
+  portfolioValuation: string
   timestamp: string
-  totalEverNumberOfLoans: string
+  sumNumberOfLoans: string
   totalReserve: string
   __typename: string
 }
@@ -28,7 +28,7 @@ interface TrancheSnapshot {
   id: string
   timestamp: string
   trancheId: string
-  debt: string
+  sumDebt: string
   tranche: {
     trancheId: string
   }
@@ -69,8 +69,8 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           id
           timestamp
           totalReserve
-          netAssetValue
-          totalEverNumberOfLoans
+          portfolioValuation
+          sumNumberOfLoans
         }
       }
       trancheSnapshots(
@@ -87,7 +87,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
           id
           trancheId
           timestamp
-          debt
+          sumDebt
           tranche {
             trancheId
           }
@@ -132,11 +132,11 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
 
     const trancheDebtValues =
       data?.trancheSnapshots?.nodes?.map(
-        ({ timestamp, debt, tranche: { trancheId } }): SharesData => ({
+        ({ timestamp, sumDebt, tranche: { trancheId } }): SharesData => ({
           share: poolMetadata?.tranches[trancheId]
             ? `${poolMetadata.tranches[trancheId].name} (${poolMetadata.tranches[trancheId].symbol})`
             : trancheId,
-          value: decimal(debt, decimals),
+          value: decimal(sumDebt, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -147,17 +147,17 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
   const sumsData = useMemo<SumsData[]>(() => {
     const poolValues =
       data?.poolSnapshots?.nodes?.map(
-        ({ timestamp, totalReserve, netAssetValue }): SumsData => ({
+        ({ timestamp, totalReserve, portfolioValuation }): SumsData => ({
           sum: 'Pool Value',
-          value: decimal(totalReserve, decimals) + decimal(netAssetValue, decimals),
+          value: decimal(totalReserve, decimals) + decimal(portfolioValuation, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
     const netAssetValues =
       data?.poolSnapshots?.nodes?.map(
-        ({ timestamp, netAssetValue }): SumsData => ({
+        ({ timestamp, portfolioValuation }): SumsData => ({
           sum: 'Pool NAV',
-          value: decimal(netAssetValue, decimals),
+          value: decimal(portfolioValuation, decimals),
           timestamp: new Date(timestamp),
         })
       ) || []
@@ -260,8 +260,8 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       {
         label: 'Pool value growth',
         value: roundedNumber(
-          (100 * (decimal(last.netAssetValue, decimals) - decimal(first.netAssetValue, decimals))) /
-            decimal(first.netAssetValue, decimals),
+          (100 * (decimal(last.portfolioValuation, decimals) - decimal(first.portfolioValuation, decimals))) /
+            decimal(first.portfolioValuation, decimals),
           { decimals: 1 }
         ),
         suffix: '%',
@@ -270,7 +270,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
         label: 'Liquidity reserve as % of pool value',
         value: roundedNumber(
           (100 * decimal(last.totalReserve, decimals)) /
-            (decimal(last.totalReserve, decimals) + decimal(last.netAssetValue, decimals)),
+            (decimal(last.totalReserve, decimals) + decimal(last.portfolioValuation, decimals)),
           { decimals: 1 }
         ),
         suffix: '%',
@@ -280,13 +280,13 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       {
         label: '# of loans',
-        value: last.totalEverNumberOfLoans,
+        value: last.sumNumberOfLoans,
       },
       {
         label: '# of loans growth',
         value: roundedNumber(
-          (100 * (Number(last.totalEverNumberOfLoans) - Number(first.totalEverNumberOfLoans))) /
-            Number(first.totalEverNumberOfLoans),
+          (100 * (Number(last.sumNumberOfLoans) - Number(first.sumNumberOfLoans))) /
+            Number(first.sumNumberOfLoans),
           { decimals: 1 }
         ),
         suffix: '%',
@@ -296,7 +296,7 @@ export const PoolDevelopment: React.FC<PoolDevelopmentProps> = (props) => {
       },
       {
         label: 'Avg. loan size',
-        value: abbreviatedNumber(decimal(last.netAssetValue, decimals) / Number(last.totalEverNumberOfLoans)),
+        value: abbreviatedNumber(decimal(last.portfolioValuation, decimals) / Number(last.sumNumberOfLoans)),
         prefix: currency,
       },
     ]
