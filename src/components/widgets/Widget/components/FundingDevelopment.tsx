@@ -19,8 +19,8 @@ interface TrancheSnapshot {
   id: string
   timestamp: string
   trancheId: string
-  sumFulfilledInvestOrdersR: string
-  sumFulfilledRedeemOrdersR: string
+  sumFulfilledInvestOrdersByPeriod: string
+  sumFulfilledRedeemOrdersByPeriod: string
 }
 
 interface PoolSnapshot {
@@ -79,8 +79,8 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
           id
           trancheId
           timestamp
-          sumFulfilledInvestOrdersR
-          sumFulfilledRedeemOrdersR
+          sumFulfilledInvestOrdersByPeriod
+          sumFulfilledRedeemOrdersByPeriod
         }
       }
       poolSnapshots(
@@ -125,42 +125,48 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
 
   const flowsData = useMemo<FlowData[]>(() => {
     const inflows: FlowData[] =
-      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { sumFulfilledInvestOrdersR, timestamp }) => {
-        const lastIndex = flowsData.length - 1
-        const snapshotTimestamp = new Date(timestamp)
-        if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
-          flowsData.splice(lastIndex, 1, {
-            ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value + decimal(sumFulfilledInvestOrdersR, decimals),
-          })
-        } else {
-          flowsData.push({
-            timestamp: snapshotTimestamp,
-            value: decimal(sumFulfilledInvestOrdersR, decimals),
-            flow: 'Inflow',
-          })
-        }
-        return flowsData
-      }, []) || []
+      data?.trancheSnapshots?.nodes?.reduce(
+        (flowsData: FlowData[], { sumFulfilledInvestOrdersByPeriod, timestamp }) => {
+          const lastIndex = flowsData.length - 1
+          const snapshotTimestamp = new Date(timestamp)
+          if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
+            flowsData.splice(lastIndex, 1, {
+              ...flowsData[lastIndex],
+              value: flowsData[lastIndex].value + decimal(sumFulfilledInvestOrdersByPeriod, decimals),
+            })
+          } else {
+            flowsData.push({
+              timestamp: snapshotTimestamp,
+              value: decimal(sumFulfilledInvestOrdersByPeriod, decimals),
+              flow: 'Inflow',
+            })
+          }
+          return flowsData
+        },
+        []
+      ) || []
 
     const outflows: FlowData[] =
-      data?.trancheSnapshots?.nodes?.reduce((flowsData: FlowData[], { sumFulfilledRedeemOrdersR, timestamp }) => {
-        const lastIndex = flowsData.length - 1
-        const snapshotTimestamp = new Date(timestamp)
-        if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
-          flowsData.splice(lastIndex, 1, {
-            ...flowsData[lastIndex],
-            value: flowsData[lastIndex].value - decimal(sumFulfilledRedeemOrdersR, decimals),
-          })
-        } else {
-          flowsData.push({
-            timestamp: snapshotTimestamp,
-            value: -decimal(sumFulfilledRedeemOrdersR, decimals),
-            flow: 'Outflow',
-          })
-        }
-        return flowsData
-      }, []) || []
+      data?.trancheSnapshots?.nodes?.reduce(
+        (flowsData: FlowData[], { sumFulfilledRedeemOrdersByPeriod, timestamp }) => {
+          const lastIndex = flowsData.length - 1
+          const snapshotTimestamp = new Date(timestamp)
+          if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
+            flowsData.splice(lastIndex, 1, {
+              ...flowsData[lastIndex],
+              value: flowsData[lastIndex].value - decimal(sumFulfilledRedeemOrdersByPeriod, decimals),
+            })
+          } else {
+            flowsData.push({
+              timestamp: snapshotTimestamp,
+              value: -decimal(sumFulfilledRedeemOrdersByPeriod, decimals),
+              flow: 'Outflow',
+            })
+          }
+          return flowsData
+        },
+        []
+      ) || []
 
     return [...inflows, ...outflows]
   }, [data, decimals])
@@ -168,7 +174,10 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
   const netFlowsData = useMemo<NetFlowData[]>(
     () =>
       data?.trancheSnapshots?.nodes?.reduce(
-        (flowsData: NetFlowData[], { sumFulfilledRedeemOrdersR, sumFulfilledInvestOrdersR, timestamp }) => {
+        (
+          flowsData: NetFlowData[],
+          { sumFulfilledRedeemOrdersByPeriod, sumFulfilledInvestOrdersByPeriod, timestamp }
+        ) => {
           const lastIndex = flowsData.length - 1
           const snapshotTimestamp = new Date(timestamp)
           if (flowsData[lastIndex]?.timestamp.valueOf() === snapshotTimestamp.valueOf()) {
@@ -176,13 +185,15 @@ export const FundingDevelopment: React.FC<FundingDevelopmentProps> = (props) => 
               ...flowsData[lastIndex],
               value:
                 flowsData[lastIndex].value +
-                decimal(sumFulfilledInvestOrdersR, decimals) -
-                decimal(sumFulfilledRedeemOrdersR, decimals),
+                decimal(sumFulfilledInvestOrdersByPeriod, decimals) -
+                decimal(sumFulfilledRedeemOrdersByPeriod, decimals),
             })
           } else {
             flowsData.push({
               timestamp: snapshotTimestamp,
-              value: decimal(sumFulfilledInvestOrdersR, decimals) - decimal(sumFulfilledRedeemOrdersR, decimals),
+              value:
+                decimal(sumFulfilledInvestOrdersByPeriod, decimals) -
+                decimal(sumFulfilledRedeemOrdersByPeriod, decimals),
               netFlow: 'Net in-/outflow',
             })
           }
