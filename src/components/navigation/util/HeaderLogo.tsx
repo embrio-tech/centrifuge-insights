@@ -20,9 +20,17 @@ export const HeaderLogo: React.FC<HeaderLogoProps> = (props) => {
     setLogoRef({ current: ref })
   })
 
-  const { ratio } = useSize(logoRef)
+  // get original width-height-ratio from svg. SVG must have viewBox defined!
+  const ratio = useMemo(() => {
+    if (!logoRef.current) return 1
+    const { width, height } = logoRef.current.viewBox.baseVal
+    return width / height
+  }, [logoRef])
+
+  // get height from logo wrapper
   const { height } = useSize(wrapperRef)
 
+  // calculate width from original ratio and wrapper height
   const width = useMemo(() => height * ratio || 0, [height, ratio])
 
   const Logo = useMemo(() => logos[logo], [logo])
